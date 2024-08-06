@@ -68,6 +68,37 @@ class DiaryPostService {
         
     }
     
+    
+    //MARK: - 해당 documentId 입력하면 저장된 정보 불러오는 함수
+    func fetchDiary(documentId: String, completion: @escaping (DiaryResponse?, Error?) -> Void) {
+           let docRef = db.collection("diaries").document(documentId)
+           
+           docRef.getDocument { (document, error) in
+               if let error = error {
+                   completion(nil, error)
+                   return
+               }
+               
+               guard let document = document, document.exists, var data = document.data() else {
+                   completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"]))
+                   return
+               }
+               
+               // Firestore Timestamp를 Date로 변환
+               if let timestamp = data["hatchDays"] as? Timestamp {
+                   data["hatchDays"] = timestamp.dateValue()
+               }
+               
+               do {
+                   let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
+                   let diaryResponse = try JSONDecoder().decode(DiaryResponse.self, from: jsonData)
+                   completion(diaryResponse, nil)
+               } catch {
+                   print("JSON Decoding Error: \(error.localizedDescription)")
+                   completion(nil, error)
+               }
+           }
+       }
 }
 
 extension DiaryPostService {
