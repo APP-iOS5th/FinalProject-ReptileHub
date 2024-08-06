@@ -16,6 +16,58 @@ class DiaryPostService {
     
     static let shared = DiaryPostService()
     private init() {}
+    
+    
+    //MARK: - 작성완료 버튼 누를 시 FireStore 에 해당 정보 저장, ImagePicker 에서 나, 엄마 , 아빠 사진 각각 받아서 파라미터에 할당하면 됨
+    func createDiary(diary:DiaryRequest,selfImageData:Data?
+                     ,motherImageData:Data?,fatherImageData:Data?,completion: @escaping(Error?)->Void) {
+        
+        let imageDatas: [Data?] = [selfImageData,motherImageData,fatherImageData]
+        let group = DispatchGroup()
+        var urls = [String?](repeating: nil, count: imageDatas.count)
+        var errors = [Error]()
+        
+        for (index, imageData) in imageDatas.enumerated() {
+            guard let imageData = imageData else {continue}
+            group.enter()
+            uploadImage(imageData: imageData) { url, error in
+                if let error = error {
+                    errors.append(error)
+                }
+                urls[index] = url
+                group.leave()
+            }
+        }
+        
+        group.notify(queue: .main) {
+            if !errors.isEmpty {
+                completion(errors.first)
+                return
+            }
+
+            var updateDiary = diary
+            updateDiary.imageURL = urls[0]
+            
+            if var parentInfo = updateDiary.parentInfo {
+                parentInfo.mother.imageURL = urls[1]
+                parentInfo.father.imageURL = urls[2]
+                updateDiary.parentInfo = parentInfo
+            }
+            
+            do {
+                let diaryData = try JSONEncoder().encode(updateDiary)
+                let dictionary = try JSONSerialization.jsonObject(with: diaryData, options: []) as? [String:Any]
+                self.db.collection("diaries").addDocument(data: dictionary ?? [:]) { error in
+                    completion(error)
+                }
+            } catch {
+                completion(error)
+            }
+            
+        }
+        
+    }
+    
 }
 
 extension DiaryPostService {
@@ -66,12 +118,4 @@ extension DiaryPostService {
         }
         
     }
-    
-    
-    
-    
-    
-    
-    
-   
 }

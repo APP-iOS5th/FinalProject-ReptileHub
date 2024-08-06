@@ -7,36 +7,37 @@
 
 import UIKit
 
-struct DiaryRequest {
-    var title: String
+struct DiaryRequest:Codable {
     var name: String
     var species: String
     var morph: String?
     var hatchDays: Date
     var lizardInfo: LizardInfo
     var parentInfo: Parents?
+    var imageURL: String?
 }
 
-struct LizardInfo {
+struct LizardInfo:Codable {
     var gender:Gender
     var weight: Int
     var feedMethod: String
     var tailexistence: Bool
 }
 
-struct Gender {
-    var male: String
-    var female: String
-    var unKnown: String
+enum Gender:String,Codable {
+    case male = "male"
+    case female = "female"
+    case unKnown = "unKnown"
 }
 
-struct ParentInfo {
-    var image: UIImage
+struct ParentInfo:Codable {
+    var image: Data
     var name: String
     var morph: String?
+    var imageURL: String?
 }
 
-struct Parents {
+struct Parents:Codable {
     var mother: ParentInfo
     var father: ParentInfo
 }
