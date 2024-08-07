@@ -44,6 +44,8 @@ class CommunityViewController: UIViewController {
         communityTableView.delegate = self
         communityTableView.dataSource = self
         
+        communityTableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "listCell")
+        
         self.view.addSubview(communityTableView)
         
         communityTableView.snp.makeConstraints { (make) -> Void in
