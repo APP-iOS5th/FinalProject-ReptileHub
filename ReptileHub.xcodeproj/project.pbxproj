@@ -11,6 +11,8 @@
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
 		4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACC2C60E87100BB70D6 /* DiaryModel.swift */; };
 		4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */; };
+		469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */; };
+		469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469B44392C62FDCA00B1C49B /* LoginViewController.swift */; };
 		58833C222C5FDE05005C2160 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C212C5FDE05005C2160 /* FirebaseAnalytics */; };
 		58833C242C5FDE05005C2160 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C232C5FDE05005C2160 /* FirebaseAuth */; };
 		58833C262C5FDE05005C2160 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C252C5FDE05005C2160 /* FirebaseFirestore */; };
@@ -46,6 +48,8 @@
 		467AB0382C6095AE0054E36D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
 		4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryPostService.swift; sourceTree = "<group>"; };
+		469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialLoginButton.swift; sourceTree = "<group>"; };
+		469B44392C62FDCA00B1C49B /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		588CE3D22C524EA900338878 /* ReptileHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReptileHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		588CE3D52C524EA900338878 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		588CE3D72C524EA900338878 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -90,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				588CE3D92C524EA900338878 /* ViewController.swift */,
+				469B44392C62FDCA00B1C49B /* LoginViewController.swift */,
 				58833C342C5FDEFD005C2160 /* Model */,
 				58833C332C5FDEF3005C2160 /* Profile */,
 				58833C322C5FDEEC005C2160 /* Community */,
@@ -140,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				589CCFFA2C608FDE00812D17 /* TestModel.swift */,
+				469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */,
 				4693FACC2C60E87100BB70D6 /* DiaryModel.swift */,
 			);
 			path = Model;
@@ -266,6 +272,7 @@
 			files = (
 				588CE3DA2C524EA900338878 /* ViewController.swift in Sources */,
 				588CE3D62C524EA900338878 /* AppDelegate.swift in Sources */,
+				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
@@ -273,6 +280,7 @@
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
 				589CD0012C60901500812D17 /* ReportViewController.swift in Sources */,
+				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
