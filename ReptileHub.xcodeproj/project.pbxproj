@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */; };
+		4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2E22C64D71700BCD451 /* AuthUser.swift */; };
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
 		4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACC2C60E87100BB70D6 /* DiaryModel.swift */; };
 		4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementViewController.swift; sourceTree = "<group>"; };
+		4674B2E22C64D71700BCD451 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
 		4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryPostService.swift; sourceTree = "<group>"; };
 		469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialLoginButton.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				589CCFFA2C608FDE00812D17 /* TestModel.swift */,
 				469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */,
 				4693FACC2C60E87100BB70D6 /* DiaryModel.swift */,
+				4674B2E22C64D71700BCD451 /* AuthUser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
+				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
 				589CD0012C60901500812D17 /* ReportViewController.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,

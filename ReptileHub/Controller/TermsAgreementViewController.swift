@@ -9,7 +9,7 @@ import UIKit
 import GoogleSignIn
 
 class TermsAgreementViewController: UIViewController {
-    var user: GIDGoogleUser
+    var user: AuthUser
     var onAgreementAccepted: (()->Void)?
     var onAgreementDeclined: (()->Void)?
     
@@ -21,7 +21,7 @@ class TermsAgreementViewController: UIViewController {
         configUI()
     }
     
-    init(user:GIDGoogleUser) {
+    init(user:AuthUser) {
         self.user = user
         super.init(nibName: nil, bundle: nil)
     }
