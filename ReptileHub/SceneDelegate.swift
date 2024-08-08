@@ -13,17 +13,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
-//        guard let _ = (scene as? UIWindowScene) else { return }
-    
+        //MARK: - Tabar
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         
-        let viewController = UINavigationController(rootViewController: CommunityViewController())
-        
-        self.window?.rootViewController = viewController
+        self.window?.rootViewController = TabbarViewController()
         self.window?.makeKeyAndVisible()
-    
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
