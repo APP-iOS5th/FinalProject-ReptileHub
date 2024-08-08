@@ -92,6 +92,28 @@ class LoginViewController: UIViewController {
         }
     }
     
+    private func navigateToMainView() {
+        let mainVC = ViewController()
+        mainVC.modalPresentationStyle = .fullScreen
+        self.present(mainVC,animated: false,completion: nil)
+    }
+    
+    private func showLoginError() {
+        let alert = UIAlertController(title: "Login Error", message: "Unable to login with Google.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func googleLoginButtonTapped() {
+        AuthService.shared.loginWithGoogle(presentingViewController: self) { success in
+            if success {
+                self.navigateToMainView()
+            } else {
+                self.showLoginError()
+            }
+        }
+    }
+    
     
     
     
@@ -100,6 +122,7 @@ class LoginViewController: UIViewController {
             print("KaKao Login")
         } else if sender == googleButton {
             print("Google Login")
+            googleLoginButtonTapped()
         } else if sender == appleButton {
             print("Apple Login")
         }
