@@ -6,24 +6,69 @@
 //
 
 import UIKit
+import SnapKit
 
 class CommunityViewController: UIViewController {
+    
+    private var searchButton: UIBarButtonItem = UIBarButtonItem()
+    
+    private var communityTableView: UITableView = UITableView(frame: .zero)
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        title = "커뮤니티"
+        
+        setupSearchButton()
+        setupTableView()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    //MARK: - rightBarButtonItem 적용
+    private func setupSearchButton() {
+        searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(actionSearchButton))
+        
+        self.navigationItem.rightBarButtonItem = searchButton
     }
-    */
+    
+    @objc
+    private func actionSearchButton() {
+        print("돋보기 버튼 클릭.")
+    }
+    
+    //MARK: - communityTableView set up
+    private func setupTableView() {
+        communityTableView.backgroundColor = .yellow
+        
+        communityTableView.delegate = self
+        communityTableView.dataSource = self
+        
+        communityTableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "listCell")
+        
+        self.view.addSubview(communityTableView)
+        
+        communityTableView.snp.makeConstraints { (make) -> Void in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.leading.equalTo(self.view.snp.leading)
+            make.trailing.equalTo(self.view.snp.trailing)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
+        }
 
+    }
+
+
+}
+
+extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
+        return cell
+    }
+    
+    
 }
