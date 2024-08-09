@@ -7,6 +7,7 @@
 
 import GoogleSignIn
 import AuthenticationServices
+import KakaoSDKUser
 
 
 protocol AuthUser {
@@ -38,5 +39,18 @@ struct AppleAuthUser: AuthUser {
         self.uid = credential.user
         self.email = credential.email
         self.name = credential.fullName?.formatted()
+    }
+}
+
+// KakaoAuthUser 클래스 정의
+struct KakaoAuthUser: AuthUser {
+    let uid: String
+    let email: String?
+    let name: String?
+    
+    init(user:KakaoSDKUser.User) {
+        self.uid = String(describing: user.id)
+        self.email = user.kakaoAccount?.email
+        self.name = user.kakaoAccount?.profile?.nickname
     }
 }

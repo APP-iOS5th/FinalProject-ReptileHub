@@ -12,6 +12,10 @@ import GoogleSignIn
 import FirebaseStorage
 import AuthenticationServices
 import CryptoKit
+import KakaoSDKAuth
+import KakaoSDKUser
+
+
 
 
 class AuthService:NSObject {
@@ -74,7 +78,7 @@ class AuthService:NSObject {
         }
     }
     
-    //APPLE OAUTH 로그인
+    //MARK: - APPLE OAUTH 로그인
     func loginWithApple(presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
         let nonce = randomNonceString()
         currentNonce = nonce
@@ -89,6 +93,28 @@ class AuthService:NSObject {
         authorizationController.delegate = self
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
+    }
+    
+    //MARK: - KaKao OAUTH 로그인
+    func loginWithKaKao(presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        if AuthApi.hasToken() {
+            print("Token exists, checking validity...")
+            UserApi.shared.accessTokenInfo { accessTokenInfo, error in
+                if let error = error {
+                    print("DEBUG: 카카오톡 토큰 가져오기 에러 \(error.localizedDescription)")
+                    self.requestKakaoOauth(presentingViewController: presentingViewController, completion: completion)
+                    print("Token error, requesting OAuth")
+                } else {
+                    // 토큰이 유효한 경우 사용자 정보 가져오기
+                    print("Token is valid, retrieving user info")
+                    self.requestKakaoOauth(presentingViewController: presentingViewController, completion: completion)
+                    
+                }
+            }
+        } else {
+            print("No token, requesting OAuth")
+            self.requestKakaoOauth(presentingViewController: presentingViewController, completion: completion)
+        }
     }
     
 }
@@ -247,7 +273,7 @@ extension AuthService {
     }
     
     // 유저 상태 감지 함수?
-    func addAuthStateDidChangeListener(completion: @escaping (User?) -> Void) {
+    func addAuthStateDidChangeListener(completion: @escaping (FirebaseAuth.User?) -> Void) {
         Auth.auth().addStateDidChangeListener { _ , user in
             completion(user)
         }
@@ -354,4 +380,113 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
         return hashString
     }
     
+}
+
+//MARK: -  카카오 로그인 관련 구현 함수들
+extension AuthService {
+    // 카카오 로그인 요청
+    private func requestKakaoOauth(presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        // 카카오톡이 있을경우
+        if UserApi.isKakaoTalkLoginAvailable() {
+            UserApi.shared.loginWithKakaoTalk { oauthToken, error in
+                if let error = error {
+                    print("DEBUG: 카카오톡 로그인 실패 \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    print("loginWithKakaoTalk() success.")
+                    self.getKakaoUserInfo(presentingViewController: presentingViewController, completion: completion)
+                }
+            }
+        } else {
+            // 카카오톡이 없을 경우
+            UserApi.shared.loginWithKakaoAccount { oauthToken, error in
+                if let error = error {
+                    print("DEBUG: 카카오 계정 로그인 실패 \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    print("loginWithKakaoAccount() success.")
+                    self.getKakaoUserInfo(presentingViewController: presentingViewController, completion: completion)
+                }
+            }
+        }
+    }
+
+    
+    private func getKakaoUserInfo(presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        UserApi.shared.me { user, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    print("DEBUG: 사용자 정보 요청 에러 \(error.localizedDescription)")
+                    completion(false)
+                }
+                return
+            }
+            
+            guard let user = user else {
+                DispatchQueue.main.async {
+                    print("DEBUG: 사용자 정보가 없습니다.")
+                    completion(false)
+                }
+                return
+            }
+            
+            let kakaoUser = KakaoAuthUser(user: user)
+            let password = String(describing: user.id)
+            print("kakaoUser = \(kakaoUser),- \(password)")
+            
+            // 파이어베이스에 사용자 생성 시도
+            Auth.auth().createUser(withEmail:kakaoUser.email!, password: password) { result, error in
+                if let error = error {
+                    print("DEBUG: 파이어베이스 사용자 생성 실패 \(error.localizedDescription)")
+                    
+                    // 사용자 생성이 실패하면, 로그인 시도
+                    Auth.auth().signIn(withEmail: kakaoUser.email!, password: password) { authResult, error in
+                        if let error = error {
+                            print("DEBUG: 파이어베이스 로그인 실패 \(error.localizedDescription)")
+                            completion(false)
+                        } else {
+                            print("DEBUG: 파이어베이스 로그인 성공")
+                            
+                            // 유저가 이미 존재하는 경우, Firestore에서 확인 및 저장 로직
+                            guard let uid = authResult?.user.uid else {
+                                completion(false)
+                                return
+                            }
+                            
+                            self.checkIfUserExists(uid: uid, email: kakaoUser.email, name: kakaoUser.name) { exists in
+                                if exists {
+                                    completion(true)
+                                } else {
+                                    // 유저 정보가 Firestore에 없으면 이는 비정상적인 상태이므로 에러 발생
+                                    print("DEBUG: Firestore에 유저 정보가 없습니다. 비정상적인 상태.")
+                                    completion(false)
+                                }
+                            }
+                        }
+                    }
+                    
+                } else {
+                    print("DEBUG: 파이어베이스 사용자 생성 성공")
+                    
+                    // 새로 사용자 생성에 성공한 경우, 약관 동의 뷰로 이동
+                    guard let uid = result?.user.uid else {
+                        completion(false)
+                        return
+                    }
+                    
+                    self.navigateToTermsAgreementView(user: kakaoUser, presentingViewController: presentingViewController) { success in
+                        if success {
+                            // 약관 동의 완료 후 유저 정보 저장
+                            self.saveUserWithDefaultProfileImage(uid: uid, user: kakaoUser) {
+                                completion(true)
+                            }
+                        } else {
+                            completion(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
