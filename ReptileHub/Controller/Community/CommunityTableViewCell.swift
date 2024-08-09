@@ -60,7 +60,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         thumbnailImageView.snp.makeConstraints { (make) -> Void in
             make.height.width.equalTo(71)
-            make.leading.equalTo(self.contentView.snp.leading)
+            make.leading.equalTo(self.contentView.snp.leading).offset(12)
         }
     }
     
@@ -137,7 +137,7 @@ class CommunityTableViewCell: UITableViewCell {
         }
         
         secondStackView.snp.makeConstraints { (make) -> Void in
-            make.trailing.equalTo(self.contentView.snp.trailing)
+            make.trailing.equalTo(menuButton.snp.centerX)
             make.bottom.equalTo(firstStackView.snp.bottom)
         }
     }
@@ -152,7 +152,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         menuButton.snp.makeConstraints { (make) -> Void in
             make.centerY.equalTo(self.contentView)
-            make.trailing.equalTo(self.contentView.snp.trailing)
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-12)
 
         }
     }
