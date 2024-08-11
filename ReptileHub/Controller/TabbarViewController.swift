@@ -9,7 +9,7 @@ import UIKit
 
 class TabbarViewController: UITabBarController {
     
-    let communityVC = CommunityViewController()
+    let communityVC = CommunityDetailViewController()
     let diaryVC = ReportViewController()
     let profileVC = ProfileViewController()
 
