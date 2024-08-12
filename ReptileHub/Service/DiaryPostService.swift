@@ -19,8 +19,9 @@ class DiaryPostService {
     
     
     //MARK: - 작성완료 버튼 누를 시 FireStore 에 해당 정보 저장, ImagePicker 에서 나, 엄마 , 아빠 사진 각각 받아서 파라미터에 할당하면 됨
-    func createDiary(diary:DiaryRequest,selfImageData:Data?
-                     ,motherImageData:Data?,fatherImageData:Data?,completion: @escaping(Error?)->Void) {
+    func registerGrowthDiary(userID:String,diary:DiaryRequest,selfImageData:Data?
+                             ,motherImageData:Data?,fatherImageData:Data?,
+                             completion: @escaping(Error?)->Void) {
         
         let imageDatas: [Data?] = [selfImageData,motherImageData,fatherImageData]
         let group = DispatchGroup()
@@ -46,7 +47,7 @@ class DiaryPostService {
             }
             
             var updateDiary = diary
-            updateDiary.imageURL = urls[0]
+            updateDiary.lizardInfo.imageURL = urls[0]
             
             if var parentInfo = updateDiary.parentInfo {
                 parentInfo.mother.imageURL = urls[1]
@@ -57,9 +58,34 @@ class DiaryPostService {
             do {
                 let diaryData = try JSONEncoder().encode(updateDiary)
                 let dictionary = try JSONSerialization.jsonObject(with: diaryData, options: []) as? [String:Any]
-                self.db.collection("diaries").addDocument(data: dictionary ?? [:]) { error in
-                    completion(error)
-                }
+                
+                let diaryID = UUID().uuidString
+                
+                // 1. 썸네일 정보 저장
+                let thumbnailData: [String: Any] = [
+                    "diary_id": diaryID,
+                    "thumbnail": updateDiary.lizardInfo.imageURL as Any,
+                    "name": updateDiary.lizardInfo.name
+                ]
+                
+                self.db.collection("users").document(userID)
+                    .collection("growth_diaries_thumbnails")
+                    .document(diaryID)
+                    .setData(thumbnailData) { error in
+                        if let error = error {
+                            completion(error)
+                            return
+                        }
+                    }
+                
+                // 2. 상세 정보 저장
+                self.db.collection("users").document(userID)
+                    .collection("growth_diaries_details")
+                    .document(diaryID)
+                    .setData(dictionary ?? [:]) { error in
+                        completion(error)
+                        
+                    }
             } catch {
                 completion(error)
             }
@@ -68,38 +94,67 @@ class DiaryPostService {
         
     }
     
-    
-    //MARK: - 해당 documentId 입력하면 저장된 정보 불러오는 함수
-    func fetchDiary(documentId: String, completion: @escaping (DiaryResponse?, Error?) -> Void) {
-        let docRef = db.collection("diaries").document(documentId)
+    //MARK: - 성장일기 썸네일 정보 불러오는 함수, 이미지, 제목, diaryID가 내려와, 해당 diaryID로 detail 검색 가능
+    func fetchGrowthThumbnails(for userID: String, completion: @escaping (Result<[ThumbnailData], Error>) -> Void) {
+        let db = Firestore.firestore()
         
-        docRef.getDocument { (document, error) in
-            if let error = error {
-                completion(nil, error)
-                return
+        db.collection("users").document(userID)
+            .collection("growth_diaries_thumbnails")
+            .getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("Error fetching thumbnails: \(error.localizedDescription)")
+                    completion(.failure(error))  // 오류가 발생한 경우, 오류를 반환
+                    return
+                }
+                
+                guard let documents = querySnapshot?.documents else {
+                    completion(.success([]))  // 문서가 없으면 빈 배열을 반환
+                    return
+                }
+
+                var thumbnails: [ThumbnailData] = []
+                
+                for document in documents {
+                    let data = document.data()
+                    if let diaryID = data["diary_id"] as? String,
+                       let thumbnail = data["thumbnail"] as? String,
+                       let name = data["name"] as? String {
+                        let thumbnailData = ThumbnailData(diary_id: diaryID, thumbnail: thumbnail, name: name)
+                        thumbnails.append(thumbnailData)
+                    }
+                }
+                
+                completion(.success(thumbnails))  // 성공적으로 썸네일 데이터를 반환
             }
-            
-            guard let document = document, document.exists, var data = document.data() else {
-                completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"]))
-                return
-            }
-            
-            // Firestore Timestamp를 Date로 변환
-            if let timestamp = data["hatchDays"] as? Timestamp {
-                data["hatchDays"] = timestamp.dateValue()
-            }
-            
-            do {
-                let jsonData = try JSONSerialization.data(withJSONObject: data, options: [])
-                let diaryResponse = try JSONDecoder().decode(DiaryResponse.self, from: jsonData)
-                completion(diaryResponse, nil)
-            } catch {
-                print("JSON Decoding Error: \(error.localizedDescription)")
-                completion(nil, error)
-            }
-        }
     }
     
+    //MARK: - DiaryDetail 정보 불러오는 함수. 썸네일에서 받아온 diaryID 를 할당해서 조회 하면 해당 detail 정보를 받을 수 있다 .
+    func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (DiaryResponse?) -> Void) {
+        db.collection("users").document(userID)
+            .collection("growth_diaries_details")
+            .document(diaryID)
+            .getDocument { (document, error) in
+                if let error = error {
+                    print("Error getting document: \(error)")
+                    completion(nil)
+                    return
+                }
+                
+                guard let document = document, document.exists else {
+                    print("Document does not exist")
+                    completion(nil)
+                    return
+                }
+                
+                print("Document data: \(document.data() ?? [:])")  // Document의 데이터 확인
+                if let diaryResponse = try? document.data(as: DiaryResponse.self) {
+                    completion(diaryResponse)
+                } else {
+                    print("Failed to decode DiaryResponse")  // 디코딩 실패 여부 확인
+                    completion(nil)
+                }
+            }
+    }
     
     //MARK: - diary 삭제 - 추후 검증 필요 ( do - catch 사용 여부 관련)
     func deleteDiary(documentId: String, completion: @escaping (Error?) -> Void) {

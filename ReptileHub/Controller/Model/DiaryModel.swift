@@ -8,20 +8,20 @@
 import UIKit
 
 struct DiaryRequest:Codable {
+    var lizardInfo: LizardInfo
+    var parentInfo: Parents?
+}
+
+struct LizardInfo:Codable {
     var name: String
     var species: String
     var morph: String?
     var hatchDays: Date
-    var lizardInfo: LizardInfo
-    var parentInfo: Parents?
-    var imageURL: String?
-}
-
-struct LizardInfo:Codable {
     var gender:Gender
     var weight: Int
     var feedMethod: String
     var tailexistence: Bool
+    var imageURL: String?
 }
 
 enum Gender:String,Codable {
@@ -31,7 +31,6 @@ enum Gender:String,Codable {
 }
 
 struct ParentInfo:Codable {
-    var image: Data
     var name: String
     var morph: String?
     var imageURL: String?
@@ -44,16 +43,16 @@ struct Parents:Codable {
 
 
 struct DiaryResponse: Codable {
+    var lizardInfo: LizardInfoResponse
+    var parentInfo: ParentsResponse?
+}
+
+struct LizardInfoResponse: Codable {
     var name: String
     var species: String
     var morph: String?
     var hatchDays: Date
-    var lizardInfo: LizardInfoResponse
-    var parentInfo: ParentsResponse?
     var imageURL: String?
-}
-
-struct LizardInfoResponse: Codable {
     var gender: String
     var weight: Int
     var feedMethod: String
@@ -69,4 +68,10 @@ struct ParentInfoResponse: Codable {
 struct ParentsResponse: Codable {
     var mother: ParentInfoResponse
     var father: ParentInfoResponse
+}
+
+struct ThumbnailData: Codable {
+    var diary_id: String
+    var thumbnail: String
+    var name: String
 }
