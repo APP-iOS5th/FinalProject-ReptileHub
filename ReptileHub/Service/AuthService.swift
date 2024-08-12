@@ -224,7 +224,8 @@ extension AuthService {
             "uid": uid,
             "email": user.email ?? "",
             "name": user.name ?? "",
-            "profileImageURL": profileImageURL
+            "profileImageURL": profileImageURL,
+            "loginType" : user.loginType
             //user.profile?.imageURL(withDimension: 100)?.absoluteString ?? ""
         ]
         
