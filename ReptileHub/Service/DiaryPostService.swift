@@ -19,7 +19,7 @@ class DiaryPostService {
     
     
     //MARK: - 작성완료 버튼 누를 시 FireStore 에 해당 정보 저장, ImagePicker 에서 나, 엄마 , 아빠 사진 각각 받아서 파라미터에 할당하면 됨
-    func registerGrowthDiary(userID:String,diary:DiaryRequest,selfImageData:Data?
+    func registerGrowthDiary(userID:String,diary:GrowthDiaryRequest,selfImageData:Data?
                              ,motherImageData:Data?,fatherImageData:Data?,
                              completion: @escaping(Error?)->Void) {
         
@@ -165,6 +165,81 @@ class DiaryPostService {
     
     
 }
+
+extension DiaryPostService {
+   
+    //MARK: - 성장 일지 속 일기 작성 함수
+    func createDiary(userID: String, diaryID: String, images: [Data], title: String, content: String, completion: @escaping (Error?) -> Void) {
+        uploadImages(images: images) { urls, errors in
+            if let errors = errors, !errors.isEmpty {
+                completion(errors.first)
+                return
+            }
+            
+            guard let urls = urls else {
+                completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to upload images"]))
+                return
+            }
+            
+            let diaryRequest = DiaryRequest(title: title, content: content, imageURLs: urls)
+            
+            let diaryData: [String: Any] = [
+                "title": diaryRequest.title,
+                "content": diaryRequest.content,
+                "imageURLs": diaryRequest.imageURLs,
+                "createdAt": FieldValue.serverTimestamp()
+            ]
+            
+            let db = Firestore.firestore()
+            db.collection("users").document(userID)
+                .collection("growth_diaries_details").document(diaryID)
+                .collection("diary_entries").addDocument(data: diaryData) { error in
+                    completion(error)
+                }
+        }
+    }
+
+    //MARK: - 성장 일지 속 일기 불러오기 - limit 로 개수 조정 가능
+    func fetchDiaryEntries(userID: String, diaryID: String, limit: Int? = nil, completion: @escaping (Result<[DiaryResponse], Error>) -> Void) {
+        let db = Firestore.firestore()
+        
+        var query: Query = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("diary_entries")
+            .order(by: "createdAt", descending: true)
+        
+        // limit 파라미터가 제공된 경우 쿼리에 제한 추가
+        if let limit = limit {
+            query = query.limit(to: limit)
+        }
+        
+        query.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                completion(.success([]))
+                return
+            }
+
+            var diaryEntries: [DiaryResponse] = []
+            
+            for document in documents {
+                if let diaryEntry = try? document.data(as: DiaryResponse.self) {
+                    diaryEntries.append(diaryEntry)
+                }
+            }
+            
+            completion(.success(diaryEntries))
+        }
+    }
+
+    
+}
+
+
 
 extension DiaryPostService {
     

@@ -7,7 +7,8 @@
 
 import UIKit
 
-struct DiaryRequest:Codable {
+// 도마뱀 등록할때 사용하는 구조체
+struct GrowthDiaryRequest:Codable {
     var lizardInfo: LizardInfo
     var parentInfo: Parents?
 }
@@ -41,8 +42,8 @@ struct Parents:Codable {
     var father: ParentInfo
 }
 
-
-struct DiaryResponse: Codable {
+// 도마뱀 정보 받아올떄 사용하는 구조체
+struct GrowthDiaryResponse: Codable {
     var lizardInfo: LizardInfoResponse
     var parentInfo: ParentsResponse?
 }
@@ -74,4 +75,20 @@ struct ThumbnailData: Codable {
     var diary_id: String
     var thumbnail: String
     var name: String
+}
+
+
+// 성장일지 속 성장일기 작성할때 사용하는 구조체
+struct DiaryRequest {
+    let title: String
+    let content: String
+    let imageURLs: [String?]
+}
+
+// 성장일기 받아올때 사용하는 구조체
+struct DiaryResponse:Codable {
+    let title: String
+    let content: String
+    let imageURLs: [String]
+    let createdAt: Date?
 }
