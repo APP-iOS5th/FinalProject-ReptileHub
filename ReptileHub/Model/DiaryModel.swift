@@ -13,6 +13,7 @@ struct GrowthDiaryRequest:Codable {
     var parentInfo: Parents?
 }
 
+// 도마뱀 등록할때 도마뱀 정보
 struct LizardInfo:Codable {
     var name: String
     var species: String
@@ -25,12 +26,14 @@ struct LizardInfo:Codable {
     var imageURL: String?
 }
 
+// 도마뱀 등록할떄 성별
 enum Gender:String,Codable {
     case male = "male"
     case female = "female"
     case unKnown = "unKnown"
 }
 
+// 도마뱀 부모 정보
 struct ParentInfo:Codable {
     var name: String
     var morph: String?
@@ -71,7 +74,8 @@ struct ParentsResponse: Codable {
     var father: ParentInfoResponse
 }
 
-struct ThumbnailData: Codable {
+// 성장일지 썸네일 받아오는 구조체 - diary_id 로 detail 정보 접근
+struct ThumbnailResponse: Codable {
     var diary_id: String
     var thumbnail: String
     var name: String

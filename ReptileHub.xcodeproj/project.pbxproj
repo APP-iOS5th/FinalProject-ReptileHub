@@ -23,6 +23,7 @@
 		46E23B252C6606620059BB62 /* KakaoSDKCert in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B242C6606620059BB62 /* KakaoSDKCert */; };
 		46E23B272C6606620059BB62 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B262C6606620059BB62 /* KakaoSDKCommon */; };
 		46E23B292C6606620059BB62 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B282C6606620059BB62 /* KakaoSDKUser */; };
+		46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7ED2C6AE46400444C98 /* LoginView.swift */; };
 		58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */; };
 		58418D712C64A9FB004E738E /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D702C64A9FB004E738E /* TabbarViewController.swift */; };
 		58833C222C5FDE05005C2160 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C212C5FDE05005C2160 /* FirebaseAnalytics */; };
@@ -67,6 +68,7 @@
 		469B443B2C6305E300B1C49B /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		469B443D2C6308B300B1C49B /* ReptileHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReptileHub.entitlements; sourceTree = "<group>"; };
 		469B443E2C63116000B1C49B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		46F0F7ED2C6AE46400444C98 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
 		58418D702C64A9FB004E738E /* TabbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		588CE3D22C524EA900338878 /* ReptileHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReptileHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,22 +120,24 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		46F0F7F12C6AE94E00444C98 /* LoginView */ = {
+			isa = PBXGroup;
+			children = (
+				46F0F7ED2C6AE46400444C98 /* LoginView.swift */,
+			);
+			path = LoginView;
+			sourceTree = "<group>";
+		};
 		584107DC2C5395A100DA47BA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				58833C312C5FDEE4005C2160 /* GrowthDiary */,
-				58833C322C5FDEEC005C2160 /* Community */,
-				58833C332C5FDEF3005C2160 /* Profile */,
 				588CE3D92C524EA900338878 /* ViewController.swift */,
 				469B44392C62FDCA00B1C49B /* LoginViewController.swift */,
-
 				58418D702C64A9FB004E738E /* TabbarViewController.swift */,
-				58833C342C5FDEFD005C2160 /* Model */,
+				4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */,
 				58833C332C5FDEF3005C2160 /* Profile */,
 				58833C322C5FDEEC005C2160 /* Community */,
-				58833C312C5FDEE4005C2160 /* Report */,
-				4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */,
-
+				58833C312C5FDEE4005C2160 /* GrowthDiary */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -207,12 +211,9 @@
 		588CE3D42C524EA900338878 /* ReptileHub */ = {
 			isa = PBXGroup;
 			children = (
-
 				469B443D2C6308B300B1C49B /* ReptileHub.entitlements */,
-
 				795776BB2C69B22F006D27A1 /* View */,
 				58833C342C5FDEFD005C2160 /* Model */,
-
 				4693FACE2C60EB4000BB70D6 /* Service */,
 				588CE3D52C524EA900338878 /* AppDelegate.swift */,
 				588CE3D72C524EA900338878 /* SceneDelegate.swift */,
@@ -230,6 +231,7 @@
 		795776BB2C69B22F006D27A1 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				46F0F7F12C6AE94E00444C98 /* LoginView */,
 				79AA14952C69C29D009F8209 /* GrowthDiary */,
 			);
 			path = View;
@@ -350,6 +352,7 @@
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
+				46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,

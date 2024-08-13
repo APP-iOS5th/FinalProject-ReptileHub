@@ -95,7 +95,7 @@ class DiaryPostService {
     }
     
     //MARK: - 성장일기 썸네일 정보 불러오는 함수, 이미지, 제목, diaryID가 내려와, 해당 diaryID로 detail 검색 가능
-    func fetchGrowthThumbnails(for userID: String, completion: @escaping (Result<[ThumbnailData], Error>) -> Void) {
+    func fetchGrowthThumbnails(for userID: String, completion: @escaping (Result<[ThumbnailResponse], Error>) -> Void) {
         let db = Firestore.firestore()
         
         db.collection("users").document(userID)
@@ -112,14 +112,14 @@ class DiaryPostService {
                     return
                 }
 
-                var thumbnails: [ThumbnailData] = []
+                var thumbnails: [ThumbnailResponse] = []
                 
                 for document in documents {
                     let data = document.data()
                     if let diaryID = data["diary_id"] as? String,
                        let thumbnail = data["thumbnail"] as? String,
                        let name = data["name"] as? String {
-                        let thumbnailData = ThumbnailData(diary_id: diaryID, thumbnail: thumbnail, name: name)
+                        let thumbnailData = ThumbnailResponse(diary_id: diaryID, thumbnail: thumbnail, name: name)
                         thumbnails.append(thumbnailData)
                     }
                 }
@@ -129,7 +129,7 @@ class DiaryPostService {
     }
     
     //MARK: - DiaryDetail 정보 불러오는 함수. 썸네일에서 받아온 diaryID 를 할당해서 조회 하면 해당 detail 정보를 받을 수 있다 .
-    func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (DiaryResponse?) -> Void) {
+    func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (GrowthDiaryResponse?) -> Void) {
         db.collection("users").document(userID)
             .collection("growth_diaries_details")
             .document(diaryID)
@@ -147,7 +147,7 @@ class DiaryPostService {
                 }
                 
                 print("Document data: \(document.data() ?? [:])")  // Document의 데이터 확인
-                if let diaryResponse = try? document.data(as: DiaryResponse.self) {
+                if let diaryResponse = try? document.data(as: GrowthDiaryResponse.self) {
                     completion(diaryResponse)
                 } else {
                     print("Failed to decode DiaryResponse")  // 디코딩 실패 여부 확인
