@@ -40,7 +40,8 @@
 		589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFA2C608FDE00812D17 /* TestModel.swift */; };
 		589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFC2C608FF100812D17 /* ProfileViewController.swift */; };
 		589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */; };
-		589CD0012C60901500812D17 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* ReportViewController.swift */; };
+		589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */; };
+		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -78,7 +79,8 @@
 		589CCFFA2C608FDE00812D17 /* TestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		589CCFFC2C608FF100812D17 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityViewController.swift; sourceTree = "<group>"; };
-		589CD0002C60901500812D17 /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+		589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryViewController.swift; sourceTree = "<group>"; };
+		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,14 +121,19 @@
 		584107DC2C5395A100DA47BA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				58833C312C5FDEE4005C2160 /* GrowthDiary */,
+				58833C322C5FDEEC005C2160 /* Community */,
+				58833C332C5FDEF3005C2160 /* Profile */,
 				588CE3D92C524EA900338878 /* ViewController.swift */,
 				469B44392C62FDCA00B1C49B /* LoginViewController.swift */,
+
 				58418D702C64A9FB004E738E /* TabbarViewController.swift */,
 				58833C342C5FDEFD005C2160 /* Model */,
 				58833C332C5FDEF3005C2160 /* Profile */,
 				58833C322C5FDEEC005C2160 /* Community */,
 				58833C312C5FDEE4005C2160 /* Report */,
 				4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */,
+
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -145,12 +152,12 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		58833C312C5FDEE4005C2160 /* Report */ = {
+		58833C312C5FDEE4005C2160 /* GrowthDiary */ = {
 			isa = PBXGroup;
 			children = (
-				589CD0002C60901500812D17 /* ReportViewController.swift */,
+				589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */,
 			);
-			path = Report;
+			path = GrowthDiary;
 			sourceTree = "<group>";
 		};
 		58833C322C5FDEEC005C2160 /* Community */ = {
@@ -200,7 +207,12 @@
 		588CE3D42C524EA900338878 /* ReptileHub */ = {
 			isa = PBXGroup;
 			children = (
+
 				469B443D2C6308B300B1C49B /* ReptileHub.entitlements */,
+
+				795776BB2C69B22F006D27A1 /* View */,
+				58833C342C5FDEFD005C2160 /* Model */,
+
 				4693FACE2C60EB4000BB70D6 /* Service */,
 				588CE3D52C524EA900338878 /* AppDelegate.swift */,
 				588CE3D72C524EA900338878 /* SceneDelegate.swift */,
@@ -213,6 +225,22 @@
 				469B443E2C63116000B1C49B /* GoogleService-Info.plist */,
 			);
 			path = ReptileHub;
+			sourceTree = "<group>";
+		};
+		795776BB2C69B22F006D27A1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				79AA14952C69C29D009F8209 /* GrowthDiary */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		79AA14952C69C29D009F8209 /* GrowthDiary */ = {
+			isa = PBXGroup;
+			children = (
+				79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */,
+			);
+			path = GrowthDiary;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -321,10 +349,11 @@
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
+				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
-				589CD0012C60901500812D17 /* ReportViewController.swift in Sources */,
+				589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
