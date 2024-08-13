@@ -30,6 +30,7 @@
 		589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFC2C608FF100812D17 /* ProfileViewController.swift */; };
 		589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */; };
 		589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */; };
+		7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449B2C6AEC7100765A80 /* Spacing.swift */; };
 		79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1AE492C6A088D00D5711B /* TabbarViewController.swift */; };
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
 /* End PBXBuildFile section */
@@ -65,6 +66,7 @@
 		589CCFFC2C608FF100812D17 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityViewController.swift; sourceTree = "<group>"; };
 		589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryViewController.swift; sourceTree = "<group>"; };
+		7968449B2C6AEC7100765A80 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		79A1AE492C6A088D00D5711B /* TabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -107,20 +109,6 @@
 				469B44392C62FDCA00B1C49B /* LoginViewController.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		58833C2F2C5FDEBE005C2160 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		58833C302C5FDEC3005C2160 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extension;
 			sourceTree = "<group>";
 		};
 		58833C312C5FDEE4005C2160 /* GrowthDiary */ = {
@@ -177,14 +165,13 @@
 		588CE3D42C524EA900338878 /* ReptileHub */ = {
 			isa = PBXGroup;
 			children = (
+				796844982C6AEB3F00765A80 /* Extension */,
 				795776BB2C69B22F006D27A1 /* View */,
 				58833C342C5FDEFD005C2160 /* Model */,
 				584107DC2C5395A100DA47BA /* Controller */,
 				4693FACE2C60EB4000BB70D6 /* Service */,
 				588CE3D52C524EA900338878 /* AppDelegate.swift */,
 				588CE3D72C524EA900338878 /* SceneDelegate.swift */,
-				58833C302C5FDEC3005C2160 /* Extension */,
-				58833C2F2C5FDEBE005C2160 /* Components */,
 				588CE3DE2C524EAA00338878 /* Assets.xcassets */,
 				588CE3E02C524EAA00338878 /* LaunchScreen.storyboard */,
 				588CE3E32C524EAA00338878 /* Info.plist */,
@@ -199,6 +186,14 @@
 				79AA14952C69C29D009F8209 /* GrowthDiary */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		796844982C6AEB3F00765A80 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				7968449B2C6AEC7100765A80 /* Spacing.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		79AA14952C69C29D009F8209 /* GrowthDiary */ = {
@@ -297,6 +292,7 @@
 			files = (
 				588CE3DA2C524EA900338878 /* ViewController.swift in Sources */,
 				588CE3D62C524EA900338878 /* AppDelegate.swift in Sources */,
+				7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */,
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
