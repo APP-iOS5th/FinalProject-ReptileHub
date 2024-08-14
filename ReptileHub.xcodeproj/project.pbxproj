@@ -31,6 +31,7 @@
 		589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */; };
 		589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */; };
 		7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449B2C6AEC7100765A80 /* Spacing.swift */; };
+		7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */; };
 		79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1AE492C6A088D00D5711B /* TabbarViewController.swift */; };
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
 /* End PBXBuildFile section */
@@ -67,6 +68,7 @@
 		589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityViewController.swift; sourceTree = "<group>"; };
 		589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryViewController.swift; sourceTree = "<group>"; };
 		7968449B2C6AEC7100765A80 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
+		7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListCollectionViewCell.swift; sourceTree = "<group>"; };
 		79A1AE492C6A088D00D5711B /* TabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -200,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */,
+				7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */,
 			);
 			path = GrowthDiary;
 			sourceTree = "<group>";
@@ -299,6 +302,7 @@
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
+				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,

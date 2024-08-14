@@ -19,6 +19,16 @@ class GrowthDiaryListView: UIView {
         return label
     }()
     
+    //MARK: - 성장일지 목록 CollectionView
+    private lazy var GrowthDiaryListCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 30//행사이의 간격
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.showsVerticalScrollIndicator = false //수직 스크롤표시 없애기
+        return view
+    }()
+    
     //MARK: - 성장일지 등록페이지 이동 버튼
     private lazy var GrowthDiaryUploadViewMoveButton: UIButton = {
         let button = UIButton()
@@ -41,7 +51,7 @@ class GrowthDiaryListView: UIView {
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         button.configuration = config
-        
+//        button.layer.zPosition = 1
         return button
     }()
     
@@ -58,18 +68,37 @@ class GrowthDiaryListView: UIView {
     private func setUI(){
         self.addSubview(GrowthDiaryTitleLabel)
         self.addSubview(GrowthDiaryUploadViewMoveButton)
+        self.addSubview(GrowthDiaryListCollectionView)
         
         GrowthDiaryTitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self).offset(-Spacing.mainSpacing)
-            make.top.equalTo(self).offset(40)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(40)
+        }
+        
+        GrowthDiaryListCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(GrowthDiaryTitleLabel.snp.bottom).offset(30)
+            make.leading.equalTo(self).offset(Spacing.mainSpacing)
+            make.trailing.equalTo(self).offset(-Spacing.mainSpacing)
+            make.bottom.equalTo(GrowthDiaryUploadViewMoveButton.snp.top).offset(-30)
         }
         
         GrowthDiaryUploadViewMoveButton.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self).offset(-Spacing.mainSpacing)
-            make.bottom.equalTo(self).offset(-30)
+            make.bottom.equalTo(self.safeAreaLayoutGuide).offset(-30)
         }
+    }
+    
+    //MARK: - Methods
+    func cofigureCollectionView(delegate: UICollectionViewDelegate, dataSource: UICollectionViewDataSource){
+        GrowthDiaryListCollectionView.delegate = delegate
+        GrowthDiaryListCollectionView.dataSource = dataSource
+        GrowthDiaryListCollectionView.reloadData()
+    }
+    
+    func reigsterCollectionViewCell(_ cellClass: AnyClass?, forCellWithReuseIdentifier identifier: String){
+        self.GrowthDiaryListCollectionView.register(cellClass, forCellWithReuseIdentifier: identifier)
     }
 }
 
