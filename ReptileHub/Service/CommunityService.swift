@@ -171,6 +171,49 @@ class CommunityService {
             }
     }
     
+    //MARK: - 좋아요, 좋아요 취소 토글 버튼
+    func toggleLikePost(userID: String, postID: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+          let postRef = db.collection("posts").document(postID)
+          let userLikesRef = db.collection("users").document(userID).collection("likedPosts").document(postID)
+          
+          // Firestore 트랜잭션을 사용하여 좋아요 토글 처리
+          db.runTransaction({ (transaction, errorPointer) -> Any? in
+              do {
+                  let postDocument = try transaction.getDocument(postRef)
+                  let userLikesDocument = try transaction.getDocument(userLikesRef)
+                  
+                  // 좋아요가 이미 눌린 상태인지 확인
+                  let hasLiked = userLikesDocument.exists
+                  
+                  // 좋아요 상태에 따라 likeCount 업데이트
+                  let likeCount = postDocument.data()?["likeCount"] as? Int ?? 0
+                  let newLikeCount = hasLiked ? likeCount - 1 : likeCount + 1
+                  
+                  // 좋아요 상태 업데이트
+                  transaction.updateData(["likeCount": newLikeCount], forDocument: postRef)
+                  
+                  if hasLiked {
+                      // 좋아요를 취소한 경우
+                      transaction.deleteDocument(userLikesRef)
+                  } else {
+                      // 좋아요를 추가한 경우
+                      transaction.setData(["likedAt": FieldValue.serverTimestamp()], forDocument: userLikesRef)
+                  }
+                  
+                  return !hasLiked
+              } catch {
+                  errorPointer?.pointee = error as NSError
+                  return nil
+              }
+          }) { (result, error) in
+              if let error = error {
+                  completion(.failure(error))
+              } else if let success = result as? Bool {
+                  completion(.success(success))
+              }
+          }
+      }
+    
 }
 
 
