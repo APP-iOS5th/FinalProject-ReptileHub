@@ -47,7 +47,7 @@ class CommunityService {
         
                ]
                // 2. 썸네일 정보 저장
-               self.db.collection("posts").document(postID).collection("post_thumbnails").document(postID).setData(thumbnailData) { error in
+               self.db.collection("posts").document(postID).setData(thumbnailData) { error in
                    if let error = error {
                        completion(error)
                        return
@@ -73,7 +73,51 @@ class CommunityService {
            }
        }
        
-
+    func fetchAllPostThumbnails(completion:@escaping (Result<[ThumbnailPostResponse],Error>)->Void) {
+        let db = Firestore.firestore()
+        
+        // 'posts' 컬렉션에서 모든 문서를 가져옴
+        db.collection("posts").getDocuments { querySnapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            var thumbnails: [ThumbnailPostResponse] = []
+            
+            // 각 문서의 썸네일 정보를 수집
+            for document in querySnapshot?.documents ?? [] {
+                let data = document.data()
+                
+                if let postID = data["postID"] as? String,
+                   let title = data["title"] as? String,
+                   let userID = data["userID"] as? String,
+                   let thumbnailURL = data["thumbnail"] as? String,
+                   let previewContent = data["previewContent"] as? String,
+                   let likeCount = data["likeCount"] as? Int,
+                   let commentCount = data["commentCount"] as? Int,
+                   let createdAt = data["createdAt"] as? Timestamp {
+                    
+                    //받아온 정보로 객체 생성
+                    let thumbnailResponse = ThumbnailPostResponse(
+                        postID: postID,
+                        title: title,
+                        userID: userID,
+                        thumbnailURL: thumbnailURL,
+                        previewContent: previewContent,
+                        likeCount: likeCount,
+                        commentCount: commentCount,
+                        createdAt: createdAt.dateValue()
+                    )
+                    thumbnails.append(thumbnailResponse)
+                }
+                
+            }
+           // completion으로 전송
+            completion(.success(thumbnails))
+            
+        }
+    }
+    
 }
 
 
