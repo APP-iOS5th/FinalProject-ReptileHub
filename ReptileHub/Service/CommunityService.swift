@@ -118,6 +118,59 @@ class CommunityService {
         }
     }
     
+    func fetchPostDetail(postID: String, completion: @escaping (Result<PostDetailResponse, Error>) -> Void) {
+        db.collection("posts")
+            .document(postID)
+            .collection("post_details")
+            .document(postID)
+            .getDocument { (document, error) in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = document?.data() else {
+                    let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for postID \(postID)"])
+                    completion(.failure(noDataError))
+                    return
+                }
+                
+                // 데이터 추출 및 PostDetailResponse 객체 생성
+                if let postID = data["postID"] as? String,
+                   let userID = data["userID"] as? String,
+                   let title = data["title"] as? String,
+                   let content = data["content"] as? String,
+                   let imageURLs = data["imageURLs"] as? [String],
+                   let likeCount = data["likeCount"] as? Int,
+                   let commentCount = data["commentCount"] as? Int {
+                    
+                    // createdAt 필드 처리
+                    let createdAt: Date?
+                    if let timestamp = data["createdAt"] as? Timestamp {
+                        createdAt = timestamp.dateValue()
+                    } else {
+                        createdAt = nil // createdAt 필드가 없을 경우 nil로 처리
+                    }
+                    
+                    let postDetailResponse = PostDetailResponse(
+                        postID: postID,
+                        userID: userID,
+                        title: title,
+                        content: content,
+                        imageURLs: imageURLs,
+                        likeCount: likeCount,
+                        commentCount: commentCount,
+                        createdAt: createdAt
+                    )
+                    
+                    completion(.success(postDetailResponse))
+                } else {
+                    let decodeError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode data for postID \(postID)"])
+                    completion(.failure(decodeError))
+                }
+            }
+    }
+    
 }
 
 

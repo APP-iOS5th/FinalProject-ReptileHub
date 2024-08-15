@@ -21,10 +21,11 @@ struct ThumbnailPostResponse: Codable {
 
 struct PostDetailResponse: Codable {
     let postID: String
+    let userID: String
     let title: String
     let content: String
     let imageURLs: [String]
     let likeCount: Int
     let commentCount: Int
-   var createdAt: Date?
+    var createdAt: Date?
 }
