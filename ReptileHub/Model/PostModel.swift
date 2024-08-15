@@ -29,3 +29,12 @@ struct PostDetailResponse: Codable {
     let commentCount: Int
     var createdAt: Date?
 }
+
+struct CommentResponse: Codable {
+    let commentID: String
+    let postID: String
+    let userID: String
+    let content: String
+    let createdAt: Date?
+    let likeCount: Int
+}

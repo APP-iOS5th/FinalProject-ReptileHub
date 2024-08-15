@@ -214,6 +214,68 @@ class CommunityService {
           }
       }
     
+    //MARK: - 댓글 작성 함수
+    func addComment(postID:String,userID:String,content:String,completion:@escaping(Error?)->Void) {
+        let db = Firestore.firestore()
+        let commentID = UUID().uuidString
+        let createdAt = FieldValue.serverTimestamp()
+        
+        let commentData : [String:Any] = [
+            "commentID" : commentID,
+            "postID" : postID,
+            "userID" : userID,
+            "content" : content,
+            "createdAt" : createdAt,
+            "likeCount" : 0
+        ]
+        db.collection("posts").document(postID).collection("comments").document(commentID).setData(commentData) { error in
+            completion(error)
+        }
+    }
+    
+    //MARK: - 댓글 불러오기 함수
+    func fetchComments(forPost postID:String, completion: @escaping(Result<[CommentResponse],Error>) -> Void) {
+        let db = Firestore.firestore()
+        
+        db.collection("posts").document(postID).collection("comments")
+            .order(by: "createdAt",descending: true)
+            .getDocuments { querySnapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                var comments: [CommentResponse] = []
+                
+                for document in querySnapshot?.documents ?? [] {
+                    let data = document.data()
+                    
+                    if let commentID = data["commentID"] as? String,
+                       let postID = data["postID"] as? String,
+                       let userID = data["userID"] as? String,
+                       let content = data["content"] as? String,
+                       let likeCount = data["likeCount"] as? Int,
+                       let createdAt = data["createdAt"] as? Timestamp {
+                        
+                        let comment = CommentResponse(
+                            commentID: commentID,
+                            postID: postID,
+                            userID: userID,
+                            content: content,
+                            createdAt: createdAt.dateValue(),
+                            likeCount: likeCount
+                        )
+                        comments.append(comment)
+                    }
+                }
+                
+                completion(.success(comments))
+            }
+        
+    }
+    
+    
+    
 }
 
 
