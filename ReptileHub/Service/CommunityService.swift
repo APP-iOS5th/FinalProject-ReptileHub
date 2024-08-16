@@ -72,8 +72,27 @@ class CommunityService {
                }
            }
        }
-       
-    func fetchAllPostThumbnails(completion:@escaping (Result<[ThumbnailPostResponse],Error>)->Void) {
+    //MARK: - 차단된 유저 확인 후, 해당 유저 게시물 제외한 나머지 게시물 불러오기
+    func fetchAllPostThumbnails(forCurrentUser currentUserID: String, completion:@escaping (Result<[ThumbnailPostResponse], Error>) -> Void) {
+        let db = Firestore.firestore()
+        
+        db.collection("users").document(currentUserID).getDocument { document, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let blockedUsers = document?.data()?["blockedUsers"] as? [String] else {
+                // 차단된 유저가 없으면 모든 게시물 썸네일을 가져옴
+                self.fetchThumbnailsExcludingBlockedUsers(blockedUsers:[],completion:completion)
+                return
+            }
+            // 차단된 유저가 있는 경우 그 유저들을 제외한 게시물만 가져옴
+            self.fetchThumbnailsExcludingBlockedUsers(blockedUsers: blockedUsers, completion: completion)
+        }
+    }
+    
+    private func fetchThumbnailsExcludingBlockedUsers(blockedUsers: [String],completion:@escaping (Result<[ThumbnailPostResponse],Error>)->Void) {
         let db = Firestore.firestore()
         
         // 'posts' 컬렉션에서 모든 문서를 가져옴
@@ -96,6 +115,11 @@ class CommunityService {
                    let likeCount = data["likeCount"] as? Int,
                    let commentCount = data["commentCount"] as? Int,
                    let createdAt = data["createdAt"] as? Timestamp {
+                    
+                    // 차단된 유저의 게시물은 제외
+                    if blockedUsers.contains(userID) {
+                        continue
+                    }
                     
                     //받아온 정보로 객체 생성
                     let thumbnailResponse = ThumbnailPostResponse(
