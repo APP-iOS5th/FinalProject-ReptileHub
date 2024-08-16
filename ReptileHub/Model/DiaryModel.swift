@@ -96,3 +96,15 @@ struct DiaryResponse:Codable {
     let imageURLs: [String]
     let createdAt: Date?
 }
+
+// 도마뱀 날짜별 무게
+struct WeightEntry {
+    let weight: Int
+    let date: Date
+}
+
+// 도마뱀 월별 무게 평균
+struct MonthWeightAverage {
+    let month: Int
+    let averageWeight: Int
+}

@@ -86,6 +86,16 @@ class DiaryPostService {
                         .collection("growth_diaries_details").document(diaryID)
                     transaction.setData(dictionary ?? [:], forDocument: detailRef)
                     
+                    // 무게 기록 저장
+                    let initialWeight = diary.lizardInfo.weight
+                    let weightData: [String: Any] = [
+                        "date": Timestamp(date: Date()),
+                        "weight": initialWeight
+                    ]
+                                    
+                    let weightHistoryRef = detailRef.collection("weight_history").document()
+                    transaction.setData(weightData, forDocument: weightHistoryRef)
+                    
                     return nil
                 } catch {
                     errorPointer?.pointee = error as NSError
@@ -360,6 +370,120 @@ extension DiaryPostService {
     }
 
     
+}
+
+extension DiaryPostService {
+   //MARK: - 도마뱀 몸무게 변화 추가 함수
+    func addWeightEntry(userID: String, diaryID: String, weight: Int, date: Date = Date(), completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let weightData: [String: Any] = [
+            "date": Timestamp(date: date),
+            "weight": weight
+        ]
+        
+        db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("weight_history").addDocument(data: weightData) { error in
+                completion(error)
+            }
+    }
+    //MARK: - 일별 도마뱀 몸무게 변화 기록 불러오기
+    func fetchDailyWeightEntries(userID: String, diaryID: String, month: Int? = nil, year: Int? = nil, completion: @escaping (Result<[WeightEntry], Error>) -> Void) {
+        let db = Firestore.firestore()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: Date())
+        
+        let selectedYear = year ?? components.year!
+        let selectedMonth = month ?? components.month!
+        
+        let startDateComponents = DateComponents(year: selectedYear, month: selectedMonth, day: 1)
+        let startDate = calendar.date(from: startDateComponents)!
+        
+        var endDateComponents = DateComponents(year: selectedYear, month: selectedMonth + 1, day: 0)
+        if selectedMonth == 12 {
+            endDateComponents = DateComponents(year: selectedYear + 1, month: 1, day: 0)
+        }
+        let endDate = calendar.date(from: endDateComponents)!
+        
+        db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("weight_history")
+            .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: startDate))
+            .whereField("date", isLessThanOrEqualTo: Timestamp(date: endDate))
+            .order(by: "date", descending: false)
+            .getDocuments { querySnapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                var weightEntries: [WeightEntry] = []
+                for document in querySnapshot?.documents ?? [] {
+                    if let weight = document.data()["weight"] as? Int,
+                       let timestamp = document.data()["date"] as? Timestamp {
+                        let weightEntry = WeightEntry(weight: weight, date: timestamp.dateValue())
+                        weightEntries.append(weightEntry)
+                    }
+                }
+                completion(.success(weightEntries))
+            }
+    }
+
+    //MARK: - 월별 도마뱀 몸무게 평균 기록 불러오기
+    func fetchMonthlyWeightAverages(userID: String, diaryID: String, year: Int? = nil, completion: @escaping (Result<[MonthWeightAverage], Error>) -> Void) {
+        let db = Firestore.firestore()
+        let calendar = Calendar.current
+        let selectedYear = year ?? calendar.component(.year, from: Date())
+        
+        var weightAverages: [MonthWeightAverage] = []
+        let dispatchGroup = DispatchGroup()
+        
+        for month in 1...12 {
+            dispatchGroup.enter()
+            
+            let startDateComponents = DateComponents(year: selectedYear, month: month, day: 1)
+            let startDate = calendar.date(from: startDateComponents)!
+            
+            var endDateComponents = DateComponents(year: selectedYear, month: month + 1, day: 0)
+            if month == 12 {
+                endDateComponents = DateComponents(year: selectedYear + 1, month: 1, day: 0)
+            }
+            let endDate = calendar.date(from: endDateComponents)!
+            
+            db.collection("users").document(userID)
+                .collection("growth_diaries_details").document(diaryID)
+                .collection("weight_history")
+                .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: startDate))
+                .whereField("date", isLessThanOrEqualTo: Timestamp(date: endDate))
+                .getDocuments { querySnapshot, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    var totalWeight = 0
+                    var entryCount = 0
+                    for document in querySnapshot?.documents ?? [] {
+                        if let weight = document.data()["weight"] as? Int {
+                            totalWeight += weight
+                            entryCount += 1
+                        }
+                    }
+                    
+                    if entryCount > 0 {
+                        let averageWeight = totalWeight / entryCount
+                        weightAverages.append(MonthWeightAverage(month: month, averageWeight: averageWeight))
+                    }
+                    
+                    dispatchGroup.leave()
+                }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion(.success(weightAverages))
+        }
+    }
+
 }
 
 
