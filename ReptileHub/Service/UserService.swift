@@ -31,4 +31,54 @@ class UserService {
             completion(error)
         }
     }
+    
+    //MARK: - 차단된 유저 프로필 불러오기
+    func fetchBlockUsers(currentUserID: String, completion: @escaping(Result<[UserProfile],Error>)->Void) {
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(currentUserID)
+        
+        userRef.getDocument { document, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let blockedUserIDs = document?.data()?["blockedUsers"] as? [String] else {
+                completion(.success([]))
+                return
+            }
+            
+            let group = DispatchGroup()
+            var blockedUsers: [UserProfile] = []
+            var fetchError:Error?
+            
+            for userID in blockedUserIDs {
+                group.enter()
+                
+                db.collection("users").document(userID).getDocument { userDocument, error in
+                    if let error = error {
+                        fetchError = error
+                    } else if let userData = userDocument?.data(),
+                              let name = userData["name"] as? String,
+                              let profileImageURL = userData["profileImageURL"] as? String {
+                        let userProfile = UserProfile(uid: userID, name: name, profileImageURL: profileImageURL)
+                        blockedUsers.append(userProfile)
+                    }
+                    group.leave()
+                }
+            }
+            
+            group.notify(queue: .main) {
+                if let error = fetchError {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(blockedUsers))
+                }
+                
+              }
+            
+        }
+        
+    }
+    
 }

@@ -19,6 +19,7 @@
 		469B44472C6315AF00B1C49B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 469B44462C6315AF00B1C49B /* GoogleSignIn */; };
 		469B44492C6315AF00B1C49B /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 469B44482C6315AF00B1C49B /* GoogleSignInSwift */; };
 		46DA262F2C6ED2DB005C7609 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA262E2C6ED2DB005C7609 /* UserService.swift */; };
+		46DA26332C6EE198005C7609 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA26322C6EE198005C7609 /* UserModel.swift */; };
 		46E23B212C6606620059BB62 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B202C6606620059BB62 /* KakaoSDK */; };
 		46E23B232C6606620059BB62 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B222C6606620059BB62 /* KakaoSDKAuth */; };
 		46E23B252C6606620059BB62 /* KakaoSDKCert in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B242C6606620059BB62 /* KakaoSDKCert */; };
@@ -72,6 +73,7 @@
 		469B443D2C6308B300B1C49B /* ReptileHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReptileHub.entitlements; sourceTree = "<group>"; };
 		469B443E2C63116000B1C49B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		46DA262E2C6ED2DB005C7609 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		46DA26322C6EE198005C7609 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		46F0F7ED2C6AE46400444C98 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		46F0F7F42C6B286300444C98 /* CommunityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityService.swift; sourceTree = "<group>"; };
 		46F0F7F82C6D997800444C98 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				4693FACC2C60E87100BB70D6 /* DiaryModel.swift */,
 				4674B2E22C64D71700BCD451 /* AuthUser.swift */,
 				46F0F7F82C6D997800444C98 /* PostModel.swift */,
+				46DA26322C6EE198005C7609 /* UserModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
+				46DA26332C6EE198005C7609 /* UserModel.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
