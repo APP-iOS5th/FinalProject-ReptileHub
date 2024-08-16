@@ -18,6 +18,7 @@
 		469B443F2C63116000B1C49B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 469B443E2C63116000B1C49B /* GoogleService-Info.plist */; };
 		469B44472C6315AF00B1C49B /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 469B44462C6315AF00B1C49B /* GoogleSignIn */; };
 		469B44492C6315AF00B1C49B /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 469B44482C6315AF00B1C49B /* GoogleSignInSwift */; };
+		46DA262F2C6ED2DB005C7609 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DA262E2C6ED2DB005C7609 /* UserService.swift */; };
 		46E23B212C6606620059BB62 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B202C6606620059BB62 /* KakaoSDK */; };
 		46E23B232C6606620059BB62 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B222C6606620059BB62 /* KakaoSDKAuth */; };
 		46E23B252C6606620059BB62 /* KakaoSDKCert in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B242C6606620059BB62 /* KakaoSDKCert */; };
@@ -70,6 +71,7 @@
 		469B443B2C6305E300B1C49B /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		469B443D2C6308B300B1C49B /* ReptileHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReptileHub.entitlements; sourceTree = "<group>"; };
 		469B443E2C63116000B1C49B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		46DA262E2C6ED2DB005C7609 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		46F0F7ED2C6AE46400444C98 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		46F0F7F42C6B286300444C98 /* CommunityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityService.swift; sourceTree = "<group>"; };
 		46F0F7F82C6D997800444C98 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */,
 				469B443B2C6305E300B1C49B /* AuthService.swift */,
 				46F0F7F42C6B286300444C98 /* CommunityService.swift */,
+				46DA262E2C6ED2DB005C7609 /* UserService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
 				46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */,
+				46DA262F2C6ED2DB005C7609 /* UserService.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
