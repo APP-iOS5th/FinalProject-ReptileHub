@@ -36,19 +36,20 @@ extension GrowthDiaryViewController{
         }
         
         // TODO: 실제 모델을 넘기고 configure함수에서 .image, .tile. timestamp로 cell에 넣기
-        cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", timestamp: Date())
+        if indexPath.item == 0{
+            cell.configure(imageName: "tempImage", title: "엘리자베스", timestamp: Date())
+        }else{
+            cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", timestamp: Date())
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let padding = 20.0 // cell 열 사이의 간격
-        let width = (collectionView.bounds.width - padding) / 2 //2열로 만들기 위해 2로 나눈다.
-        
-        let cell = GrowthDiaryListCollectionViewCell()
-        let height = cell.calculateHeight(width: width) //dummy cell을 이용한 dynamic height 설정
-        
-        return CGSize(width: width, height: height)
+        let padding = 20.0 //열 사이의 간격
+        let cellSize = (collectionView.bounds.width - padding) / 2
+        //높이는 자동으로 설정되지만 좀더 효율적으로 하기 위해 최대한 예상되는 근사값을 넣기
+        return CGSize(width: cellSize, height: 200)
     }
 }
 

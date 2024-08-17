@@ -25,7 +25,7 @@ class GrowthDiaryListView: UIView {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 30//행 사이의 간격
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsVerticalScrollIndicator = false //수직 스크롤표시 없애기
         return view

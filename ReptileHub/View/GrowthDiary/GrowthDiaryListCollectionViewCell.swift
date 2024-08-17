@@ -24,7 +24,6 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
         label.setContentHuggingPriority(.required, for: .vertical)
-        label.numberOfLines = 0
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }()
@@ -35,7 +34,6 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         label.textColor = .gray
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.numberOfLines = 0
         return label
     }()
     
@@ -80,24 +78,5 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         GrowthDiaryItemImage.image = UIImage(named: imageName)
         GrowthDiaryItemTitle.text = title
         GrowthDiaryItemDate.text = "\(formatter.string(from: timestamp))"
-    }
-    
-    func calculateHeight(width: CGFloat) -> CGFloat {
-        // 데이터를 설정
-        configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", timestamp: Date())
-        
-        // 셀의 크기를 측정할 준비를 합니다.
-        self.frame = CGRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude)
-        self.layoutIfNeeded()
-        
-        // 시스템 레이아웃을 통해 셀의 적절한 크기를 계산합니다.
-        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
-        // Auto Layout 기준으로 너비/높이를 설정
-        let fittingSize = self.systemLayoutSizeFitting(targetSize,
-                                                       withHorizontalFittingPriority: .required,
-                                                       verticalFittingPriority: .fittingSizeLevel)
-        
-        // 최종적으로 계산된 높이 반환
-        return fittingSize.height
     }
 }
