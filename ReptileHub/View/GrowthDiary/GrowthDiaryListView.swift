@@ -23,7 +23,9 @@ class GrowthDiaryListView: UIView {
     private lazy var GrowthDiaryListCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 30//행사이의 간격
+        layout.minimumLineSpacing = 30//행 사이의 간격
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.showsVerticalScrollIndicator = false //수직 스크롤표시 없애기
         return view
@@ -33,6 +35,7 @@ class GrowthDiaryListView: UIView {
     private lazy var GrowthDiaryUploadViewMoveButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
         
         var config = UIButton.Configuration.filled()
         //AttributedString 설정
@@ -51,7 +54,6 @@ class GrowthDiaryListView: UIView {
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         button.configuration = config
-//        button.layer.zPosition = 1
         return button
     }()
     
@@ -67,8 +69,8 @@ class GrowthDiaryListView: UIView {
     
     private func setUI(){
         self.addSubview(GrowthDiaryTitleLabel)
-        self.addSubview(GrowthDiaryUploadViewMoveButton)
         self.addSubview(GrowthDiaryListCollectionView)
+        self.addSubview(GrowthDiaryUploadViewMoveButton)
         
         GrowthDiaryTitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)

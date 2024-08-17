@@ -24,7 +24,8 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
 extension GrowthDiaryViewController{
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10//임시
+        // TODO: 실제 존재하는 Model의 개수
+        10
     }
     
     //데이터 소스 개체에 컬레션 보기에서 지정된 항목에 해당하는 셀을 요청합니다.
@@ -33,20 +34,23 @@ extension GrowthDiaryViewController{
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GrowthDiaryListCollectionViewCell.identifier, for: indexPath) as? GrowthDiaryListCollectionViewCell else{
             return UICollectionViewCell()
         }
+        
+        // TODO: 실제 모델을 넘기고 configure함수에서 .image, .tile. timestamp로 cell에 넣기
+        cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", timestamp: Date())
+        
         return cell
     }
     
-    //대리인에게 지정된 항목의 셀의 크기를 요청합니다.
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let padding: CGFloat = 20
-        let width = (collectionView.bounds.width - padding) / 2
-        // TODO: 높이 계산하기
-        let heigth = 171.0
-        return CGSize(width: width, height: heigth)
+        let padding = 20.0 // cell 열 사이의 간격
+        let width = (collectionView.bounds.width - padding) / 2 //2열로 만들기 위해 2로 나눈다.
         
+        let cell = GrowthDiaryListCollectionViewCell()
+        let height = cell.calculateHeight(width: width) //dummy cell을 이용한 dynamic height 설정
+        
+        return CGSize(width: width, height: height)
     }
 }
-
 
 #if DEBUG
 import SwiftUI
