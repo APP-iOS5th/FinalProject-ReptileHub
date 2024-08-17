@@ -91,6 +91,7 @@ struct DiaryRequest {
 
 // 성장일기 받아올때 사용하는 구조체
 struct DiaryResponse:Codable {
+    let entryID: String
     let title: String
     let content: String
     let imageURLs: [String]

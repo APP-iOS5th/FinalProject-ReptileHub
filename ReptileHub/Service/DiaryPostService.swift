@@ -315,8 +315,9 @@ extension DiaryPostService {
             }
             
             let diaryRequest = DiaryRequest(title: title, content: content, imageURLs: urls)
-            
+            let entryID = UUID().uuidString //고유 ID 생성
             let diaryData: [String: Any] = [
+                "entryID": entryID,
                 "title": diaryRequest.title,
                 "content": diaryRequest.content,
                 "imageURLs": diaryRequest.imageURLs,
@@ -326,7 +327,7 @@ extension DiaryPostService {
             let db = Firestore.firestore()
             db.collection("users").document(userID)
                 .collection("growth_diaries_details").document(diaryID)
-                .collection("diary_entries").addDocument(data: diaryData) { error in
+                .collection("diary_entries").document(entryID).setData(diaryData) { error in
                     completion(error)
                 }
         }
@@ -360,12 +361,87 @@ extension DiaryPostService {
             var diaryEntries: [DiaryResponse] = []
             
             for document in documents {
-                if let diaryEntry = try? document.data(as: DiaryResponse.self) {
+                let data = document.data()
+                
+                if let entryID = data["entryID"] as? String,
+                   let title = data["title"] as? String,
+                   let content = data["content"] as? String,
+                   let imageURLs = data["imageURLs"] as? [String],
+                   let createdAt = data["createdAt"] as? Timestamp {
+                    let diaryEntry = DiaryResponse(
+                        entryID: entryID,
+                        title: title,
+                        content: content,
+                        imageURLs: imageURLs,
+                        createdAt: createdAt.dateValue()
+                       )
                     diaryEntries.append(diaryEntry)
+                } else {
+                    print("Failed to parse document data: \(document.data())")
                 }
+                
             }
             
             completion(.success(diaryEntries))
+        }
+    }
+    
+    //MARK: - 성장 일지 속 일기 삭제 함수
+    func deleteDiaryEntry(userID: String, diaryID: String, entryID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        
+        let entryRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("diary_entries").document(entryID)
+        
+        // 먼저 일기 데이터를 가져옴
+        entryRef.getDocument { (document, error) in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            guard let data = document?.data() else {
+                let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for entryID \(entryID)"])
+                completion(noDataError)
+                return
+            }
+            
+            // 일기에 저장된 이미지 URL을 가져옴
+            if let imageURLs = data["imageURLs"] as? [String] {
+                let group = DispatchGroup()
+                var deletionErrors: [Error] = []
+                
+                for imageURL in imageURLs {
+                    group.enter()
+                    
+                   
+                    self.deleteImage(from: imageURL) { error in
+                        if let error = error {
+                            deletionErrors.append(error)
+                        }
+                        group.leave()
+                    }
+                }
+                
+                // 이미지 삭제가 끝난 후 일기 문서 삭제
+                group.notify(queue: .main) {
+                    if !deletionErrors.isEmpty {
+                        completion(deletionErrors.first)
+                        return
+                    }
+                    
+                    // Firestore에서 일기 문서 삭제
+                    entryRef.delete { error in
+                        completion(error)
+                    }
+                }
+            } else {
+                // 이미지가 없는 경우 일기 문서만 삭제
+                entryRef.delete { error in
+                    completion(error)
+                }
+            }
         }
     }
 
