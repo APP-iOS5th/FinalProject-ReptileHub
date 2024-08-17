@@ -8,11 +8,19 @@
 import UIKit
 
 class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    let mydata: [Int] = [1]
     
     private let GrowthDiaryView = GrowthDiaryListView()
+    private lazy var emptyView: EmptyView = {
+        return EmptyView()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUp()
+    }
+    
+    private func setUp(){
         self.view = GrowthDiaryView
         GrowthDiaryView.backgroundColor = .white
         GrowthDiaryView.cofigureCollectionView(delegate: self, dataSource: self)
@@ -22,10 +30,17 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
 
 //MARK: - Extension
 extension GrowthDiaryViewController{
+    
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // TODO: 실제 존재하는 Model의 개수
-        10
+        if mydata.count == 0{
+            emptyView.configure("등록된 반려도마뱀이 없습니다.")
+            collectionView.backgroundView = emptyView
+        }else{
+            collectionView.backgroundView = nil
+        }
+        return mydata.count
     }
     
     //데이터 소스 개체에 컬레션 보기에서 지정된 항목에 해당하는 셀을 요청합니다.

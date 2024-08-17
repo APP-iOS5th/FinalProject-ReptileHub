@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class GrowthDiaryListView: UIView {
+class GrowthDiaryListView: UIView {    
     //MARK: - 상단 텍스트 Label
     private lazy var GrowthDiaryTitleLabel: UILabel = {
         let label = UILabel()
@@ -113,6 +113,24 @@ extension UILabel{
         let range = (text as NSString).range(of: rangeText)
         attributeString.addAttribute(.font, value: font, range: range)
         self.attributedText = attributeString
+    }
+}
+
+extension UICollectionView{
+    func setEmptyView(){
+        let emptyMessageLabel: UILabel = {
+            let label = UILabel()
+            label.text = "등록된 반려도마뱀이 없어요"
+            label.textColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
+            label.textAlignment = .center
+            label.font = UIFont.systemFont(ofSize: 20)
+            return label
+        }()
+        self.backgroundView = emptyMessageLabel
+    }
+    
+    func restore(){
+        self.backgroundView = nil
     }
 }
 
