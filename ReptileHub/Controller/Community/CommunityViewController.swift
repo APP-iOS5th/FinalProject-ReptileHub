@@ -48,7 +48,7 @@ class CommunityViewController: UIViewController {
         
         self.view.addSubview(communityTableView)
         
-        communityTableView.snp.makeConstraints { (make) -> Void in
+        communityTableView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
             make.leading.equalTo(self.view.snp.leading)
             make.trailing.equalTo(self.view.snp.trailing)

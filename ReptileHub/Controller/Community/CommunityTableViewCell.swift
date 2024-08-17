@@ -58,7 +58,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         self.contentView.addSubview(thumbnailImageView)
         
-        thumbnailImageView.snp.makeConstraints { (make) -> Void in
+        thumbnailImageView.snp.makeConstraints { make in
             make.height.width.equalTo(71)
             make.leading.equalTo(self.contentView.snp.leading).offset(12)
         }
@@ -81,7 +81,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         self.contentView.addSubview(mainInfoStackView)
         
-        mainInfoStackView.snp.makeConstraints { (make) -> Void in
+        mainInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(thumbnailImageView.snp.top)
             make.leading.equalTo(thumbnailImageView.snp.trailing)
             make.bottom.equalTo(firstStackView.snp.top)
@@ -131,12 +131,12 @@ class CommunityTableViewCell: UITableViewCell {
         self.contentView.addSubview(firstStackView)
         self.contentView.addSubview(secondStackView)
         
-        firstStackView.snp.makeConstraints { (make) -> Void in
+        firstStackView.snp.makeConstraints { make in
             make.leading.equalTo(thumbnailImageView.snp.trailing)
             make.bottom.equalTo(thumbnailImageView.snp.bottom)
         }
         
-        secondStackView.snp.makeConstraints { (make) -> Void in
+        secondStackView.snp.makeConstraints { make in
             make.trailing.equalTo(menuButton.snp.centerX)
             make.bottom.equalTo(firstStackView.snp.bottom)
         }
@@ -150,7 +150,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         self.contentView.addSubview(menuButton)
         
-        menuButton.snp.makeConstraints { (make) -> Void in
+        menuButton.snp.makeConstraints { make in
             make.centerY.equalTo(self.contentView)
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-12)
 
