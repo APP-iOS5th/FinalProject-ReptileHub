@@ -141,58 +141,89 @@ class CommunityService {
             
         }
     }
+
     
-    func fetchPostDetail(postID: String, completion: @escaping (Result<PostDetailResponse, Error>) -> Void) {
-        db.collection("posts")
-            .document(postID)
-            .collection("post_details")
-            .document(postID)
-            .getDocument { (document, error) in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                
-                guard let data = document?.data() else {
-                    let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for postID \(postID)"])
-                    completion(.failure(noDataError))
-                    return
-                }
-                
-                // 데이터 추출 및 PostDetailResponse 객체 생성
-                if let postID = data["postID"] as? String,
-                   let userID = data["userID"] as? String,
-                   let title = data["title"] as? String,
-                   let content = data["content"] as? String,
-                   let imageURLs = data["imageURLs"] as? [String],
-                   let likeCount = data["likeCount"] as? Int,
-                   let commentCount = data["commentCount"] as? Int {
-                    
-                    // createdAt 필드 처리
-                    let createdAt: Date?
-                    if let timestamp = data["createdAt"] as? Timestamp {
-                        createdAt = timestamp.dateValue()
-                    } else {
-                        createdAt = nil // createdAt 필드가 없을 경우 nil로 처리
-                    }
-                    
-                    let postDetailResponse = PostDetailResponse(
-                        postID: postID,
-                        userID: userID,
-                        title: title,
-                        content: content,
-                        imageURLs: imageURLs,
-                        likeCount: likeCount,
-                        commentCount: commentCount,
-                        createdAt: createdAt
-                    )
-                    
-                    completion(.success(postDetailResponse))
-                } else {
-                    let decodeError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode data for postID \(postID)"])
-                    completion(.failure(decodeError))
-                }
+    func fetchPostDetail(userID: String, postID: String, completion: @escaping (Result<PostDetailResponse, Error>) -> Void) {
+        let postRef = db.collection("posts").document(postID)
+        let userLikesRef = db.collection("users").document(userID).collection("likedPosts").document(postID)
+        
+        // Firestore에서 여러 문서를 병렬로 가져오는 DispatchGroup 사용
+        let group = DispatchGroup()
+        
+        var postDetailResponse: PostDetailResponse?
+        var isLiked: Bool = false
+        var fetchError: Error?
+        
+        group.enter()
+        postRef.collection("post_details").document(postID).getDocument { (document, error) in
+            defer { group.leave() }
+            
+            if let error = error {
+                fetchError = error
+                return
             }
+            
+            guard let data = document?.data() else {
+                fetchError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for postID \(postID)"])
+                return
+            }
+            
+            if let postID = data["postID"] as? String,
+               let userID = data["userID"] as? String,
+               let title = data["title"] as? String,
+               let content = data["content"] as? String,
+               let imageURLs = data["imageURLs"] as? [String],
+               let likeCount = data["likeCount"] as? Int,
+               let commentCount = data["commentCount"] as? Int {
+                
+                let createdAt: Date?
+                if let timestamp = data["createdAt"] as? Timestamp {
+                    createdAt = timestamp.dateValue()
+                } else {
+                    createdAt = nil
+                }
+                
+                postDetailResponse = PostDetailResponse(
+                    postID: postID,
+                    userID: userID,
+                    title: title,
+                    content: content,
+                    imageURLs: imageURLs,
+                    likeCount: likeCount,
+                    commentCount: commentCount,
+                    createdAt: createdAt,
+                    isLiked: isLiked
+                )
+            } else {
+                fetchError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode data for postID \(postID)"])
+            }
+        }
+        
+        group.enter()
+        userLikesRef.getDocument { (document, error) in
+            defer { group.leave() }
+            
+            if let error = error {
+                fetchError = error
+                return
+            }
+            
+            // 좋아요 여부 확인
+            isLiked = document?.exists ?? false
+        }
+        
+        // 모든 비동기 작업이 끝난 후에 실행
+        group.notify(queue: .main) {
+            if let fetchError = fetchError {
+                completion(.failure(fetchError))
+            } else if var postDetailResponse = postDetailResponse {
+                postDetailResponse.isLiked = isLiked
+                completion(.success(postDetailResponse))
+            } else {
+                let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No post detail found for postID \(postID)"])
+                completion(.failure(noDataError))
+            }
+        }
     }
     
     //MARK: - 좋아요, 좋아요 취소 토글 버튼
