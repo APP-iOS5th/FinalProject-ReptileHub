@@ -7,31 +7,34 @@
 
 import UIKit
 
-struct DiaryRequest:Codable {
+// 도마뱀 등록할때 사용하는 구조체
+struct GrowthDiaryRequest:Codable {
+    var lizardInfo: LizardInfo
+    var parentInfo: Parents?
+}
+
+// 도마뱀 등록할때 도마뱀 정보
+struct LizardInfo:Codable {
     var name: String
     var species: String
     var morph: String?
     var hatchDays: Date
-    var lizardInfo: LizardInfo
-    var parentInfo: Parents?
-    var imageURL: String?
-}
-
-struct LizardInfo:Codable {
     var gender:Gender
     var weight: Int
     var feedMethod: String
     var tailexistence: Bool
+    var imageURL: String?
 }
 
+// 도마뱀 등록할떄 성별
 enum Gender:String,Codable {
     case male = "male"
     case female = "female"
     case unKnown = "unKnown"
 }
 
+// 도마뱀 부모 정보
 struct ParentInfo:Codable {
-    var image: Data
     var name: String
     var morph: String?
     var imageURL: String?
@@ -42,18 +45,18 @@ struct Parents:Codable {
     var father: ParentInfo
 }
 
+// 도마뱀 정보 받아올떄 사용하는 구조체
+struct GrowthDiaryResponse: Codable {
+    var lizardInfo: LizardInfoResponse
+    var parentInfo: ParentsResponse?
+}
 
-struct DiaryResponse: Codable {
+struct LizardInfoResponse: Codable {
     var name: String
     var species: String
     var morph: String?
     var hatchDays: Date
-    var lizardInfo: LizardInfoResponse
-    var parentInfo: ParentsResponse?
     var imageURL: String?
-}
-
-struct LizardInfoResponse: Codable {
     var gender: String
     var weight: Int
     var feedMethod: String
@@ -69,4 +72,27 @@ struct ParentInfoResponse: Codable {
 struct ParentsResponse: Codable {
     var mother: ParentInfoResponse
     var father: ParentInfoResponse
+}
+
+// 성장일지 썸네일 받아오는 구조체 - diary_id 로 detail 정보 접근
+struct ThumbnailResponse: Codable {
+    var diary_id: String
+    var thumbnail: String
+    var name: String
+}
+
+
+// 성장일지 속 성장일기 작성할때 사용하는 구조체
+struct DiaryRequest {
+    let title: String
+    let content: String
+    let imageURLs: [String?]
+}
+
+// 성장일기 받아올때 사용하는 구조체
+struct DiaryResponse:Codable {
+    let title: String
+    let content: String
+    let imageURLs: [String]
+    let createdAt: Date?
 }
