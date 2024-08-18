@@ -127,6 +127,17 @@ class GrowthDiaryListView: UIView {
         
         return UICollectionViewCompositionalLayout(section: section)
     }
+    
+    func updateScrollState(){
+        GrowthDiaryListCollectionView.setNeedsLayout()
+        GrowthDiaryListCollectionView.layoutIfNeeded()
+        
+        if GrowthDiaryListCollectionView.contentSize.height > GrowthDiaryListCollectionView.bounds.height{
+            GrowthDiaryListCollectionView.isScrollEnabled = true
+        }else{
+            GrowthDiaryListCollectionView.isScrollEnabled = false
+        }
+    }
 }
 
 //MARK: - extension

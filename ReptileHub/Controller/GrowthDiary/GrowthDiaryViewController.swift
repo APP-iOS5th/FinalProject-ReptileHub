@@ -8,11 +8,16 @@
 import UIKit
 
 class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    let mydata: [Int] = [1, 2, 3] //개수를 파악하기 위한 임시 데이터
+    let mydata: [Int] = [1, 2, 3, 9, 9 ,9 ,9 ,9] //개수를 파악하기 위한 임시 데이터
     private let GrowthDiaryView = GrowthDiaryListView()
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        GrowthDiaryView.updateScrollState()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
