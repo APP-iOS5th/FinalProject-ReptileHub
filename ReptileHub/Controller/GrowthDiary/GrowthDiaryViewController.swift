@@ -8,8 +8,7 @@
 import UIKit
 
 class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    let mydata: [Int] = [1]
-    
+    let mydata: [Int] = [1, 2, 3] //개수를 파악하기 위한 임시 데이터
     private let GrowthDiaryView = GrowthDiaryListView()
     private lazy var emptyView: EmptyView = {
         return EmptyView()
@@ -51,20 +50,8 @@ extension GrowthDiaryViewController{
         }
         
         // TODO: 실제 모델을 넘기고 configure함수에서 .image, .tile. timestamp로 cell에 넣기
-        if indexPath.item == 0{
-            cell.configure(imageName: "tempImage", title: "엘리자베스", timestamp: Date())
-        }else{
-            cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", timestamp: Date())
-        }
-        
+        cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", date: Date())
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let padding = 20.0 //열 사이의 간격
-        let cellSize = (collectionView.bounds.width - padding) / 2
-        //높이는 자동으로 설정되지만 좀더 효율적으로 하기 위해 최대한 예상되는 근사값을 넣기
-        return CGSize(width: cellSize, height: 200)
     }
 }
 

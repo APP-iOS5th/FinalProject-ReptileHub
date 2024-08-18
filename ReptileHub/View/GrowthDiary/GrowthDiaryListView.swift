@@ -21,12 +21,7 @@ class GrowthDiaryListView: UIView {
     
     //MARK: - 성장일지 목록 CollectionView
     private lazy var GrowthDiaryListCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 30//행 사이의 간격
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let view = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         view.showsVerticalScrollIndicator = false //수직 스크롤표시 없애기
         return view
     }()
@@ -38,6 +33,7 @@ class GrowthDiaryListView: UIView {
         button.layer.masksToBounds = true
         
         var config = UIButton.Configuration.filled()
+        
         //AttributedString 설정
         var buttonText = AttributedString("새로운 반려 도마뱀 등록하기") //텍스트 정의
         
@@ -101,6 +97,35 @@ class GrowthDiaryListView: UIView {
     
     func reigsterCollectionViewCell(_ cellClass: AnyClass?, forCellWithReuseIdentifier identifier: String){
         self.GrowthDiaryListCollectionView.register(cellClass, forCellWithReuseIdentifier: identifier)
+    }
+    
+    private func createLayout() -> UICollectionViewLayout{
+        // 아이템 크기 설정
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.5), // 전체 너비의 50%
+            heightDimension: .estimated(200)) // 높이는 동적 설정
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // 그룹 크기 설정
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0)
+            , heightDimension: .estimated(200))
+        
+        //그룹 방향 및 개수 설정
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item, item])
+        
+        // 그룹 내 아이템 간 간격 설정(열 사이 간격 20p)
+        group.interItemSpacing = .fixed(20)
+        
+        // 섹션 설정
+        let section = NSCollectionLayoutSection(group: group)
+        // 섹션 내 그룹 간 간격 설정 (행 사이 간격 30p)
+        section.interGroupSpacing = 30
+        
+        return UICollectionViewCompositionalLayout(section: section)
     }
 }
 

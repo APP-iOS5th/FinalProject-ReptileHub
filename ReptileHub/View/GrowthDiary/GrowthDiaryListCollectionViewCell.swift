@@ -23,8 +23,6 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
     private lazy var GrowthDiaryItemTitle: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
-        label.setContentHuggingPriority(.required, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }()
     
@@ -32,8 +30,6 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .gray
-        label.setContentHuggingPriority(.required, for: .vertical)
-        label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }()
     
@@ -54,7 +50,6 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         
         GrowthDiaryItemImage.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(contentView)
-            make.width.equalTo(contentView.bounds.width)
             make.height.equalTo(GrowthDiaryItemImage.snp.width).multipliedBy(0.74)
         }
         
@@ -70,13 +65,13 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(imageName: String, title: String, timestamp: Date){
+    func configure(imageName: String, title: String, date: Date){
         let formatter = DateFormatter()
         formatter.dateFormat = "YY. MM. dd 생성"
         formatter.locale = Locale(identifier: "ko_KR")
         
         GrowthDiaryItemImage.image = UIImage(named: imageName)
         GrowthDiaryItemTitle.text = title
-        GrowthDiaryItemDate.text = "\(formatter.string(from: timestamp))"
+        GrowthDiaryItemDate.text = "\(formatter.string(from: date))"
     }
 }

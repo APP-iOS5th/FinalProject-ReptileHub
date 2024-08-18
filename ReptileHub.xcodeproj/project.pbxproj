@@ -170,7 +170,6 @@
 			isa = PBXGroup;
 			children = (
 				798476422C70EFA400895D2D /* Components */,
-				796844982C6AEB3F00765A80 /* Extension */,
 				795776BB2C69B22F006D27A1 /* View */,
 				58833C342C5FDEFD005C2160 /* Model */,
 				584107DC2C5395A100DA47BA /* Controller */,
@@ -193,17 +192,10 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		796844982C6AEB3F00765A80 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-				7968449B2C6AEC7100765A80 /* Spacing.swift */,
-			);
-			path = Extension;
-			sourceTree = "<group>";
-		};
 		798476422C70EFA400895D2D /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				7968449B2C6AEC7100765A80 /* Spacing.swift */,
 				798476402C70E05200895D2D /* EmptyView.swift */,
 			);
 			path = Components;
