@@ -13,6 +13,7 @@
 		4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */; };
 		469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */; };
 		469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469B44392C62FDCA00B1C49B /* LoginViewController.swift */; };
+		5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */; };
 		583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */; };
 		58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */; };
 		58418D712C64A9FB004E738E /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D702C64A9FB004E738E /* TabbarViewController.swift */; };
@@ -53,6 +54,7 @@
 		4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryPostService.swift; sourceTree = "<group>"; };
 		469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialLoginButton.swift; sourceTree = "<group>"; };
 		469B44392C62FDCA00B1C49B /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailViewController.swift; sourceTree = "<group>"; };
 		58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
 		58418D702C64A9FB004E738E /* TabbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */,
 				58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */,
 				583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */,
+				5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */,
 			);
 			path = Community;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
+				5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */,

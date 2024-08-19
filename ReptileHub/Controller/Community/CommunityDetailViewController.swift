@@ -58,7 +58,6 @@ class CommunityDetailViewController: UIViewController {
     // 댓글 부분
     private let commentTableView: UITableView = UITableView(frame: .zero)
     
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,6 +80,7 @@ class CommunityDetailViewController: UIViewController {
         setupCommentTableView()
     }
     
+    
     //MARK: - 스크롤뷰 세팅
     private func setupMainScrollView() {
         scrollView.alwaysBounceVertical = true
@@ -96,17 +96,19 @@ class CommunityDetailViewController: UIViewController {
         scrollView.addSubview(stackView)
         
         scrollView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(self.view.safeAreaLayoutGuide)
-            make.leading.trailing.equalTo(self.view)
-            make.height.equalTo(self.view.frame.height)
-            make.width.equalTo(self.view.frame.width)
+            make.top.leading.trailing.bottom.equalTo(self.view.safeAreaLayoutGuide)
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(scrollView)
+//            make.top.leading.trailing.equalTo(scrollView)
 //            make.height.equalTo(self.view.frame.height)
-            make.width.equalTo(self.view.frame.width)
+            make.top.leading.trailing.bottom.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.snp.width)
         }
+        
+        let stackViewHeight = stackView.heightAnchor.constraint(greaterThanOrEqualTo: self.view.heightAnchor)
+        stackViewHeight.priority = .defaultLow
+        stackViewHeight.isActive = true
     }
     
     //MARK: - 프로필 이미지
@@ -342,6 +344,7 @@ class CommunityDetailViewController: UIViewController {
             make.height.equalTo(10)
             make.top.equalTo(countInfoStackView.snp.bottom).offset(10)
             make.leading.trailing.equalTo(self.view)
+            
         }
     }
     
@@ -354,22 +357,24 @@ class CommunityDetailViewController: UIViewController {
         
         commentTableView.delegate = self
         commentTableView.dataSource = self
-        commentTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        commentTableView.isScrollEnabled = false
+        commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
         commentTableView.backgroundColor = .lightGray
+        commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
         
         self.stackView.addArrangedSubview(commentTableView)
+        
+        commentTableView.translatesAutoresizingMaskIntoConstraints = false
         
         commentTableView.snp.makeConstraints { make in
             make.top.equalTo(divisionThickLine.snp.bottom)
             make.leading.equalTo(self.stackView.snp.leading).offset(24)
             make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
-            make.bottom.equalTo(self.stackView.snp.bottom)
-            make.height.equalTo(300)
+//            make.height.greaterThanOrEqualTo(800)
         }
     }
     
+
 }
 
 
@@ -382,13 +387,12 @@ extension CommunityDetailViewController: UIScrollViewDelegate {
 
 extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
+        cell.configureCell()
         return cell
     }
-    
-    
 }
