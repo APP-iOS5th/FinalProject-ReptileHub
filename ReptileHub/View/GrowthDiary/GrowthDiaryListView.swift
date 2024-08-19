@@ -10,12 +10,10 @@ import SnapKit
 
 class GrowthDiaryListView: UIView {    
     //MARK: - 상단 텍스트 Label
-    private lazy var GrowthDiaryTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "사랑하는 반려도마뱀의 하루하루를 기록해보세요!"
-        label.font = UIFont.systemFont(ofSize: 28)
+    private lazy var GrowthDiaryTitleLabel: FontWeightLabel = {
+        let label = FontWeightLabel()
         label.numberOfLines = 0
-        label.asFont(rangeText: "하루하루를 기록해보세요!", font: UIFont.systemFont(ofSize: 28, weight: .bold))
+        label.setFontWeightText(fullText: "사랑하는 반려도마뱀의 하루하루를 기록해보세요!", boldText: "하루하루를 기록해보세요!", fontSize: 28, weight: .bold)
         return label
     }()
     
@@ -137,18 +135,6 @@ class GrowthDiaryListView: UIView {
         }else{
             GrowthDiaryListCollectionView.isScrollEnabled = false
         }
-    }
-}
-
-//MARK: - extension
-extension UILabel{
-    func asFont(rangeText: String, font: UIFont){
-        guard let text = self.text else { return }
-        
-        let attributeString = NSMutableAttributedString(string: text)
-        let range = (text as NSString).range(of: rangeText)
-        attributeString.addAttribute(.font, value: font, range: range)
-        self.attributedText = attributeString
     }
 }
 
