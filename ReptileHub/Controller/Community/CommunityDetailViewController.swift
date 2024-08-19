@@ -10,6 +10,8 @@ import SnapKit
 
 class CommunityDetailViewController: UIViewController {
     
+    var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~", "링딩동", "다크초코 6.7만 달성~", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~"]
+    
     // 스크롤 뷰
     private let scrollView: UIScrollView = UIScrollView()
     private let stackView: UIStackView = UIStackView()
@@ -45,7 +47,7 @@ class CommunityDetailViewController: UIViewController {
     private let pageCountView: UIView = UIView()
     
     // 본문 텍스트
-    private let contentText: UITextView = UITextView()
+    private let contentText: UILabel = UILabel()
     
     // 좋아요, 댓글 개수
     private let likeCount: UILabel = UILabel()
@@ -58,6 +60,8 @@ class CommunityDetailViewController: UIViewController {
     // 댓글 부분
     private let commentTableView: UITableView = UITableView(frame: .zero)
     
+    private var tableViewHeight: CGFloat = 0.0
+    private var rowHeights: [IndexPath: CGFloat] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,6 +82,7 @@ class CommunityDetailViewController: UIViewController {
         setupCountInfoStackView()
         setupDivisionThickLine()
         setupCommentTableView()
+        
     }
     
     
@@ -358,7 +363,9 @@ class CommunityDetailViewController: UIViewController {
         commentTableView.delegate = self
         commentTableView.dataSource = self
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
+        commentTableView.isScrollEnabled = false
         commentTableView.backgroundColor = .lightGray
+        commentTableView.estimatedRowHeight = 60
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
         
@@ -366,14 +373,52 @@ class CommunityDetailViewController: UIViewController {
         
         commentTableView.translatesAutoresizingMaskIntoConstraints = false
         
+        var resultHeight: CGFloat = 0.0
+        for comment in dummyData {
+            let height = getLabelHeight(text: comment)
+            resultHeight += (height + 50)
+        }
+        
         commentTableView.snp.makeConstraints { make in
             make.top.equalTo(divisionThickLine.snp.bottom)
             make.leading.equalTo(self.stackView.snp.leading).offset(24)
             make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
-//            make.height.greaterThanOrEqualTo(800)
+            make.bottom.equalTo(self.stackView.snp.bottom)
+            make.height.equalTo(resultHeight)
         }
     }
     
+    func getLabelHeight(text: String) -> CGFloat {
+        let label = UILabel(
+            frame: .init(
+                x: .zero,
+                y: .zero,
+                width: commentTableView.frame.width - 75,
+                height: .greatestFiniteMagnitude
+            )
+        )
+        label.text = text
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 13)
+        label.sizeToFit()
+        let labelHeight = label.frame.height
+        return labelHeight
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tableViewHeight = 0.0
+        rowHeights = [:]
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        commentTableView.snp.remakeConstraints { make in
+            make.top.equalTo(divisionThickLine.snp.bottom)
+            make.leading.equalTo(self.stackView.snp.leading).offset(24)
+            make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
+            make.bottom.equalTo(self.stackView.snp.bottom)
+            make.height.equalTo(tableViewHeight + 40) // 40은 테이블뷰-헤더뷰 크기임.
+        }
+    }
 
 }
 
@@ -387,12 +432,36 @@ extension CommunityDetailViewController: UIScrollViewDelegate {
 
 extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        dummyData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
+        cell.commentText = dummyData[indexPath.row]
         cell.configureCell()
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if let cachedHeight = rowHeights[indexPath] {
+            return cachedHeight
+        }
+        let label = UILabel(
+            frame: .init(
+                x: .zero,
+                y: .zero,
+                width: commentTableView.frame.width - 75,
+                height: .greatestFiniteMagnitude
+            )
+        )
+        label.text = dummyData[indexPath.row]
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 13)
+        label.sizeToFit()
+        let labelHeight = label.frame.height
+        
+        tableViewHeight += (labelHeight + 50)
+        rowHeights[indexPath] = labelHeight + 50
+        return labelHeight
     }
 }
