@@ -10,7 +10,7 @@ import SnapKit
 
 class CommunityDetailViewController: UIViewController {
     
-    var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~", "링딩동", "다크초코 6.7만 달성~", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~"]
+    var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~", "링딩동", "다크초코 6.7만 달성~", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~",]
     
     // 스크롤 뷰
     private let scrollView: UIScrollView = UIScrollView()
@@ -376,7 +376,7 @@ class CommunityDetailViewController: UIViewController {
         var resultHeight: CGFloat = 0.0
         for comment in dummyData {
             let height = getLabelHeight(text: comment)
-            resultHeight += (height + 50)
+            resultHeight += height
         }
         
         commentTableView.snp.makeConstraints { make in
@@ -416,7 +416,7 @@ class CommunityDetailViewController: UIViewController {
             make.leading.equalTo(self.stackView.snp.leading).offset(24)
             make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
             make.bottom.equalTo(self.stackView.snp.bottom)
-            make.height.equalTo(tableViewHeight + 40) // 40은 테이블뷰-헤더뷰 크기임.
+            make.height.equalTo(tableViewHeight + 40) // 40은 위ㅔㅇ서 지정한 테이블뷰-헤더뷰 크기임.
         }
     }
 
@@ -446,20 +446,10 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
         if let cachedHeight = rowHeights[indexPath] {
             return cachedHeight
         }
-        let label = UILabel(
-            frame: .init(
-                x: .zero,
-                y: .zero,
-                width: commentTableView.frame.width - 75,
-                height: .greatestFiniteMagnitude
-            )
-        )
-        label.text = dummyData[indexPath.row]
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13)
-        label.sizeToFit()
-        let labelHeight = label.frame.height
         
+        let labelHeight = getLabelHeight(text: dummyData[indexPath.row])
+        
+        // 50 = cell의 commentLabel의 버티컬 패딩 값 조절을 위한 값 / 증가(패딩 증가) / 감소(패딩 감소)
         tableViewHeight += (labelHeight + 50)
         rowHeights[indexPath] = labelHeight + 50
         return labelHeight

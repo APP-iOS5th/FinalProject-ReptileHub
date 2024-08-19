@@ -151,7 +151,7 @@ class CommunityTableViewCell: UITableViewCell {
         self.contentView.addSubview(menuButton)
         
         menuButton.snp.makeConstraints { make in
-            make.centerY.equalTo(self.contentView)
+            make.top.equalTo(self.contentView).offset(5)
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-12)
 
         }

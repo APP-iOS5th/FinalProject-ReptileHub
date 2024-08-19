@@ -38,7 +38,7 @@ class CommunityListView: UIView {
 
     }
     
-    private func configureTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
+    func configureTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
         communityTableView.delegate = delegate
         communityTableView.dataSource = datasource
     }

@@ -12,11 +12,14 @@ class CommunityViewController: UIViewController {
     
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
     
+    private let communityListView = CommunityListView()
     
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view = communityListView
+        communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
         title = "커뮤니티"
         
