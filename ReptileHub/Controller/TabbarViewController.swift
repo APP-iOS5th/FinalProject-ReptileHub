@@ -8,10 +8,10 @@
 import UIKit
 
 class TabbarViewController: UITabBarController {
-    
-    let communityVC = CommunityDetailViewController()
-    let diaryVC = ReportViewController()
-    let profileVC = ProfileViewController()
+
+    let communityVC = CommunityViewController()
+    let diaryVC = GrowthDiaryViewController()
+    let profileVC = CommunityViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
