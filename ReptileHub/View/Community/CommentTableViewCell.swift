@@ -74,10 +74,6 @@ class CommentTableViewCell: UITableViewCell {
         elementStackView.addArrangedSubview(timestampLabel)
         
         self.contentView.addSubview(elementStackView)
-        
-        let commentH = getLabelHeight(text: commentText ?? "", fontSize: 12)
-        let titleH = getLabelHeight(text: titleLabel.text ?? "", fontSize: 13)
-        let timeH = getLabelHeight(text: timestampLabel.text ?? "", fontSize: 10)
 
         elementStackView.snp.makeConstraints { make in
             make.top.equalTo(self.contentView.snp.top).offset(5)
@@ -101,22 +97,6 @@ class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    func getLabelHeight(text: String, fontSize: CGFloat) -> CGFloat {
-        let label = UILabel(
-            frame: .init(
-                x: .zero,
-                y: .zero,
-                width: elementStackView.frame.width,
-                height: .greatestFiniteMagnitude
-            )
-        )
-        label.text = text
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: fontSize)
-        label.sizeToFit()
-        let labelHeight = label.frame.height
-        return labelHeight
-    }
     
     //MARK: - menu 버튼
     private func setupMenuButton() {
