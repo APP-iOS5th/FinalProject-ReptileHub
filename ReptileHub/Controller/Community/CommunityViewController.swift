@@ -21,7 +21,7 @@ class CommunityViewController: UIViewController {
         self.view = communityListView
         communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
-        title = "커뮤니티"
+        title = "홈"
         
         setupSearchButton()
     }
@@ -49,7 +49,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        76
+        85
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

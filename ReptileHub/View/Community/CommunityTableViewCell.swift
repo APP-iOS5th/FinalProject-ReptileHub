@@ -54,12 +54,15 @@ class CommunityTableViewCell: UITableViewCell {
     func setupThumbnail() {
         thumbnailImageView.image = UIImage(systemName: "camera")
         thumbnailImageView.contentMode = .scaleAspectFit
+        thumbnailImageView.layer.cornerRadius = 5
+        thumbnailImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
         thumbnailImageView.backgroundColor = .green
         
         self.contentView.addSubview(thumbnailImageView)
         
         thumbnailImageView.snp.makeConstraints { make in
             make.height.width.equalTo(71)
+            make.centerY.equalTo(self.contentView)
             make.leading.equalTo(self.contentView.snp.leading).offset(12)
         }
     }
@@ -67,13 +70,14 @@ class CommunityTableViewCell: UITableViewCell {
     //MARK: - 제목, 내용 StackView
     func setupMainInfoStackView() {
         mainInfoStackView.axis = .vertical
-        mainInfoStackView.distribution = .fillEqually
+        mainInfoStackView.distribution = .equalSpacing
         mainInfoStackView.alignment = .leading
         mainInfoStackView.backgroundColor = .blue
         
         titleLabel.text = "공부는 말이야.."
-        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        contentLabel.text = "미룰때까지 미루는거야.. 공부는 내일부터~~"
+        titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        contentLabel.text = "미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~"
+        contentLabel.numberOfLines = 0
         contentLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         
         mainInfoStackView.addArrangedSubview(titleLabel)
@@ -83,7 +87,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         mainInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(thumbnailImageView.snp.top)
-            make.leading.equalTo(thumbnailImageView.snp.trailing)
+            make.leading.equalTo(thumbnailImageView.snp.trailing).offset(5)
             make.bottom.equalTo(firstStackView.snp.top)
             make.trailing.equalTo(menuButton.snp.leading)
             make.height.equalTo(55)
@@ -132,7 +136,7 @@ class CommunityTableViewCell: UITableViewCell {
         self.contentView.addSubview(secondStackView)
         
         firstStackView.snp.makeConstraints { make in
-            make.leading.equalTo(thumbnailImageView.snp.trailing)
+            make.leading.equalTo(thumbnailImageView.snp.trailing).offset(5)
             make.bottom.equalTo(thumbnailImageView.snp.bottom)
         }
         
