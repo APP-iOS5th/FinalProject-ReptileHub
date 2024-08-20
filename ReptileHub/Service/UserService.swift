@@ -33,7 +33,7 @@ class UserService {
     }
     
     //MARK: - 차단된 유저 프로필 불러오기
-    func fetchBlockUsers(currentUserID: String, completion: @escaping(Result<[UserProfile],Error>)->Void) {
+    func fetchBlockUsers(currentUserID: String, completion: @escaping(Result<[BlockUserProfile],Error>)->Void) {
         let db = Firestore.firestore()
         let userRef = db.collection("users").document(currentUserID)
         
@@ -49,7 +49,7 @@ class UserService {
             }
             
             let group = DispatchGroup()
-            var blockedUsers: [UserProfile] = []
+            var blockedUsers: [BlockUserProfile] = []
             var fetchError:Error?
             
             for userID in blockedUserIDs {
@@ -61,7 +61,7 @@ class UserService {
                     } else if let userData = userDocument?.data(),
                               let name = userData["name"] as? String,
                               let profileImageURL = userData["profileImageURL"] as? String {
-                        let userProfile = UserProfile(uid: userID, name: name, profileImageURL: profileImageURL)
+                        let userProfile = BlockUserProfile(uid: userID, name: name, profileImageURL: profileImageURL)
                         blockedUsers.append(userProfile)
                     }
                     group.leave()
@@ -124,7 +124,30 @@ class UserService {
                 completion(.success(thumbnails))
             }
     }
-    
+    //MARK: - 유저(본인) 프로필 불러오기
+    func fetchUserProfile(uid: String, completion: @escaping (Result<UserProfile, Error>) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("users").document(uid).getDocument { documentSnapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = documentSnapshot?.data(),
+                  let uid = data["uid"] as? String,
+                  let name = data["name"] as? String,
+                  let profileImageURL = data["profileImageURL"] as? String,
+                  let loginType = data["loginType"] as? String,
+                  let lizardCount = data["lizardCount"] as? Int,
+                  let postCount = data["postCount"] as? Int else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid user data"])))
+                return
+            }
+            
+            let userProfile = UserProfile(uid: uid, name: name, profileImageURL: profileImageURL, loginType: loginType, lizardCount: lizardCount, postCount: postCount)
+            completion(.success(userProfile))
+        }
+    }
     
 }
 
