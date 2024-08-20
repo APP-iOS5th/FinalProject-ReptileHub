@@ -127,3 +127,123 @@ class UserService {
     
     
 }
+
+extension UserService {
+    func updateUserProfile(uid: String, newName: String?, newProfileImage: UIImage?, completion: @escaping (Error?) -> Void) {
+        // Firestore의 users 컬렉션에서 해당 유저 문서 참조
+        let userRef = Firestore.firestore().collection("users").document(uid)
+        
+        // 새로운 닉네임이 제공되었는지 확인
+        var updateData: [String: Any] = [:]
+        if let newName = newName {
+            updateData["name"] = newName
+        }
+        
+        // 새로운 프로필 이미지가 있는지 확인
+        if let newProfileImage = newProfileImage {
+            // 기존 프로필 이미지 URL 가져오기
+            userRef.getDocument { document, error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                guard let data = document?.data(),
+                      let currentProfileImageURL = data["profileImageURL"] as? String else {
+                    // 기존 프로필 이미지 URL을 가져오지 못한 경우
+                    self.uploadNewProfileImage(uid: uid, newProfileImage: newProfileImage, userRef: userRef, updateData: updateData, completion: completion)
+                    return
+                }
+                
+                // Default 이미지인지 확인
+                if !currentProfileImageURL.contains("default_profile.jpg") {
+                    // 기존 이미지를 삭제
+                    self.deleteImage(from: currentProfileImageURL) { error in
+                        if let error = error {
+                            completion(error)
+                            return
+                        }
+                        // 새 이미지 업로드
+                        self.uploadNewProfileImage(uid: uid, newProfileImage: newProfileImage, userRef: userRef, updateData: updateData, completion: completion)
+                    }
+                } else {
+                    // Default 이미지는 삭제하지 않고 새 이미지만 업로드
+                    self.uploadNewProfileImage(uid: uid, newProfileImage: newProfileImage, userRef: userRef, updateData: updateData, completion: completion)
+                }
+            }
+        } else {
+            // 프로필 이미지가 없으면 이름만 업데이트
+            userRef.updateData(updateData) { error in
+                completion(error)
+            }
+        }
+    }
+    
+    
+    private func uploadNewProfileImage(uid: String, newProfileImage: UIImage, userRef: DocumentReference, updateData: [String: Any], completion: @escaping (Error?) -> Void) {
+        guard let imageData = newProfileImage.jpegData(compressionQuality: 0.8) else {
+            completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Image compression failed"]))
+            return
+        }
+        
+        let filePath = "profile_images/\(UUID().uuidString).jpg"
+        let storageRef = Storage.storage().reference().child(filePath)
+        
+        storageRef.putData(imageData, metadata: nil) { _, error in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                if let downloadURL = url?.absoluteString {
+                    var newData = updateData
+                    newData["profileImageURL"] = downloadURL
+                    userRef.updateData(newData) { error in
+                        completion(error)
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    private func extractFileName(from url: String) -> String? {
+        guard let urlComponents = URLComponents(string: url),
+              let path = urlComponents.path.removingPercentEncoding else {
+            return nil
+        }
+        
+        let pathComponents = path.split(separator: "/")
+        return pathComponents.last?.components(separatedBy: "%2F").last
+    }
+    
+    func deleteImage(from url: String, completion: @escaping (Error?) -> Void) {
+        guard let fileName = extractFileName(from: url) else {
+            print("Invalid file URL: \(url)")
+            completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid file URL"]))
+            return
+        }
+        
+        // 기본 프로필 이미지는 삭제하지 않음
+        if fileName != "default_profile.jpg" {
+            let fileRef = Storage.storage().reference().child("profile_images/\(fileName)")
+            print("Deleting file at path: \(fileRef.fullPath)")
+            fileRef.delete { error in
+                if let error = error {
+                    print("Error deleting file at path: \(fileRef.fullPath) - \(error.localizedDescription)")
+                } else {
+                    print("Successfully deleted file at path: \(fileRef.fullPath)")
+                }
+                completion(error)
+            }
+        } else {
+            completion(nil)
+        }
+    }
+}
