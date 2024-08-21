@@ -25,7 +25,10 @@
 		46E23B292C6606620059BB62 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B282C6606620059BB62 /* KakaoSDKUser */; };
 		46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7ED2C6AE46400444C98 /* LoginView.swift */; };
 		46F0F7F52C6B286300444C98 /* CommunityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7F42C6B286300444C98 /* CommunityService.swift */; };
+		5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */; };
+		583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */; };
 		58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */; };
+		5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5881F01F2C73122500FBB13E /* CommunityListView.swift */; };
 		58833C222C5FDE05005C2160 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C212C5FDE05005C2160 /* FirebaseAnalytics */; };
 		58833C242C5FDE05005C2160 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C232C5FDE05005C2160 /* FirebaseAuth */; };
 		58833C262C5FDE05005C2160 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 58833C252C5FDE05005C2160 /* FirebaseFirestore */; };
@@ -74,7 +77,10 @@
 		469B443E2C63116000B1C49B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		46F0F7ED2C6AE46400444C98 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		46F0F7F42C6B286300444C98 /* CommunityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityService.swift; sourceTree = "<group>"; };
+		5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
+		583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailViewController.swift; sourceTree = "<group>"; };
 		58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
+		5881F01F2C73122500FBB13E /* CommunityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListView.swift; sourceTree = "<group>"; };
 		588CE3D22C524EA900338878 /* ReptileHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReptileHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		588CE3D52C524EA900338878 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		588CE3D72C524EA900338878 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -151,6 +157,16 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		5881F01E2C73120D00FBB13E /* Community */ = {
+			isa = PBXGroup;
+			children = (
+				5881F01F2C73122500FBB13E /* CommunityListView.swift */,
+				58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */,
+				5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */,
+			);
+			path = Community;
+			sourceTree = "<group>";
+		};
 		58833C312C5FDEE4005C2160 /* GrowthDiary */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,7 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */,
-				58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */,
+				583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */,
 			);
 			path = Community;
 			sourceTree = "<group>";
@@ -225,6 +241,7 @@
 		795776BB2C69B22F006D27A1 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5881F01E2C73120D00FBB13E /* Community */,
 				46F0F7F12C6AE94E00444C98 /* LoginView */,
 				79AA14952C69C29D009F8209 /* GrowthDiary */,
 			);
@@ -353,11 +370,13 @@
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
+				5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				798476412C70E05200895D2D /* EmptyView.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
+				583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
 				46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
@@ -365,6 +384,7 @@
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
 				589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
+				5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */,
 				46F0F7F52C6B286300444C98 /* CommunityService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -510,7 +530,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = P95R3MRRWK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -538,7 +558,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = P95R3MRRWK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
