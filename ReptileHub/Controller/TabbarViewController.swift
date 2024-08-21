@@ -11,7 +11,7 @@ class TabbarViewController: UITabBarController {
     
     let communityVC = CommunityViewController()
     let diaryVC = GrowthDiaryViewController()
-    let profileVC = CommunityViewController()
+    let profileVC = ProfileViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
