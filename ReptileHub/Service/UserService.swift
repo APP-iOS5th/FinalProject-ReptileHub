@@ -148,6 +148,48 @@ class UserService {
             completion(.success(userProfile))
         }
     }
+    //MARK: - 유저(본인) 작성했던 댓글 불러오기
+    func fetchAllUserComments(userID: String, completion: @escaping (Result<[CommentResponse], Error>) -> Void) {
+        let db = Firestore.firestore()
+        
+        db.collectionGroup("comments") // 모든 comments 서브컬렉션을 대상으로 쿼리
+            .whereField("userID", isEqualTo: userID) // userID로 필터링
+            .order(by: "createdAt", descending: true)
+            .getDocuments { querySnapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                var userComments: [CommentResponse] = []
+                
+                for document in querySnapshot?.documents ?? [] {
+                    let data = document.data()
+                    
+                    if let commentID = data["commentID"] as? String,
+                       let postID = data["postID"] as? String,
+                       let userID = data["userID"] as? String,
+                       let content = data["content"] as? String,
+                       let likeCount = data["likeCount"] as? Int,
+                       let createdAt = data["createdAt"] as? Timestamp {
+                        
+                        let comment = CommentResponse(
+                            commentID: commentID,
+                            postID: postID,
+                            userID: userID,
+                            content: content,
+                            createdAt: createdAt.dateValue(),
+                            likeCount: likeCount
+                        )
+                        userComments.append(comment)
+                    }
+                }
+                
+                completion(.success(userComments))
+        }
+        
+    }
+    
     
 }
 
