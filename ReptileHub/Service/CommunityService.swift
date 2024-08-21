@@ -329,8 +329,39 @@ class CommunityService {
         
     }
     
-    
-    
+    // MARK: - 댓글 삭제 함수
+       func deleteComment(postID: String, commentID: String, completion: @escaping (Error?) -> Void) {
+           let db = Firestore.firestore()
+           
+           let commentRef = db.collection("posts").document(postID).collection("comments").document(commentID)
+           
+           // 댓글 삭제
+           commentRef.delete { error in
+               if let error = error {
+                   print("Failed to delete comment: \(error.localizedDescription)")
+                   completion(error)
+               } else {
+                   print("댓글 삭제 완료!!")
+                   completion(nil)
+               }
+           }
+       }
+    // MARK: - 댓글 수정 함수
+    func updateComment(postID: String, commentID: String, newContent: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let commentRef = db.collection("posts").document(postID).collection("comments").document(commentID)
+        
+        // content 필드를 새 내용으로 업데이트
+        commentRef.updateData(["content": newContent]) { error in
+            if let error = error {
+                print("Error updating comment: \(error.localizedDescription)")
+                completion(error)
+            } else {
+                print("댓글 업데이트 완료!!")
+                completion(nil)
+            }
+        }
+    }
 }
 
 
