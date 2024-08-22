@@ -216,20 +216,15 @@ class SpecialDetailViewController: UIViewController {
             make.centerY.equalTo(pageCountView)
         }
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
+// 이미지 스크롤 카운트
 extension SpecialDetailViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView.frame.width > 0 else {
+            return
+        }
         let pageIndex = Int(round(scrollView.contentOffset.x / scrollView.frame.width))
-        self.imagePageCount.text = "\(pageIndex + 1)/(self.contentImages.count)"
-       }
+        self.imagePageCount.text = "\(pageIndex + 1)/ \(self.specialImages.count)"
+    }
 }
