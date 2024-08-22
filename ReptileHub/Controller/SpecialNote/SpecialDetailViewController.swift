@@ -10,18 +10,18 @@ import SnapKit
 
 class SpecialDetailViewController: UIViewController {
     
-//    private let scrollView: UIScrollView = UIScrollView()
-//    private let stackView: UIStackView = UIStackView()
-    
+    // 특이사항 상세 뷰 이미지
     private var specialImages: [UIImageView] = [
         UIImageView(image: UIImage(named: "Snowball")),
         UIImageView(image: UIImage(named: "Snowball")),
         UIImageView(image: UIImage(named: "Snowball")),
         ]
+    // 특이사항 상세 뷰 이미지 뷰
     private var imageViews: [UIView] = []
     private let imageStackView: UIStackView = UIStackView()
     private let imageScrollView: UIScrollView = UIScrollView()
     
+    // 특이사항 상세 뷰 이미지 카운트 뷰
     private var pageCountView: UIView = {
         let imageRectangle = UIView()
         imageRectangle.layer.cornerRadius = 100
@@ -34,6 +34,8 @@ class SpecialDetailViewController: UIViewController {
         imageCountNumber.font = .systemFont(ofSize: 8)
         return imageCountNumber
     }()
+    
+    // 특이사항 상세 뷰 제목
     private var specialTitle: UILabel = {
         let specailTitle = UILabel()
         specailTitle.text = "일지 제목"
@@ -41,6 +43,7 @@ class SpecialDetailViewController: UIViewController {
         specailTitle.textColor = .black
         return specailTitle
     }()
+    // 특이사항 상세 뷰 반려도마뱀 이름
     private var specialLizardName: UILabel = {
         let specialLizardName = UILabel()
         specialLizardName.text = "반려도마뱀 이름"
@@ -48,6 +51,7 @@ class SpecialDetailViewController: UIViewController {
         specialLizardName.textColor = .darkGray
         return specialLizardName
     }()
+    // 특이사항 상세 뷰 날짜
     private var dateLabel: UILabel = {
         let dateLabel = UILabel()
         dateLabel.text = "2024.08.14"
@@ -55,11 +59,13 @@ class SpecialDetailViewController: UIViewController {
         dateLabel.textColor = UIColor(named: "Light_Gray")
         return dateLabel
     }()
+    // 특이사항 상세 뷰 라인
     private var specialLine: UIView = {
         let specialLine = UIView()
         specialLine.backgroundColor = UIColor(named: "Light_Gray")
         return specialLine
     }()
+    // 특이사항 상세 뷰 내용
     private var specialText: UILabel = {
         let specialText = UILabel()
         specialText.text = "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세"
@@ -68,6 +74,7 @@ class SpecialDetailViewController: UIViewController {
         specialText.textColor = .black
         return specialText
     }()
+    // 특이사항 상세 뷰 네비게이션 바 수정 버튼
     private var ellipsis: UIImageView = {
         let ellipsis = UIImageView()
         ellipsis.image = UIImage(systemName: "ellipsis")
@@ -85,6 +92,7 @@ class SpecialDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    // 뷰 레이아웃
     private func detailsetupUI() {
         view.backgroundColor = .white
         navigationItem.title = "특이사항"
@@ -130,10 +138,11 @@ class SpecialDetailViewController: UIViewController {
             
         }
     }
+    // 수정 버튼 기능
     @objc private func editButton() {
-
+        print("edit")
     }
-    
+    // 이미지 스크롤 뷰 레이아웃
     private func setupImageScrollView() {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fill
@@ -182,6 +191,7 @@ class SpecialDetailViewController: UIViewController {
             make.top.leading.trailing.bottom.equalTo(imageScrollView)
         }
     }
+    // 이미지 카운트 레이아웃
     private func setupImagePageCountLabel() {
         pageCountView.backgroundColor = .lightGray
         pageCountView.layer.cornerRadius = 12
