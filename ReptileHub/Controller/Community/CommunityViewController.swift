@@ -12,17 +12,18 @@ class CommunityViewController: UIViewController {
     
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
     
-    private var communityTableView: UITableView = UITableView(frame: .zero)
+    private let communityListView = CommunityListView()
+    
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.view = communityListView
+        communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
-        title = "커뮤니티"
+        title = "홈"
         
         setupSearchButton()
-        setupTableView()
     }
     
     //MARK: - rightBarButtonItem 적용
@@ -37,36 +38,22 @@ class CommunityViewController: UIViewController {
         print("돋보기 버튼 클릭.")
     }
     
-    //MARK: - communityTableView set up
-    private func setupTableView() {
-        communityTableView.backgroundColor = .yellow
-        
-        communityTableView.delegate = self
-        communityTableView.dataSource = self
-        
-        communityTableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "listCell")
-        
-        self.view.addSubview(communityTableView)
-        
-        communityTableView.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-            make.leading.equalTo(self.view.snp.leading)
-            make.trailing.equalTo(self.view.snp.trailing)
-            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
-        }
-
-    }
+    
 
 
 }
 
 extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        0
+        18
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        85
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! CommunityTableViewCell
         return cell
     }
     
