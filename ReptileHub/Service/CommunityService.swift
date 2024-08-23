@@ -406,3 +406,106 @@ extension CommunityService {
            }
        }
 }
+
+extension CommunityService {
+    // MARK: - 커뮤니티 게시글 수정 함수 구현
+    func updatePost(postID: String, userID: String, newTitle: String?, newContent: String?, newImages: [Data]?, existingImageURLs: [String]?, removedImageURLs: [String]?, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let postRef = db.collection("posts").document(postID)
+        let detailRef = postRef.collection("post_details").document(postID)
+        let storageRef = Storage.storage().reference()
+
+        var newImageURLs: [String] = existingImageURLs ?? []
+        var errors: [Error] = []
+        let group = DispatchGroup()
+        
+        // 1. 새로 추가된 이미지를 Firebase Storage에 업로드
+        if let newImages = newImages {
+            for imageData in newImages {
+                let fileName = UUID().uuidString + ".jpg"
+                let fileRef = storageRef.child("community_images/\(fileName)")
+                
+                group.enter()
+                fileRef.putData(imageData, metadata: nil) { _, error in
+                    if let error = error {
+                        errors.append(error)
+                        group.leave()
+                        return
+                    }
+                    
+                    fileRef.downloadURL { url, error in
+                        if let error = error {
+                            errors.append(error)
+                        } else if let url = url {
+                            newImageURLs.append(url.absoluteString)
+                        }
+                        group.leave()
+                    }
+                }
+            }
+        }
+        // 2. 기존에 있던 이미지 중 삭제된 이미지를 Firebase Storage에서 삭제
+        if let removedImageURLs = removedImageURLs {
+            for imageURL in removedImageURLs {
+                guard let fileName = extractFileName(from: imageURL) else { continue }
+                let fileRef = storageRef.child("community_images/\(fileName)")
+                
+                group.enter()
+                fileRef.delete { error in
+                    if let error = error {
+                        errors.append(error)
+                    } else {
+                        // 삭제된 이미지를 목록에서 제거
+                        newImageURLs.removeAll { $0 == imageURL }
+                    }
+                    group.leave()
+                }
+            }
+        }
+        // 3. 모든 작업이 완료되면 Firestore 업데이트
+        group.notify(queue: .main) {
+            if !errors.isEmpty {
+                completion(errors.first)
+                return
+            }
+            
+            // 4. 썸네일 이미지 설정
+            let newThumbnailURL = newImageURLs.first ?? ""
+            
+            var updatedData: [String: Any] = [:]
+            if let newTitle = newTitle {
+                updatedData["title"] = newTitle
+            }
+            if let newContent = newContent {
+                updatedData["content"] = newContent
+            }
+            updatedData["imageURLs"] = newImageURLs
+            updatedData["thumbnail"] = newThumbnailURL  // 썸네일 업데이트
+            updatedData["updatedAt"] = FieldValue.serverTimestamp()
+            
+            // 5. Firestore 업데이트
+            detailRef.updateData(updatedData) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                // 썸네일 문서도 업데이트
+                postRef.updateData(["thumbnail": newThumbnailURL]) { error in
+                    completion(error)
+                }
+            }
+        }
+    }
+    
+    private func extractFileName(from url: String) -> String? {
+        guard let urlComponents = URLComponents(string: url),
+              let queryItems = urlComponents.queryItems,
+              let path = urlComponents.path.removingPercentEncoding else {
+            return nil
+        }
+
+        let pathComponents = path.split(separator: "/")
+        return pathComponents.last?.components(separatedBy: "%2F").last
+    }
+    
+}
