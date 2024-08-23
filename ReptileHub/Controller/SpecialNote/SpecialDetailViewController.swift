@@ -39,7 +39,7 @@ class SpecialDetailViewController: UIViewController {
     private var specialTitle: UILabel = {
         let specailTitle = UILabel()
         specailTitle.text = "일지 제목"
-        specailTitle.font = .systemFont(ofSize: 20, weight: .bold)
+        specailTitle.font = .systemFont(ofSize: 22, weight: .bold)
         specailTitle.textColor = .black
         return specailTitle
     }()
@@ -47,7 +47,7 @@ class SpecialDetailViewController: UIViewController {
     private var specialLizardName: UILabel = {
         let specialLizardName = UILabel()
         specialLizardName.text = "반려도마뱀 이름"
-        specialLizardName.font = .systemFont(ofSize: 10, weight: .semibold)
+        specialLizardName.font = .systemFont(ofSize: 14, weight: .semibold)
         specialLizardName.textColor = .darkGray
         return specialLizardName
     }()
@@ -55,58 +55,77 @@ class SpecialDetailViewController: UIViewController {
     private var dateLabel: UILabel = {
         let dateLabel = UILabel()
         dateLabel.text = "2024.08.14"
-        dateLabel.font = .systemFont(ofSize: 10, weight: .semibold)
-        dateLabel.textColor = UIColor(named: "Light_Gray")
+        dateLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        dateLabel.textColor = .lightGray
         return dateLabel
     }()
     // 특이사항 상세 뷰 라인
     private var specialLine: UIView = {
         let specialLine = UIView()
-        specialLine.backgroundColor = UIColor(named: "Light_Gray")
+        specialLine.backgroundColor = .lightGray
         return specialLine
     }()
     // 특이사항 상세 뷰 내용
     private var specialText: UILabel = {
         let specialText = UILabel()
-        specialText.text = "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세"
-        specialText.numberOfLines = .bitWidth
-        specialText.font = .systemFont(ofSize: 10)
+        specialText.text = "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세. 남산 위에 저 소나무 철갑을 두른 듯 바람 서리 불변함은 우리 기상일세. 무궁화 삼천리 화려강산 대한사람 대한으로 길이 보전하세."
+        specialText.numberOfLines = 0
+        specialText.font = .systemFont(ofSize: 12)
         specialText.textColor = .black
         return specialText
-    }()
-    // 특이사항 상세 뷰 네비게이션 바 수정 버튼
-    private var ellipsis: UIImageView = {
-        let ellipsis = UIImageView()
-        ellipsis.image = UIImage(systemName: "ellipsis")
-        ellipsis.tintColor = .darkGray
-        ellipsis.contentMode = .center
-        ellipsis.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
-        return ellipsis
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        detailsetupUI()
+        setupNavigationBar()
         setupImageScrollView()
         setupImagePageCountLabel()
+        detailsetupUI()
         // Do any additional setup after loading the view.
+    }
+    
+    // Navigationbar & UIMenu
+    private func setupNavigationBar() {
+        navigationItem.title = "특이사항"
+        
+        var ellipsis: UIButton = {
+            let ellipsis = UIButton()
+            ellipsis.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+            ellipsis.tintColor = .darkGray
+            ellipsis.contentMode = .center
+            ellipsis.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
+            return ellipsis
+        }()
+        var menuItems: [UIAction] {
+            return [
+                UIAction(title: "수정하기", image: UIImage(systemName: "pencil"),handler: { [weak self]_ in
+                    self?.navigateToEditScreen() }),
+                UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
+                
+            ]
+        }
+        var menu: UIMenu {
+            return UIMenu(title: "", image: nil, identifier: nil, options: [], children: menuItems)
+        }
+        
+        let customBarButtonItem = UIBarButtonItem(customView: ellipsis)
+        navigationItem.rightBarButtonItem = customBarButtonItem
+        ellipsis.showsMenuAsPrimaryAction = true
+        ellipsis.menu = menu
     }
     
     // 뷰 레이아웃
     private func detailsetupUI() {
         view.backgroundColor = .white
-        navigationItem.title = "특이사항"
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(editButton))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: ellipsis)
         
 //        view.addSubview(specialImages)
 //        view.addSubview(imageRectangle)
 //        view.addSubview(imageCountNumber)
-//        view.addSubview(specialTitle)
-//        view.addSubview(specialLizardName)
-//        view.addSubview(dateLabel)
-//        view.addSubview(specialLine)
-//        view.addSubview(specialText)
+        view.addSubview(specialTitle)
+        view.addSubview(specialLizardName)
+        view.addSubview(dateLabel)
+        view.addSubview(specialLine)
+        view.addSubview(specialText)
         
 //        specialImages.snp.makeConstraints{(make) in
 //            make.width.equalTo(100)
@@ -116,32 +135,41 @@ class SpecialDetailViewController: UIViewController {
 //
 //        }
         
-        pageCountView.snp.makeConstraints{(make) in
-            
-        }
-        imagePageCount.snp.makeConstraints{(make) in
-            
-        }
+//        pageCountView.snp.makeConstraints{(make) in
+//            
+//        }
+//        imagePageCount.snp.makeConstraints{(make) in
+//            
+//        }
         specialTitle.snp.makeConstraints{(make) in
-            
+            make.leading.equalTo(self.view).offset(20)
+            make.top.equalTo(imageScrollView.snp.bottom).offset(20)
         }
         specialLizardName.snp.makeConstraints{(make) in
-            
+            make.leading.equalTo(self.view).offset(20)
+            make.top.equalTo(specialTitle.snp.bottom).offset(10)
         }
         dateLabel.snp.makeConstraints{(make) in
-            
+            make.trailing.equalTo(self.view).offset(-20)
+            make.centerY.equalTo(specialLizardName)
         }
         specialLine.snp.makeConstraints{(make) in
-            
+            make.height.equalTo(1)
+            make.width.equalToSuperview().offset(-40)
+            make.centerX.equalTo(self.view)
+            make.top.equalTo(dateLabel.snp.bottom).offset(20)
         }
         specialText.snp.makeConstraints{(make) in
-            
+            make.centerX.equalTo(self.view)
+            make.width.equalToSuperview().offset(-50)
+            make.top.equalTo(specialLine.snp.bottom).offset(20)
         }
     }
-    // 수정 버튼 기능
-    @objc private func editButton() {
-        print("edit")
-    }
+    // 수정 화면으로 전환하는 함수
+        private func navigateToEditScreen() {
+            let editViewController = SpecialEditViewController()
+            navigationController?.pushViewController(editViewController, animated: true)
+        }
     // 이미지 스크롤 뷰 레이아웃
     private func setupImageScrollView() {
         imageStackView.axis = .horizontal
