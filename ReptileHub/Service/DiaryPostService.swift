@@ -18,18 +18,18 @@ class DiaryPostService {
     private init() {}
     
     
-    //MARK: - 작성완료 버튼 누를 시 FireStore 에 해당 정보 저장, ImagePicker 에서 나, 엄마 , 아빠 사진 각각 받아서 파라미터에 할당하면 됨
-    func registerGrowthDiary(userID:String,diary:GrowthDiaryRequest,selfImageData:Data?
-                             ,motherImageData:Data?,fatherImageData:Data?,
-                             completion: @escaping(Error?)->Void) {
-        
-        let imageDatas: [Data?] = [selfImageData,motherImageData,fatherImageData]
+    //MARK: - 작성완료 버튼 누를 시 FireStore 에 해당 정보 저장, ImagePicker 에서 나, 엄마 , 아빠 사진 각각 받아서 파라미터에 할당하면 됨 / 프로필에 등록된 도마뱀 개수 +1
+    func registerGrowthDiary(userID: String, diary: GrowthDiaryRequest, selfImageData: Data?,
+                             motherImageData: Data?, fatherImageData: Data?,
+                             completion: @escaping (Error?) -> Void) {
+
+        let imageDatas: [Data?] = [selfImageData, motherImageData, fatherImageData]
         let group = DispatchGroup()
         var urls = [String?](repeating: nil, count: imageDatas.count)
         var errors = [Error]()
         
         for (index, imageData) in imageDatas.enumerated() {
-            guard let imageData = imageData else {continue}
+            guard let imageData = imageData else { continue }
             group.enter()
             uploadImage(imageData: imageData) { url, error in
                 if let error = error {
@@ -55,43 +55,60 @@ class DiaryPostService {
                 updateDiary.parentInfo = parentInfo
             }
             
-            do {
-                let diaryData = try JSONEncoder().encode(updateDiary)
-                let dictionary = try JSONSerialization.jsonObject(with: diaryData, options: []) as? [String:Any]
-                
-                let diaryID = UUID().uuidString
-                
-                // 1. 썸네일 정보 저장
-                let thumbnailData: [String: Any] = [
-                    "diary_id": diaryID,
-                    "thumbnail": updateDiary.lizardInfo.imageURL as Any,
-                    "name": updateDiary.lizardInfo.name
-                ]
-                
-                self.db.collection("users").document(userID)
-                    .collection("growth_diaries_thumbnails")
-                    .document(diaryID)
-                    .setData(thumbnailData) { error in
-                        if let error = error {
-                            completion(error)
-                            return
-                        }
-                    }
-                
-                // 2. 상세 정보 저장
-                self.db.collection("users").document(userID)
-                    .collection("growth_diaries_details")
-                    .document(diaryID)
-                    .setData(dictionary ?? [:]) { error in
-                        completion(error)
-                        
-                    }
-            } catch {
-                completion(error)
-            }
+            let db = Firestore.firestore()
+            let profileRef = db.collection("users").document(userID)
+            let diaryID = UUID().uuidString  // 고유 ID 생성
             
+            db.runTransaction({ (transaction, errorPointer) -> Any? in
+                do {
+                    let profileDocument = try transaction.getDocument(profileRef)
+                    
+                    // 현재 도마뱀 개수를 가져와서 1을 추가
+                    let currentLizardCount = profileDocument.data()?["lizardCount"] as? Int ?? 0
+                    transaction.updateData(["lizardCount": currentLizardCount + 1], forDocument: profileRef)
+                    
+                    // 썸네일 정보 저장
+                    let thumbnailData: [String: Any] = [
+                        "diary_id": diaryID,
+                        "thumbnail": updateDiary.lizardInfo.imageURL as Any,
+                        "name": updateDiary.lizardInfo.name
+                    ]
+                    
+                    let thumbnailRef = db.collection("users").document(userID)
+                        .collection("growth_diaries_thumbnails").document(diaryID)
+                    transaction.setData(thumbnailData, forDocument: thumbnailRef)
+                    
+                    // 상세 정보 저장
+                    let diaryData = try JSONEncoder().encode(updateDiary)
+                    let dictionary = try JSONSerialization.jsonObject(with: diaryData, options: []) as? [String: Any]
+                    
+                    let detailRef = db.collection("users").document(userID)
+                        .collection("growth_diaries_details").document(diaryID)
+                    transaction.setData(dictionary ?? [:], forDocument: detailRef)
+                    
+                    // 무게 기록 저장
+                    let initialWeight = diary.lizardInfo.weight
+                    let weightData: [String: Any] = [
+                        "date": Timestamp(date: Date()),
+                        "weight": initialWeight
+                    ]
+                                    
+                    let weightHistoryRef = detailRef.collection("weight_history").document()
+                    transaction.setData(weightData, forDocument: weightHistoryRef)
+                    
+                    return nil
+                } catch {
+                    errorPointer?.pointee = error as NSError
+                    return nil
+                }
+            }) { (result, error) in
+                if let error = error {
+                    completion(error)
+                } else {
+                    completion(nil)
+                }
+            }
         }
-        
     }
     
     //MARK: - 성장일기 썸네일 정보 불러오는 함수, 이미지, 제목, diaryID가 내려와, 해당 diaryID로 detail 검색 가능
@@ -156,14 +173,130 @@ class DiaryPostService {
             }
     }
     
-    //MARK: - diary 삭제 - 추후 검증 필요 ( do - catch 사용 여부 관련)
-    func deleteDiary(documentId: String, completion: @escaping (Error?) -> Void) {
-           db.collection("diaries").document(documentId).delete() { error in
-               completion(error)
-           }
-       }
-    
-    
+    //MARK: - 성장일지 삭제 - 등록된 도마뱀 삭제시 -> 썸네일, detail, 성장일기 및 관련 image Storage 에서 삭제 및 프로필에 등록된 도마뱀 개수 -1
+    func deleteGrowthDiary(userID: String, diaryID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let profileRef = db.collection("users").document(userID)
+        let thumbnailRef = profileRef.collection("growth_diaries_thumbnails").document(diaryID)
+        let detailRef = profileRef.collection("growth_diaries_details").document(diaryID)
+        let storageRef = Storage.storage().reference()
+
+        // 1. 하위 컬렉션인 diaryEntries 삭제
+        let entriesRef = detailRef.collection("diary_entries")
+        entriesRef.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error fetching diary entries: \(error.localizedDescription)")
+                completion(error)
+                return
+            }
+            
+            let batch = db.batch()
+            
+            for document in querySnapshot?.documents ?? [] {
+                let data = document.data()
+                
+                // diaryEntry에 저장된 이미지 URL들 삭제
+                if let imageURLs = data["imageURLs"] as? [String] {
+                    for imageURL in imageURLs {
+                        print("Attempting to delete image from URL: \(imageURL)")
+                        self.deleteImage(from: imageURL) { error in
+                            if let error = error {
+                                print("Error deleting image from diary entry: \(error.localizedDescription)")
+                            } else {
+                                print("Successfully deleted image: \(imageURL)")
+                            }
+                        }
+                    }
+                }
+                
+                // 하위 컬렉션의 모든 문서를 삭제
+                batch.deleteDocument(document.reference)
+            }
+            
+            // 2. 썸네일 이미지 삭제
+            thumbnailRef.getDocument { (document, error) in
+                if let data = document?.data(),
+                   let thumbnailURL = data["thumbnail"] as? String {
+                    print("Attempting to delete thumbnail image from URL: \(thumbnailURL)")
+                    self.deleteImage(from: thumbnailURL) { error in
+                        if let error = error {
+                            print("Error deleting thumbnail: \(error.localizedDescription)")
+                        } else {
+                            print("Successfully deleted thumbnail image: \(thumbnailURL)")
+                        }
+                    }
+                }
+            }
+            
+            // 3. 부모 문서와 관련된 썸네일 및 상세 정보 문서 삭제
+            detailRef.getDocument { (document, error) in
+                if let data = document?.data() {
+                    // 부모 정보에 저장된 이미지 URL 삭제
+                    if let parentInfo = data["parentInfo"] as? [String: Any] {
+                        if let motherInfo = parentInfo["mother"] as? [String: Any],
+                           let motherImageURL = motherInfo["imageURL"] as? String {
+                            print("Attempting to delete mother image from URL: \(motherImageURL)")
+                            self.deleteImage(from: motherImageURL) { error in
+                                if let error = error {
+                                    print("Error deleting mother image: \(error.localizedDescription)")
+                                } else {
+                                    print("Successfully deleted mother image: \(motherImageURL)")
+                                }
+                            }
+                        }
+                        
+                        if let fatherInfo = parentInfo["father"] as? [String: Any],
+                           let fatherImageURL = fatherInfo["imageURL"] as? String {
+                            print("Attempting to delete father image from URL: \(fatherImageURL)")
+                            self.deleteImage(from: fatherImageURL) { error in
+                                if let error = error {
+                                    print("Error deleting father image: \(error.localizedDescription)")
+                                } else {
+                                    print("Successfully deleted father image: \(fatherImageURL)")
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                batch.deleteDocument(thumbnailRef)
+                batch.deleteDocument(detailRef)
+                
+                // 4. 배치 작업 커밋
+                batch.commit { error in
+                    if let error = error {
+                        print("Error committing batch delete: \(error.localizedDescription)")
+                        completion(error)
+                    } else {
+                        // 5. 도마뱀 개수 감소 트랜잭션
+                        db.runTransaction({ (transaction, errorPointer) -> Any? in
+                            do {
+                                let profileDocument = try transaction.getDocument(profileRef)
+                                let currentLizardCount = profileDocument.data()?["lizardCount"] as? Int ?? 0
+                                
+                                if currentLizardCount > 0 {
+                                    transaction.updateData(["lizardCount": currentLizardCount - 1], forDocument: profileRef)
+                                }
+                                
+                                return nil
+                            } catch {
+                                errorPointer?.pointee = error as NSError
+                                return nil
+                            }
+                        }) { (result, error) in
+                            if let error = error {
+                                print("Error in lizard count transaction: \(error.localizedDescription)")
+                                completion(error)
+                            } else {
+                                print("Successfully deleted growth diary and updated lizard count")
+                                completion(nil)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 extension DiaryPostService {
@@ -182,8 +315,9 @@ extension DiaryPostService {
             }
             
             let diaryRequest = DiaryRequest(title: title, content: content, imageURLs: urls)
-            
+            let entryID = UUID().uuidString //고유 ID 생성
             let diaryData: [String: Any] = [
+                "entryID": entryID,
                 "title": diaryRequest.title,
                 "content": diaryRequest.content,
                 "imageURLs": diaryRequest.imageURLs,
@@ -193,7 +327,7 @@ extension DiaryPostService {
             let db = Firestore.firestore()
             db.collection("users").document(userID)
                 .collection("growth_diaries_details").document(diaryID)
-                .collection("diary_entries").addDocument(data: diaryData) { error in
+                .collection("diary_entries").document(entryID).setData(diaryData) { error in
                     completion(error)
                 }
         }
@@ -227,23 +361,212 @@ extension DiaryPostService {
             var diaryEntries: [DiaryResponse] = []
             
             for document in documents {
-                if let diaryEntry = try? document.data(as: DiaryResponse.self) {
+                let data = document.data()
+                
+                if let entryID = data["entryID"] as? String,
+                   let title = data["title"] as? String,
+                   let content = data["content"] as? String,
+                   let imageURLs = data["imageURLs"] as? [String],
+                   let createdAt = data["createdAt"] as? Timestamp {
+                    let diaryEntry = DiaryResponse(
+                        entryID: entryID,
+                        title: title,
+                        content: content,
+                        imageURLs: imageURLs,
+                        createdAt: createdAt.dateValue()
+                       )
                     diaryEntries.append(diaryEntry)
+                } else {
+                    print("Failed to parse document data: \(document.data())")
                 }
+                
             }
             
             completion(.success(diaryEntries))
+        }
+    }
+    
+    //MARK: - 성장 일지 속 일기 삭제 함수
+    func deleteDiaryEntry(userID: String, diaryID: String, entryID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        
+        let entryRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("diary_entries").document(entryID)
+        
+        // 먼저 일기 데이터를 가져옴
+        entryRef.getDocument { (document, error) in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            guard let data = document?.data() else {
+                let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for entryID \(entryID)"])
+                completion(noDataError)
+                return
+            }
+            
+            // 일기에 저장된 이미지 URL을 가져옴
+            if let imageURLs = data["imageURLs"] as? [String] {
+                let group = DispatchGroup()
+                var deletionErrors: [Error] = []
+                
+                for imageURL in imageURLs {
+                    group.enter()
+                    
+                   
+                    self.deleteImage(from: imageURL) { error in
+                        if let error = error {
+                            deletionErrors.append(error)
+                        }
+                        group.leave()
+                    }
+                }
+                
+                // 이미지 삭제가 끝난 후 일기 문서 삭제
+                group.notify(queue: .main) {
+                    if !deletionErrors.isEmpty {
+                        completion(deletionErrors.first)
+                        return
+                    }
+                    
+                    // Firestore에서 일기 문서 삭제
+                    entryRef.delete { error in
+                        completion(error)
+                    }
+                }
+            } else {
+                // 이미지가 없는 경우 일기 문서만 삭제
+                entryRef.delete { error in
+                    completion(error)
+                }
+            }
         }
     }
 
     
 }
 
+extension DiaryPostService {
+   //MARK: - 도마뱀 몸무게 변화 추가 함수
+    func addWeightEntry(userID: String, diaryID: String, weight: Int, date: Date = Date(), completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let weightData: [String: Any] = [
+            "date": Timestamp(date: date),
+            "weight": weight
+        ]
+        
+        db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("weight_history").addDocument(data: weightData) { error in
+                completion(error)
+            }
+    }
+    //MARK: - 일별 도마뱀 몸무게 변화 기록 불러오기
+    func fetchDailyWeightEntries(userID: String, diaryID: String, month: Int? = nil, year: Int? = nil, completion: @escaping (Result<[WeightEntry], Error>) -> Void) {
+        let db = Firestore.firestore()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: Date())
+        
+        let selectedYear = year ?? components.year!
+        let selectedMonth = month ?? components.month!
+        
+        let startDateComponents = DateComponents(year: selectedYear, month: selectedMonth, day: 1)
+        let startDate = calendar.date(from: startDateComponents)!
+        
+        var endDateComponents = DateComponents(year: selectedYear, month: selectedMonth + 1, day: 0)
+        if selectedMonth == 12 {
+            endDateComponents = DateComponents(year: selectedYear + 1, month: 1, day: 0)
+        }
+        let endDate = calendar.date(from: endDateComponents)!
+        
+        db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("weight_history")
+            .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: startDate))
+            .whereField("date", isLessThanOrEqualTo: Timestamp(date: endDate))
+            .order(by: "date", descending: false)
+            .getDocuments { querySnapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                var weightEntries: [WeightEntry] = []
+                for document in querySnapshot?.documents ?? [] {
+                    if let weight = document.data()["weight"] as? Int,
+                       let timestamp = document.data()["date"] as? Timestamp {
+                        let weightEntry = WeightEntry(weight: weight, date: timestamp.dateValue())
+                        weightEntries.append(weightEntry)
+                    }
+                }
+                completion(.success(weightEntries))
+            }
+    }
+
+    //MARK: - 월별 도마뱀 몸무게 평균 기록 불러오기
+    func fetchMonthlyWeightAverages(userID: String, diaryID: String, year: Int? = nil, completion: @escaping (Result<[MonthWeightAverage], Error>) -> Void) {
+        let db = Firestore.firestore()
+        let calendar = Calendar.current
+        let selectedYear = year ?? calendar.component(.year, from: Date())
+        
+        var weightAverages: [MonthWeightAverage] = []
+        let dispatchGroup = DispatchGroup()
+        
+        for month in 1...12 {
+            dispatchGroup.enter()
+            
+            let startDateComponents = DateComponents(year: selectedYear, month: month, day: 1)
+            let startDate = calendar.date(from: startDateComponents)!
+            
+            var endDateComponents = DateComponents(year: selectedYear, month: month + 1, day: 0)
+            if month == 12 {
+                endDateComponents = DateComponents(year: selectedYear + 1, month: 1, day: 0)
+            }
+            let endDate = calendar.date(from: endDateComponents)!
+            
+            db.collection("users").document(userID)
+                .collection("growth_diaries_details").document(diaryID)
+                .collection("weight_history")
+                .whereField("date", isGreaterThanOrEqualTo: Timestamp(date: startDate))
+                .whereField("date", isLessThanOrEqualTo: Timestamp(date: endDate))
+                .getDocuments { querySnapshot, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    var totalWeight = 0
+                    var entryCount = 0
+                    for document in querySnapshot?.documents ?? [] {
+                        if let weight = document.data()["weight"] as? Int {
+                            totalWeight += weight
+                            entryCount += 1
+                        }
+                    }
+                    
+                    if entryCount > 0 {
+                        let averageWeight = totalWeight / entryCount
+                        weightAverages.append(MonthWeightAverage(month: month, averageWeight: averageWeight))
+                    }
+                    
+                    dispatchGroup.leave()
+                }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion(.success(weightAverages))
+        }
+    }
+
+}
+
 
 
 extension DiaryPostService {
     
-    // 선택된 이미지 데이터를 Storage 에 저장하는 함수 -> completion으로 성공시 url 리턴, 실패시 error 리턴
+    //MARK: - 선택된 이미지 데이터를 Storage 에 저장하는 함수 -> completion으로 성공시 url 리턴, 실패시 error 리턴
     private func uploadImage(imageData:Data, completion: @escaping (String?,Error?)-> Void) {
         let filePath = "images/\(UUID().uuidString).jpg"
         let metaData = StorageMetadata()
@@ -260,7 +583,7 @@ extension DiaryPostService {
         }
     }
     
-    // 선택한 이미지 배열을 하나하나 uploadImage로 보내는 함수 ->
+    //MARK: - 선택한 이미지 배열을 하나하나 uploadImage로 보내는 함수 ->
     private func uploadImages(images:[Data], completion:@escaping([String]?,[Error]?)->Void) {
         let group = DispatchGroup()
         var urls = [String]()
@@ -288,5 +611,36 @@ extension DiaryPostService {
             completion(urls.isEmpty ? nil : urls, errors.isEmpty ? nil : errors)
         }
         
+    }
+    //MARK: -  이미지URL -> FireStorage 저장된 이미지 명 변환하는 함수
+    private func extractFileName(from url: String) -> String? {
+        guard let urlComponents = URLComponents(string: url),
+              let queryItems = urlComponents.queryItems,
+              let path = urlComponents.path.removingPercentEncoding else {
+            return nil
+        }
+
+        let pathComponents = path.split(separator: "/")
+        return pathComponents.last?.components(separatedBy: "%2F").last
+    }
+
+    //MARK: -FireStorage 에서 해당 경로의 이미지 파일명 삭제 함수
+    func deleteImage(from url: String, completion: @escaping (Error?) -> Void) {
+        guard let fileName = extractFileName(from: url) else {
+            print("Invalid file URL: \(url)")
+            completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid file URL"]))
+            return
+        }
+        
+        let fileRef = Storage.storage().reference().child("images/\(fileName)")
+        print("Deleting file at path: \(fileRef.fullPath)")
+        fileRef.delete { error in
+            if let error = error {
+                print("Error deleting file at path: \(fileRef.fullPath) - \(error.localizedDescription)")
+            } else {
+                print("Successfully deleted file at path: \(fileRef.fullPath)")
+            }
+            completion(error)
+        }
     }
 }
