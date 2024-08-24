@@ -16,8 +16,8 @@ class SpecialEditViewController: UIViewController {
     private lazy var imageButton: UIButton = {
         let imageButton = UIButton()
         imageButton.setImage(UIImage(systemName: "camera.fill"), for: .normal)
-        imageButton.tintColor = UIColor(named: "Dark_Gray")
-        imageButton.backgroundColor = UIColor(named: "Light_Gray")
+        imageButton.tintColor = UIColor(named: "imagePickerPlaceholderColor")
+        imageButton.backgroundColor = UIColor(named: "imagePickerColor")
         imageButton.layer.cornerRadius = 5
 //        imageButton.layer.shadowOffset = CGSize(width: 1, height: 1)
 //        imageButton.layer.shadowOpacity = 0.5
@@ -37,9 +37,9 @@ class SpecialEditViewController: UIViewController {
     private lazy var dateButton: UIButton = {
         let dateButton = UIButton()
         dateButton.setTitle("yyyy.mm.dd", for: .normal)
-        dateButton.setTitleColor(UIColor(named: "Dark_Gray"), for: .normal)
+        dateButton.setTitleColor(UIColor(named: "textFieldTitleColor"), for: .normal)
         dateButton.layer.cornerRadius = 5
-        dateButton.backgroundColor = UIColor(named: "Light_Green")
+        dateButton.backgroundColor = UIColor(named: "datePickerBG")
 //        dateButton.layer.shadowOffset = CGSize(width: 1, height: 1)
 //        dateButton.layer.shadowOpacity = 0.5
 //        dateButton.layer.shadowColor = UIColor.darkGray.cgColor
@@ -49,7 +49,7 @@ class SpecialEditViewController: UIViewController {
     private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
 //        datePicker.backgroundColor = UIColor(named: "Light_Green")
-        datePicker.tintColor = UIColor(named: "Dark_Green")
+        datePicker.tintColor = UIColor(named: "datePickerBG")
 //        datePicker.layer.cornerRadius = 5
         datePicker.preferredDatePickerStyle = .automatic
         datePicker.datePickerMode = .date
@@ -103,7 +103,7 @@ class SpecialEditViewController: UIViewController {
         descriptionTextView.text = "입력해주세요..."
         descriptionTextView.font = .systemFont(ofSize: 15)
         descriptionTextView.textColor = .secondaryLabel
-        descriptionTextView.backgroundColor = UIColor(named: "Light_Gray")
+        descriptionTextView.backgroundColor = UIColor(named: "textFieldSegmentBG")
 //        descriptionTextView.delegate = self
         
         descriptionTextView.layer.cornerRadius = 5
@@ -125,7 +125,7 @@ class SpecialEditViewController: UIViewController {
         let saveButton = UIButton()
         saveButton.setTitle("등록하기", for: .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
-        saveButton.backgroundColor = UIColor(named: "Dark_Green")
+        saveButton.backgroundColor = UIColor(named: "addBtnGraphTabbarColor")
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.layer.cornerRadius = 5
         saveButton.layer.shadowColor = UIColor.darkGray.cgColor
@@ -167,12 +167,12 @@ class SpecialEditViewController: UIViewController {
             make.width.equalTo(100)
             make.height.equalTo(100)
             make.leading.equalTo(20)
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin).offset(15)
         }
         
         dateLabel.snp.makeConstraints{ (make) in
-            make.leading.equalTo(30)
-            make.top.equalTo(imageButton.snp.bottomMargin).offset(40)
+            make.leading.equalTo(25)
+            make.top.equalTo(imageButton.snp.bottomMargin).offset(30)
             
         }
         
@@ -192,11 +192,11 @@ class SpecialEditViewController: UIViewController {
             make.centerX.equalTo(self.view)
             make.height.equalTo(40)
             make.width.equalTo(self.view).offset(-50)
-            make.top.equalTo(datePicker.snp.bottom).offset(20)
+            make.top.equalTo(datePicker.snp.bottom).offset(10)
         }
         
         descriptionLabel.snp.makeConstraints{(make) in
-            make.leading.equalTo(30)
+            make.leading.equalTo(25)
             make.top.equalTo(specialTitle.snp.bottomMargin).offset(30)
         }
         
@@ -216,7 +216,7 @@ class SpecialEditViewController: UIViewController {
             make.centerX.equalTo(self.view)
             make.height.equalTo(50)
             make.width.equalTo(self.view).offset(-40)
-            make.top.equalTo(descriptionTextView.snp.bottom).offset(40)
+            make.top.equalTo(descriptionTextView.snp.bottom).offset(30)
         }
     }
 
