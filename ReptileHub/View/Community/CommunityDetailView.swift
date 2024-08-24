@@ -9,8 +9,11 @@ import UIKit
 import SnapKit
 
 class CommunityDetailView: UIView {
-
+    
     var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~", "링딩동", "다크초코 6.7만 달성~", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~",]
+    
+    // 키보드 탭 제스쳐
+    lazy var tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
     
     // 스크롤 뷰
     private let scrollView: UIScrollView = UIScrollView()
@@ -73,7 +76,7 @@ class CommunityDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         setupCommentStackView()
         setupMainScrollView()
         setupProfileImage()
@@ -86,12 +89,75 @@ class CommunityDetailView: UIView {
         setupCountInfoStackView()
         setupDivisionThickLine()
         setupCommentTableView()
+        
+        self.addGestureRecognizer(tapGesture)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardAction),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardAction),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    // super view 클릭시 키보드 내려감
+    @objc
+    func tapHandler(_ sender: UIView) {
+        commentTextView.resignFirstResponder()
+    }
+    
+    @objc
+    func keyboardAction(_ notification: NSNotification) {
+        guard let keyboardSize = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let animationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double,
+              let animationCurveRawNSN = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber else {
+            return
+        }
+        
+        let animationCurveRaw = animationCurveRawNSN.uintValue
+        let animationCurve = UIView.AnimationOptions(rawValue: animationCurveRaw)
+        
+        switch notification.name {
+        case UIResponder.keyboardWillShowNotification:
+            print("키보드 열림")
+            
+            // 제약조건 변경과 애니메이션을 적용
+            UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
 
+                self.commentBackgroundView.snp.remakeConstraints { make in
+                    make.width.equalTo(self.frame.width)
+                    make.height.greaterThanOrEqualTo(40)
+                    make.leading.trailing.equalTo(self)
+                    make.bottom.equalTo(self.snp.bottom).offset(-keyboardSize.height)
+                }
+                
+                // 레이아웃 변화를 애니메이션으로 적용
+                self.layoutIfNeeded()
+            }, completion: nil)
+            
+        case UIResponder.keyboardWillHideNotification:
+            print("키보드 닫힘")
+            
+            // 제약조건 변경과 애니메이션을 적용
+            UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
+                
+                self.commentBackgroundView.snp.remakeConstraints { make in
+                    make.width.equalTo(self.frame.width)
+                    make.height.greaterThanOrEqualTo(40)
+                    make.leading.trailing.equalTo(self)
+                    make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+                }
+                
+                // 레이아웃 변화를 애니메이션으로 적용
+                self.layoutIfNeeded()
+            }, completion: nil)
+            
+        default:
+            return
+        }
+    }
+    
     
     //MARK: - 스크롤뷰 세팅
     private func setupMainScrollView() {
@@ -234,7 +300,7 @@ class CommunityDetailView: UIView {
         imageStackView.snp.makeConstraints { make in
             make.top.leading.trailing.bottom.equalTo(imageScrollView)
         }
-
+        
         for i in 0..<contentImages.count {
             let imageView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 230))
             
@@ -258,10 +324,10 @@ class CommunityDetailView: UIView {
                 make.height.equalTo(230)
                 make.width.equalTo(imageScrollView)
             }
-
+            
         }
         
-
+        
     }
     
     //MARK: - 본문 이미지의 페이지 현황
@@ -352,7 +418,7 @@ class CommunityDetailView: UIView {
         headerView.backgroundColor = .yellow
         headerView.frame = CGRect(x: 0, y: 0, width: 0, height: 40)
         
-
+        
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
         commentTableView.isScrollEnabled = false
         commentTableView.backgroundColor = .lightGray
@@ -380,7 +446,7 @@ class CommunityDetailView: UIView {
         }
     }
     
-
+    
     
     //MARK: - 댓글 작성란 setup
     private func setupCommentStackView() {
@@ -424,7 +490,8 @@ class CommunityDetailView: UIView {
             make.leading.equalTo(commentBackgroundView.snp.leading).offset(10)
             make.trailing.equalTo(sendButton.snp.leading)
             make.bottom.equalTo(commentBackgroundView.snp.bottom).offset(-5)
-            make.height.greaterThanOrEqualTo(30) // 최소 높이를 30으로 설정
+            make.height.greaterThanOrEqualTo(40) // 최소 높이를 40으로 설정
+            make.height.lessThanOrEqualTo(103)
             make.width.equalTo(342)
         }
         
@@ -504,7 +571,6 @@ class CommunityDetailView: UIView {
         
         if textView.text == "" {
             placeHolder.textColor = .white
-            textView.layoutIfNeeded()
         } else {
             placeHolder.textColor = .clear
         }
