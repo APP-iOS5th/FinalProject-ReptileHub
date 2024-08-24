@@ -45,6 +45,7 @@
 		589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFC2C608FF100812D17 /* ProfileViewController.swift */; };
 		589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */; };
 		589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */; };
+		58C61A042C7A530F00E1FD3A /* KeyboardDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C61A032C7A530F00E1FD3A /* KeyboardDelegate.swift */; };
 		58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F63F2C772E6B00FDABD1 /* CommunityDetailView.swift */; };
 		58F3F6422C781DF500FDABD1 /* AddPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F6412C781DF500FDABD1 /* AddPostViewController.swift */; };
 		58F3F6442C781F1400FDABD1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F6432C781F1400FDABD1 /* AddPostView.swift */; };
@@ -95,6 +96,7 @@
 		589CCFFC2C608FF100812D17 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityViewController.swift; sourceTree = "<group>"; };
 		589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryViewController.swift; sourceTree = "<group>"; };
+		58C61A032C7A530F00E1FD3A /* KeyboardDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDelegate.swift; sourceTree = "<group>"; };
 		58F3F63F2C772E6B00FDABD1 /* CommunityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailView.swift; sourceTree = "<group>"; };
 		58F3F6412C781DF500FDABD1 /* AddPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostViewController.swift; sourceTree = "<group>"; };
 		58F3F6432C781F1400FDABD1 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */,
 				5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */,
 				58F3F6432C781F1400FDABD1 /* AddPostView.swift */,
+				58C61A032C7A530F00E1FD3A /* KeyboardDelegate.swift */,
 			);
 			path = Community;
 			sourceTree = "<group>";
@@ -373,6 +376,7 @@
 				4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */,
 				588CE3DA2C524EA900338878 /* ViewController.swift in Sources */,
 				588CE3D62C524EA900338878 /* AppDelegate.swift in Sources */,
+				58C61A042C7A530F00E1FD3A /* KeyboardDelegate.swift in Sources */,
 				7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */,
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
 				469B443C2C6305E300B1C49B /* AuthService.swift in Sources */,

@@ -74,10 +74,20 @@ class CommunityDetailView: UIView {
     private let placeHolder: UILabel = UILabel()
     
     
+    let keyboardManager = KeyboardManager()
+    
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupCommentStackView()
+        self.addGestureRecognizer(tapGesture)
+        
+        keyboardManager.delegate = self
+        keyboardManager.showNoti()
+        keyboardManager.hideNoti()
+        
+        setupCommentView()
         setupMainScrollView()
         setupProfileImage()
         setupElementStackView()
@@ -90,12 +100,9 @@ class CommunityDetailView: UIView {
         setupDivisionThickLine()
         setupCommentTableView()
         
-        self.addGestureRecognizer(tapGesture)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardAction),
-                                               name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardAction),
-                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+    
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -106,57 +113,7 @@ class CommunityDetailView: UIView {
     func tapHandler(_ sender: UIView) {
         commentTextView.resignFirstResponder()
     }
-    
-    @objc
-    func keyboardAction(_ notification: NSNotification) {
-        guard let keyboardSize = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-              let animationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double,
-              let animationCurveRawNSN = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber else {
-            return
-        }
-        
-        let animationCurveRaw = animationCurveRawNSN.uintValue
-        let animationCurve = UIView.AnimationOptions(rawValue: animationCurveRaw)
-        
-        switch notification.name {
-        case UIResponder.keyboardWillShowNotification:
-            print("키보드 열림")
-            
-            // 제약조건 변경과 애니메이션을 적용
-            UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
 
-                self.commentBackgroundView.snp.remakeConstraints { make in
-                    make.width.equalTo(self.frame.width)
-                    make.height.greaterThanOrEqualTo(40)
-                    make.leading.trailing.equalTo(self)
-                    make.bottom.equalTo(self.snp.bottom).offset(-keyboardSize.height)
-                }
-                
-                // 레이아웃 변화를 애니메이션으로 적용
-                self.layoutIfNeeded()
-            }, completion: nil)
-            
-        case UIResponder.keyboardWillHideNotification:
-            print("키보드 닫힘")
-            
-            // 제약조건 변경과 애니메이션을 적용
-            UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
-                
-                self.commentBackgroundView.snp.remakeConstraints { make in
-                    make.width.equalTo(self.frame.width)
-                    make.height.greaterThanOrEqualTo(40)
-                    make.leading.trailing.equalTo(self)
-                    make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
-                }
-                
-                // 레이아웃 변화를 애니메이션으로 적용
-                self.layoutIfNeeded()
-            }, completion: nil)
-            
-        default:
-            return
-        }
-    }
     
     
     //MARK: - 스크롤뷰 세팅
@@ -449,7 +406,7 @@ class CommunityDetailView: UIView {
     
     
     //MARK: - 댓글 작성란 setup
-    private func setupCommentStackView() {
+    private func setupCommentView() {
         commentTextView.layer.cornerRadius = 10
         commentTextView.font = UIFont.systemFont(ofSize: 18)
         commentTextView.isScrollEnabled = false
@@ -539,7 +496,6 @@ class CommunityDetailView: UIView {
     // UIScrollViewDelegate의 scrollViewDidScroll에 사용
     func imageScrollCount(scrollView: UIScrollView) {
         guard scrollView.frame.width > 0 else {
-            print("0")
             return
         }
         let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
@@ -566,8 +522,6 @@ class CommunityDetailView: UIView {
     func textViewChange(textView: UITextView) {
         let size = CGSize(width: commentTextView.frame.width, height: .greatestFiniteMagnitude)
         let estimatedSize = textView.sizeThatFits(size)
-        
-        print("현재 텍스트뷰 높이 : \(estimatedSize.height), \(estimatedSize.width)")
         
         if textView.text == "" {
             placeHolder.textColor = .white
@@ -609,4 +563,35 @@ class CommunityDetailView: UIView {
     }
     
     
+}
+
+
+extension CommunityDetailView: KeyboardNotificationDelegate {
+    func keyboardWillShow(keyboardSize: CGRect) {
+        print("keyboard Show")
+        
+        self.commentBackgroundView.snp.remakeConstraints { make in
+            make.width.equalTo(self.frame.width)
+            make.height.greaterThanOrEqualTo(40)
+            make.leading.trailing.equalTo(self)
+            make.bottom.equalTo(self.snp.bottom).offset(-keyboardSize.height)
+        }
+        
+        // 레이아웃 변화를 애니메이션으로 적용
+        self.layoutIfNeeded()
+    }
+    
+    func keyboardWillHide(keyboardSize: CGRect) {
+        print("keyboardW Hide")
+        
+        self.commentBackgroundView.snp.remakeConstraints { make in
+            make.width.equalTo(self.frame.width)
+            make.height.greaterThanOrEqualTo(40)
+            make.leading.trailing.equalTo(self)
+            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+        }
+        
+        // 레이아웃 변화를 애니메이션으로 적용
+        self.layoutIfNeeded()
+    }
 }

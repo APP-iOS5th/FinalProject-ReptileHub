@@ -34,19 +34,7 @@ class CommunityDetailViewController: UIViewController {
         detailView.remakeTableView()
     }
     
-//    override func viewIsAppearing(_ animated: Bool) {
-//        super.viewIsAppearing(animated)
-//        detailView.addGestureRecognizer(detailView.tapGesture)
-//        NotificationCenter.default.addObserver(detailView, selector: #selector(detailView.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-////        NotificationCenter.default.addObserver(self, selector: #selector(detailView.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-//    }
-//    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        view.removeGestureRecognizer(detailView.tapGesture)
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-//    }
+
 
     
     //MARK: - menu 버튼
@@ -105,6 +93,12 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         detailView.tableViewCellHeight(indexPath: indexPath, tableView: tableView)
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("댓글 셀 클릭")
+    }
+    
+    
 }
 
 extension CommunityDetailViewController: UITextViewDelegate {

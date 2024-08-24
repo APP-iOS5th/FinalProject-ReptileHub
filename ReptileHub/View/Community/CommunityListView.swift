@@ -23,6 +23,8 @@ class CommunityListView: UIView {
         super.init(coder: coder)
     }
     
+
+    
     //MARK: - communityTableView set up
     private func setupTableView() {
         communityTableView.backgroundColor = .yellow
