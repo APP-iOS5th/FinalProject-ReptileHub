@@ -51,7 +51,7 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     //MARK: - Thumnail Image
-    func setupThumbnail() {
+    private func setupThumbnail() {
         thumbnailImageView.image = UIImage(systemName: "camera")
         thumbnailImageView.contentMode = .scaleAspectFit
         thumbnailImageView.layer.cornerRadius = 5
@@ -68,7 +68,7 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     //MARK: - 제목, 내용 StackView
-    func setupMainInfoStackView() {
+    private func setupMainInfoStackView() {
         mainInfoStackView.axis = .vertical
         mainInfoStackView.distribution = .equalSpacing
         mainInfoStackView.alignment = .leading
@@ -95,7 +95,7 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     //MARK: - 댓글, 좋아요 수, 닉네임, 게시날짜 stackview
-    func setupSubInfoStackView() {
+    private func setupSubInfoStackView() {
         // 댓글, 좋아요 이미지와 count 스택뷰
         firstStackView.axis = .horizontal
         firstStackView.distribution = .equalSpacing
@@ -147,7 +147,7 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     //MARK: - menu 버튼
-    func setupMenuButton() {
+    private func setupMenuButton() {
         menuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         menuButton.contentMode = .scaleAspectFit
         menuButton.transform = CGAffineTransform(rotationAngle: .pi * 0.5)
