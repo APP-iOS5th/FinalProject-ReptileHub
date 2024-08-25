@@ -8,11 +8,15 @@
 import UIKit
 
 class AddPostViewController: UIViewController {
+    
+    private let addPostView = AddPostView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        
+        self.view = addPostView
     }
     
 

@@ -7,11 +7,18 @@
 
 import UIKit
 
+// addpostviewcontroller 뷰 이동 버튼액션
+protocol CommunityListViewDelegate: AnyObject {
+    func didTapAddPostButton()
+}
+
 class CommunityListView: UIView {
+    
+    weak var delegate: CommunityListViewDelegate?
 
     private let communityTableView: UITableView = UITableView(frame: .zero)
     
-    private let addButton: UIButton = UIButton(type: .custom)
+    let addButton: UIButton = UIButton(type: .custom)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -48,6 +55,7 @@ class CommunityListView: UIView {
         addButton.layer.cornerRadius = addButton.frame.width * 0.5
         addButton.setImage(UIImage(systemName: "pencil"), for: .normal)
         addButton.backgroundColor = .systemCyan
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         
         self.addSubview(addButton)
         
@@ -57,6 +65,11 @@ class CommunityListView: UIView {
             make.width.height.equalTo(60)
         }
     }
+    
+    @objc private func addButtonTapped() {
+            delegate?.didTapAddPostButton()
+        }
+    
     
     func configureTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
         communityTableView.delegate = delegate

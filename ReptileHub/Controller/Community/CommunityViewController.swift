@@ -13,12 +13,12 @@ class CommunityViewController: UIViewController {
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
     
     private let communityListView = CommunityListView()
-    
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.view = communityListView
+        communityListView.delegate = self
         communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
         title = "홈"
@@ -43,6 +43,14 @@ class CommunityViewController: UIViewController {
 
 }
 
+extension CommunityViewController: CommunityListViewDelegate {
+    func didTapAddPostButton() {
+        let addPostViewController = AddPostViewController()
+        addPostViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(addPostViewController, animated: true)
+    }
+}
+
 extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         18
@@ -63,3 +71,5 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
         self.navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
+
+
