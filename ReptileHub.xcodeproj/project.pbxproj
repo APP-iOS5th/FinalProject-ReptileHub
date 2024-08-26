@@ -52,9 +52,12 @@
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
 		9F2BD4342C75C4B5006FDD69 /* SpecialPlusButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */; };
 		9F2BD4362C75C4EC006FDD69 /* SpecialListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */; };
-		9F2BD4382C75C513006FDD69 /* SpecialListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4372C75C513006FDD69 /* SpecialListViewController.swift */; };
 		9F2BD43A2C75C555006FDD69 /* SpecialDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4392C75C555006FDD69 /* SpecialDetailViewController.swift */; };
 		9F2BD43C2C75C577006FDD69 /* SpecialEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD43B2C75C577006FDD69 /* SpecialEditViewController.swift */; };
+		9F2BD43F2C7BCD68006FDD69 /* SpecialListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD43E2C7BCD68006FDD69 /* SpecialListViewController.swift */; };
+		9F2BD4412C7BCD8B006FDD69 /* SpecialListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */; };
+		9F2BD4432C7BE977006FDD69 /* SpecialEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */; };
+		9F2BD4452C7BF803006FDD69 /* SpecialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -104,9 +107,12 @@
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
 		9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialPlusButtonView.swift; sourceTree = "<group>"; };
 		9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListViewCell.swift; sourceTree = "<group>"; };
-		9F2BD4372C75C513006FDD69 /* SpecialListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListViewController.swift; sourceTree = "<group>"; };
 		9F2BD4392C75C555006FDD69 /* SpecialDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialDetailViewController.swift; sourceTree = "<group>"; };
 		9F2BD43B2C75C577006FDD69 /* SpecialEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialEditViewController.swift; sourceTree = "<group>"; };
+		9F2BD43E2C7BCD68006FDD69 /* SpecialListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListViewController.swift; sourceTree = "<group>"; };
+		9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListView.swift; sourceTree = "<group>"; };
+		9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialEditView.swift; sourceTree = "<group>"; };
+		9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +258,7 @@
 		795776BB2C69B22F006D27A1 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				9F2BD43D2C7BCCF7006FDD69 /* SpecialNote */,
 				5881F01E2C73120D00FBB13E /* Community */,
 				46F0F7F12C6AE94E00444C98 /* LoginView */,
 				79AA14952C69C29D009F8209 /* GrowthDiary */,
@@ -280,11 +287,21 @@
 		9F2BD4322C75C431006FDD69 /* SpecialNote */ = {
 			isa = PBXGroup;
 			children = (
-				9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */,
-				9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */,
-				9F2BD4372C75C513006FDD69 /* SpecialListViewController.swift */,
 				9F2BD4392C75C555006FDD69 /* SpecialDetailViewController.swift */,
 				9F2BD43B2C75C577006FDD69 /* SpecialEditViewController.swift */,
+				9F2BD43E2C7BCD68006FDD69 /* SpecialListViewController.swift */,
+			);
+			path = SpecialNote;
+			sourceTree = "<group>";
+		};
+		9F2BD43D2C7BCCF7006FDD69 /* SpecialNote */ = {
+			isa = PBXGroup;
+			children = (
+				9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */,
+				9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */,
+				9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */,
+				9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */,
+				9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */,
 			);
 			path = SpecialNote;
 			sourceTree = "<group>";
@@ -393,20 +410,23 @@
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
 				469B443C2C6305E300B1C49B /* AuthService.swift in Sources */,
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
+				9F2BD4412C7BCD8B006FDD69 /* SpecialListView.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
 				5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */,
+				9F2BD4452C7BF803006FDD69 /* SpecialDetailView.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				9F2BD4342C75C4B5006FDD69 /* SpecialPlusButtonView.swift in Sources */,
 				798476412C70E05200895D2D /* EmptyView.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
+				9F2BD43F2C7BCD68006FDD69 /* SpecialListViewController.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
-				9F2BD4382C75C513006FDD69 /* SpecialListViewController.swift in Sources */,
 				46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
+				9F2BD4432C7BE977006FDD69 /* SpecialEditView.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
 				9F2BD43C2C75C577006FDD69 /* SpecialEditViewController.swift in Sources */,
