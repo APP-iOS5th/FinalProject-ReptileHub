@@ -41,7 +41,7 @@ class LoginViewController: UIViewController {
     @objc func handleLogin(_ sender: UIButton) {
         if sender == loginView.kakaoButton {
             print("KaKao Login")
-         //   kakaoLoginButtonTapped()
+            kakaoLoginButtonTapped()
         } else if sender == loginView.googleButton {
             print("Google Login")
             googleLoginButtonTapped()
