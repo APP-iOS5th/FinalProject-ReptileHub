@@ -11,7 +11,7 @@ import SnapKit
 class SpecialPlusButtonView: UITableViewHeaderFooterView {
     
     static let identifier = "SpecialPlusButton"
-//    private var heightConstraint: Constraint?
+    private var heightConstraint: Constraint?
     private var plusButtonBottomConstraint: Constraint?
     
     private var plusButton: UIButton = {
@@ -54,18 +54,18 @@ class SpecialPlusButtonView: UITableViewHeaderFooterView {
         
     }
     
-//    func updateHeight(height: CGFloat) {
-//        var newFrame = frame
-//        newFrame.size.height = height
-//        frame = newFrame
-//        plusButtonBottomConstraint?.update(inset: 10)
-//        layoutIfNeeded()
-//        heightConstraint?.update(offset: height)
-        // 버튼의 위치를 업데이트
-//        plusButton.snp.updateConstraints { make in
-//            make.bottom.equalToSuperview().inset(10)
-//        }
-//    }
+    func updateHeight(height: CGFloat) {
+        var newFrame = frame
+        newFrame.size.height = height
+        frame = newFrame
+        plusButtonBottomConstraint?.update(inset: 10)
+        layoutIfNeeded()
+        heightConstraint?.update(offset: height)
+//         버튼의 위치를 업데이트
+        plusButton.snp.updateConstraints { make in
+            make.bottom.equalToSuperview().inset(10)
+        }
+    }
     //    override func viewDidLoad() {
     //        super.viewDidLoad()
     //
