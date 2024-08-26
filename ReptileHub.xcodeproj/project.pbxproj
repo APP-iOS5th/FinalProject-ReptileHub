@@ -59,6 +59,21 @@
 		798476412C70E05200895D2D /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798476402C70E05200895D2D /* EmptyView.swift */; };
 		79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1AE492C6A088D00D5711B /* TabbarViewController.swift */; };
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
+		C12FC0ED2C790CA3000BB52E /* BlockUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */; };
+		C12FC0EF2C790D19000BB52E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12FC0EE2C790D19000BB52E /* ProfileView.swift */; };
+		C14FF35E2C75DB1000089C6D /* EditUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */; };
+		C14FF36B2C75DB2800089C6D /* BlockUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF35F2C75DB2800089C6D /* BlockUserViewController.swift */; };
+		C14FF36C2C75DB2800089C6D /* BlockUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3602C75DB2800089C6D /* BlockUserTableViewCell.swift */; };
+		C14FF36D2C75DB2800089C6D /* WritePostListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */; };
+		C14FF36E2C75DB2800089C6D /* WritePostListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3632C75DB2800089C6D /* WritePostListViewController.swift */; };
+		C14FF36F2C75DB2800089C6D /* LikePostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3652C75DB2800089C6D /* LikePostTableViewCell.swift */; };
+		C14FF3702C75DB2800089C6D /* LikePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3662C75DB2800089C6D /* LikePostViewController.swift */; };
+		C14FF3712C75DB2800089C6D /* WriteReplyListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3682C75DB2800089C6D /* WriteReplyListTableViewCell.swift */; };
+		C14FF3722C75DB2800089C6D /* WriteReplyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3692C75DB2800089C6D /* WriteReplyListViewController.swift */; };
+		C14FF3742C75DB4100089C6D /* ReptileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF3732C75DB4100089C6D /* ReptileViewController.swift */; };
+		C154FA1A2C7C0F2C00624AA3 /* LikePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA192C7C0F2C00624AA3 /* LikePostView.swift */; };
+		C154FA1C2C7C11B500624AA3 /* WriteReplyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */; };
+		C154FA1E2C7C15D600624AA3 /* WritePostListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -115,6 +130,21 @@
 		798476402C70E05200895D2D /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 		79A1AE492C6A088D00D5711B /* TabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
+		C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockUserView.swift; sourceTree = "<group>"; };
+		C12FC0EE2C790D19000BB52E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoViewController.swift; sourceTree = "<group>"; };
+		C14FF35F2C75DB2800089C6D /* BlockUserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockUserViewController.swift; sourceTree = "<group>"; };
+		C14FF3602C75DB2800089C6D /* BlockUserTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockUserTableViewCell.swift; sourceTree = "<group>"; };
+		C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WritePostListTableViewCell.swift; sourceTree = "<group>"; };
+		C14FF3632C75DB2800089C6D /* WritePostListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WritePostListViewController.swift; sourceTree = "<group>"; };
+		C14FF3652C75DB2800089C6D /* LikePostTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LikePostTableViewCell.swift; sourceTree = "<group>"; };
+		C14FF3662C75DB2800089C6D /* LikePostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LikePostViewController.swift; sourceTree = "<group>"; };
+		C14FF3682C75DB2800089C6D /* WriteReplyListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WriteReplyListTableViewCell.swift; sourceTree = "<group>"; };
+		C14FF3692C75DB2800089C6D /* WriteReplyListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WriteReplyListViewController.swift; sourceTree = "<group>"; };
+		C14FF3732C75DB4100089C6D /* ReptileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReptileViewController.swift; sourceTree = "<group>"; };
+		C154FA192C7C0F2C00624AA3 /* LikePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikePostView.swift; sourceTree = "<group>"; };
+		C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteReplyListView.swift; sourceTree = "<group>"; };
+		C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritePostListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -213,6 +243,12 @@
 			isa = PBXGroup;
 			children = (
 				589CCFFC2C608FF100812D17 /* ProfileViewController.swift */,
+				C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */,
+				C14FF3732C75DB4100089C6D /* ReptileViewController.swift */,
+				C14FF3632C75DB2800089C6D /* WritePostListViewController.swift */,
+				C14FF3692C75DB2800089C6D /* WriteReplyListViewController.swift */,
+				C14FF3662C75DB2800089C6D /* LikePostViewController.swift */,
+				C14FF35F2C75DB2800089C6D /* BlockUserViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -268,6 +304,7 @@
 		795776BB2C69B22F006D27A1 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C1EBDFC72C782A2500B6CCBD /* Profile */,
 				5881F01E2C73120D00FBB13E /* Community */,
 				46F0F7F12C6AE94E00444C98 /* LoginView */,
 				79AA14952C69C29D009F8209 /* GrowthDiary */,
@@ -291,6 +328,22 @@
 				7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */,
 			);
 			path = GrowthDiary;
+			sourceTree = "<group>";
+		};
+		C1EBDFC72C782A2500B6CCBD /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				C12FC0EE2C790D19000BB52E /* ProfileView.swift */,
+				C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */,
+				C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */,
+				C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */,
+				C14FF3682C75DB2800089C6D /* WriteReplyListTableViewCell.swift */,
+				C154FA192C7C0F2C00624AA3 /* LikePostView.swift */,
+				C14FF3652C75DB2800089C6D /* LikePostTableViewCell.swift */,
+				C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */,
+				C14FF3602C75DB2800089C6D /* BlockUserTableViewCell.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -388,38 +441,53 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C14FF35E2C75DB1000089C6D /* EditUserInfoViewController.swift in Sources */,
 				4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */,
+				C154FA1E2C7C15D600624AA3 /* WritePostListView.swift in Sources */,
 				46F0F7F92C6D997800444C98 /* PostModel.swift in Sources */,
 				588CE3DA2C524EA900338878 /* ViewController.swift in Sources */,
 				588CE3D62C524EA900338878 /* AppDelegate.swift in Sources */,
 				58C61A042C7A530F00E1FD3A /* KeyboardDelegate.swift in Sources */,
 				7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */,
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
+				C154FA1C2C7C11B500624AA3 /* WriteReplyListView.swift in Sources */,
+				C12FC0EF2C790D19000BB52E /* ProfileView.swift in Sources */,
 				469B443C2C6305E300B1C49B /* AuthService.swift in Sources */,
 				46B0D99C2C78C18C00697E7E /* PostDetailViewController.swift in Sources */,
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
+				C14FF3742C75DB4100089C6D /* ReptileViewController.swift in Sources */,
 				46DA26332C6EE198005C7609 /* UserModel.swift in Sources */,
 				5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */,
 				58F3F6442C781F1400FDABD1 /* AddPostView.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				798476412C70E05200895D2D /* EmptyView.swift in Sources */,
+				C14FF36F2C75DB2800089C6D /* LikePostTableViewCell.swift in Sources */,
+				C12FC0ED2C790CA3000BB52E /* BlockUserView.swift in Sources */,
 				46B0D99A2C78C17200697E7E /* PostEditViewController.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
+				C14FF36E2C75DB2800089C6D /* WritePostListViewController.swift in Sources */,
 				583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
+				C14FF3722C75DB2800089C6D /* WriteReplyListViewController.swift in Sources */,
 				46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */,
 				46DA262F2C6ED2DB005C7609 /* UserService.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
 				58F3F6422C781DF500FDABD1 /* AddPostViewController.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
+				C14FF36D2C75DB2800089C6D /* WritePostListTableViewCell.swift in Sources */,
+				C154FA1A2C7C0F2C00624AA3 /* LikePostView.swift in Sources */,
 				58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */,
 				589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */,
+				C14FF36C2C75DB2800089C6D /* BlockUserTableViewCell.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
+				C14FF3712C75DB2800089C6D /* WriteReplyListTableViewCell.swift in Sources */,
+				C14FF3702C75DB2800089C6D /* LikePostViewController.swift in Sources */,
+				C14FF36B2C75DB2800089C6D /* BlockUserViewController.swift in Sources */,
 				5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */,
 				46F0F7F52C6B286300444C98 /* CommunityService.swift in Sources */,
 			);
