@@ -21,9 +21,9 @@ class CommunityListView: UIView {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupTableView()
-        setupAddButton()
     }
+    
+
     
     //MARK: - communityTableView set up
     private func setupTableView() {
