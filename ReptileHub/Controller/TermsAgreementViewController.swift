@@ -19,6 +19,7 @@ class TermsAgreementViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
+        print("termsAgreement View did Load")
     }
     
     init(user:AuthUser) {
@@ -39,19 +40,23 @@ class TermsAgreementViewController: UIViewController {
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview().offset(-20)
         }
-        
+      
         declineButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview()
             
             agreeButton.addTarget(self, action: #selector(agreeButtonTapped), for: .touchUpInside)
             declineButton.addTarget(self, action: #selector(declineButtonTapped), for: .touchUpInside)
+            agreeButton.setTitleColor(.black, for: .normal)
+            declineButton.setTitleColor(.black, for: .normal)
+            agreeButton.setTitle("Agree", for: .normal) 
+            declineButton.setTitle("Decline", for: .normal)
             
         }
         
         
     }
-    
+        
     @objc private func agreeButtonTapped() {
         onAgreementAccepted?()
         self.dismiss(animated: true, completion: nil)
