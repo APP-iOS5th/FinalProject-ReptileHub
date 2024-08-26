@@ -6,17 +6,10 @@
 //
 
 import UIKit
-import SnapKit
 
-class LikePostViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class LikePostViewController: UIViewController {
     
-    private var likePostTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(LikePostTableViewCell.self, forCellReuseIdentifier: "likeCell")
-        
-        return tableView
-        
-    }()
+    private let likePostView = LikePostView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +17,14 @@ class LikePostViewController: UIViewController, UITableViewDelegate, UITableView
         self.view.backgroundColor = .white
         self.title = "내가 찜한 게시글"
         
-        likePostTableView.delegate = self
-        likePostTableView.dataSource = self
+        self.view = likePostView
         
-        view.addSubview(likePostTableView)
-        
-        likePostTableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        likePostView.configureLikePostTableView(delegate: self, datasource: self)
     }
+}
+
+
+extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         18
@@ -47,5 +39,4 @@ class LikePostViewController: UIViewController, UITableViewDelegate, UITableView
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         return cell
     }
-    
 }

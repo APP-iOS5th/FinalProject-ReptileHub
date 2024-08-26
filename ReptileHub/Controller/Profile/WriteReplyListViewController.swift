@@ -6,31 +6,24 @@
 //
 
 import UIKit
-import SnapKit
 
-class WriteReplyListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class WriteReplyListViewController: UIViewController {
     
-    private var replyListTableView: UITableView = {
-       let tableView = UITableView()
-        tableView.register(ReplyListTableViewCell.self, forCellReuseIdentifier: "replyCell")
-        return tableView
-    }()
-
+    private let writeReplyView = WriteReplyListView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
         self.title = "내가 작성한 댓글"
+
+        self.view = writeReplyView
         
-        replyListTableView.delegate = self
-        replyListTableView.dataSource = self
-        
-        view.addSubview(replyListTableView)
-        
-        replyListTableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        writeReplyView.configureReplyTableView(delegate: self, datasource: self)
     }
+}
+
+extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         18
@@ -41,7 +34,7 @@ class WriteReplyListViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "replyCell", for: indexPath) as! ReplyListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "replyCell", for: indexPath) as! WriteReplyListTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         return cell
     }

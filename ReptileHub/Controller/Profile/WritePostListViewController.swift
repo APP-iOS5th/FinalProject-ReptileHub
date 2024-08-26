@@ -1,5 +1,5 @@
 //
-//  WritePostViewController.swift
+//  WritePostListViewController.swift
 //  Reptile_Hub_UI
 //
 //  Created by 육현서 on 8/8/24.
@@ -7,33 +7,24 @@
 
 import UIKit
 
-class WritePostViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class WritePostListViewController: UIViewController {
     
-    private var WritePostTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(WritePostListTableViewCell.self, forCellReuseIdentifier: "cell")
-        return tableView
-    }()
+    private let writePostListView = WritePostListView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        WritePostTableView.delegate = self
-        WritePostTableView.dataSource = self
-        
         self.view.backgroundColor = .white
         self.title = "내가 작성한 게시글"
         
-        view.addSubview(WritePostTableView)
+        self.view = writePostListView
         
+        writePostListView.configureWritePostTableView(delegate: self, datasource: self)
         
-        WritePostTableView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-            make.leading.equalTo(self.view.snp.leading)
-            make.trailing.equalTo(self.view.snp.trailing)
-            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
-        }
     }
+}
+
+extension WritePostListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         18

@@ -1,20 +1,15 @@
 //
-//  BlockListViewController.swift
+//  BlockUserViewController.swift
 //  Reptile_Hub_UI
 //
 //  Created by 육현서 on 8/8/24.
 //
 
 import UIKit
-import SnapKit
 
-class BlockListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class BlockUserViewController: UIViewController {
     
-    private var blockUserTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(BlockUserTableViewCell.self, forCellReuseIdentifier: "userCell")
-        return tableView
-    }()
+    private let blockUserView = BlockUserView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,24 +17,19 @@ class BlockListViewController: UIViewController, UITableViewDataSource, UITableV
         self.view.backgroundColor = .white
         self.title = "내가 차단한 사용자"
         
-        blockUserTableView.delegate = self
-        blockUserTableView.dataSource = self
-        
-        view.addSubview(blockUserTableView)
-        
-        
-        blockUserTableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        self.view = blockUserView
+        blockUserView.configureBlockUserTableView(delegate: self, datasource: self)
     }
-    
+}
+
+extension BlockUserViewController: UITableViewDelegate, UITableViewDataSource {
     // 테이블 뷰의 셀 수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        18
+        return 18
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        68
+        return 68
     }
     
     // 각 테이블 뷰의 셀 구성

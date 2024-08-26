@@ -1,5 +1,5 @@
 //
-//  ReplyListTableViewCell.swift
+//  WriteReplyListTableViewCell.swift
 //  Reptile_Hub_UI
 //
 //  Created by 육현서 on 8/20/24.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ReplyListTableViewCell: UITableViewCell {
+class WriteReplyListTableViewCell: UITableViewCell {
     
     private var commentDetail: UILabel = {
         let label = UILabel()

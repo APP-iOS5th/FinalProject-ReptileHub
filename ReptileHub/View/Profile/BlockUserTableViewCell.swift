@@ -51,7 +51,7 @@ class BlockUserTableViewCell: UITableViewCell {
         let button = UIButton()
         button.setTitle("차단해제", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
-        button.backgroundColor = .green
+        button.backgroundColor = .addBtnGraphTabbar
         button.layer.cornerRadius = 3
         button.addTarget(self, action: #selector(selectBlockCancel), for: .touchUpInside)
         return button
