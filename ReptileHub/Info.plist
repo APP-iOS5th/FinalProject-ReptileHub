@@ -12,6 +12,14 @@
 				<string>com.googleusercontent.apps.379483332296-h3v7drot9hdtdsk2mafc472r0n0edn3e</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakao안알랴줌</string>
+			</array>
+		</dict>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

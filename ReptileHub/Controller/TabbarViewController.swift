@@ -27,8 +27,6 @@ class TabbarViewController: UITabBarController {
         self.viewControllers = [firstNavigationController, secondNavigationController, thirdNavigationController]
     }
     
-
-    
     
 
     
