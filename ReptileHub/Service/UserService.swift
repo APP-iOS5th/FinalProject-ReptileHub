@@ -244,7 +244,7 @@ extension UserService {
         }
     }
     
-    
+    // Storage 에 저장된 이미지 삭제 필요
     private func uploadNewProfileImage(uid: String, newProfileImage: UIImage, userRef: DocumentReference, updateData: [String: Any], completion: @escaping (Error?) -> Void) {
         guard let imageData = newProfileImage.jpegData(compressionQuality: 0.8) else {
             completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Image compression failed"]))
