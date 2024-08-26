@@ -57,5 +57,9 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailViewController = CommunityDetailViewController()
+        detailViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(detailViewController, animated: true)
+    }
 }
