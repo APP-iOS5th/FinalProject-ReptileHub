@@ -18,7 +18,6 @@ class CommunityDetailView: UIView {
     // 키보드 델리겟 매니저
     let keyboardManager = KeyboardManager()
     
-    
     // 스크롤 뷰
     private let scrollView: UIScrollView = UIScrollView()
     private let stackView: UIStackView = UIStackView()
@@ -287,7 +286,6 @@ class CommunityDetailView: UIView {
             }
             
         }
-        
         
     }
     

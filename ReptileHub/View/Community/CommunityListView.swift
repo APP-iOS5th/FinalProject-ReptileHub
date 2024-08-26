@@ -13,15 +13,17 @@ protocol CommunityListViewDelegate: AnyObject {
 }
 
 class CommunityListView: UIView {
-    
+
     weak var delegate: CommunityListViewDelegate?
 
     private let communityTableView: UITableView = UITableView(frame: .zero)
     
     let addButton: UIButton = UIButton(type: .custom)
     
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         setupTableView()
         setupAddButton()
     }
@@ -31,7 +33,6 @@ class CommunityListView: UIView {
     }
     
 
-    
     //MARK: - communityTableView set up
     private func setupTableView() {
         communityTableView.backgroundColor = .yellow
@@ -48,13 +49,14 @@ class CommunityListView: UIView {
         }
 
     }
-    
+
     //MARK: - Add Button set up
     private func setupAddButton() {
         addButton.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
         addButton.layer.cornerRadius = addButton.frame.width * 0.5
         addButton.setImage(UIImage(systemName: "pencil"), for: .normal)
         addButton.backgroundColor = .systemCyan
+
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         
         self.addSubview(addButton)
@@ -66,6 +68,7 @@ class CommunityListView: UIView {
         }
     }
     
+
     @objc private func addButtonTapped() {
             delegate?.didTapAddPostButton()
         }

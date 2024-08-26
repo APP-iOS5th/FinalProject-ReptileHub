@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+
 class CommunityViewController: UIViewController {
     
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
@@ -18,6 +19,7 @@ class CommunityViewController: UIViewController {
         super.viewDidLoad()
         
         self.view = communityListView
+
         communityListView.delegate = self
         communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
@@ -50,6 +52,7 @@ extension CommunityViewController: CommunityListViewDelegate {
         self.navigationController?.pushViewController(addPostViewController, animated: true)
     }
 }
+
 
 extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
