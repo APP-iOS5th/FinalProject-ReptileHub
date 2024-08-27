@@ -66,12 +66,8 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(imageName: String, title: String, date: Date){
-        let formatter = DateFormatter()
-        formatter.dateFormat = "YY. MM. dd 생성"
-        formatter.locale = Locale(identifier: "ko_KR")
-        
         GrowthDiaryItemImage.image = UIImage(named: imageName)
         GrowthDiaryItemTitle.text = title
-        GrowthDiaryItemDate.text = "\(formatter.string(from: date))"
+        GrowthDiaryItemDate.text = "\(date.formatted) 생성"
     }
 }

@@ -20,6 +20,15 @@ class AddGrowthDiaryViewController: UIViewController {
         self.title = "성장일지"
         self.view = addGrowthDiaryView
         self.view.backgroundColor = .white
+        
+        let action = UIAction{ [weak self] _ in
+            self?.datePickerValueChanged()
+        }
+        addGrowthDiaryView.addAction(action: action)
+    }
+    
+    private func datePickerValueChanged(){
+        addGrowthDiaryView.updateDateField()
     }
 }
 

@@ -20,7 +20,26 @@ class AddGrowthDiaryView: UIView {
     //모프
     private lazy var morphTextField: UITextField = createTextField(text: "모프를 입력해주세요.")
     //해칭일
-    private lazy var hatchDaysTextField: UITextField = createTextField(text: "2024.08.05")
+    private lazy var hatchDaysDatePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.preferredDatePickerStyle = .compact
+        picker.datePickerMode = .date
+        return picker
+    }()
+    private lazy var hatchDaysTextField: UITextField = {
+        let textField = createTextField(text: "해칭일을 선택해주세요.")
+        textField.inputView = hatchDaysDatePicker
+        return textField
+    }()
+    
+    func addAction(action: UIAction){
+        hatchDaysDatePicker.addAction(action, for: .valueChanged)
+    }
+    
+    func updateDateField(){
+        hatchDaysTextField.text = hatchDaysDatePicker.date.formatted
+    }
+    
     //성별
     private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
     //무게
@@ -32,8 +51,29 @@ class AddGrowthDiaryView: UIView {
         title: "꼬리",
         buttonTitles: ("있음", "없음")
     )
-
+//    private lazy var hatchDaysDatePicker: UIDatePicker = {
+//        let picker = UIDatePicker()
+//        picker.preferredDatePickerStyle = .wheels
+//        picker.datePickerMode = .date
+//        picker.addTarget(self, action: #selector(dateChange), for: .valueChanged)
+//        return picker
+//    }()
+//    
+//    //해칭일 날짜 textField
+//    private lazy var hatchDaysTextFiled: UITextField = {
+//        let textField = createTextField(text: Date().toString())
+//        textField.inputView = hatchDaysDatePicker
+//        return textField
+//    }()
     
+
+    // 텍스트 필드에 들어갈 텍스트를 DateFormatter 변환
+//    private func dateFormat(date: Date) -> String {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy / MM / dd"
+//        
+//        return formatter.string(from: date)
+//    }
     //MARK: - 아빠 정보
     //아빠 이미지
     private lazy var fatherImageView: UIImageView = createImageVIew()
@@ -79,11 +119,11 @@ class AddGrowthDiaryView: UIView {
             createTextFieldGroup(title: "이름이 어떻게 되나요?", textField: nameTextField),
             createTextFieldGroup(title: "종이 어떻게 되나요?", textField: speciesTextField),
             createShowGroupViewButton(title: "모프 여부가 어떻게 되나요?", contentView: morphTextField, buttonTitles: ("있음", "없음")),
-            createTextFieldGroup(title: "해칭일이 어떻게 되나요?", textField: hatchDaysTextField),
-//            createTextFieldGroup(title: "성별이 어떻게 되나요?", textField: genderTextField),
+            createGroup(title: "해칭일이 어떻게 되나요?", contentView: hatchDaysTextField),
+            //            createTextFieldGroup(title: "성별이 어떻게 되나요?", textField: genderTextField),
             createGroup(title: "성별이 어떻게 되나요?", contentView: genderDropdownView),
             createTextFieldGroup(title: "무게가 어떻게 되나요?", textField: weightTextField),
-//            createTextFieldGroup(title: "피딩 방식이 어떻게 되나요?", textField: feedMethodTextField),
+            //            createTextFieldGroup(title: "피딩 방식이 어떻게 되나요?", textField: feedMethodTextField),
             createGroup(title: "피딩 방식이 어떻게 되나요?", contentView: feedMethodDropdownView),
             tailButtonGroup,
             createShowGroupViewButton(title: "부모 정보가 어떻게 되나요?", contentView: parentInfoStackView, buttonTitles: ("등록", "미등록")),
@@ -291,7 +331,6 @@ class AddGrowthDiaryView: UIView {
         
         return createGroup(title: title, contentView: buttonStackView)
     }
-    
     
     //MARK: - Action
     @objc private func showContent(_ sender: UIButton) {
