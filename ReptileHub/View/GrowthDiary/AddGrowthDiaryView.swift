@@ -22,16 +22,17 @@ class AddGrowthDiaryView: UIView {
     //해칭일
     private lazy var hatchDaysTextField: UITextField = createTextField(text: "2024.08.05")
     //성별
-    private lazy var genderTextField: UITextField = createTextField(text: "성별을 선택해주세요")// TODO: 드롭다운으로 구현
+    private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
     //무게
     private lazy var weightTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
     //피딩 방식
-    private lazy var feedMethodTextField: UITextField = createTextField(text: "피딩 방식을 선택해주세요.") // TODO: 드롭다운으로 구현
+    private lazy var feedMethodDropdownView: DropDownView = DropDownView(options: ["자율", "핸드"], title: "피딩 방식을 선택해주세요.")
     //꼬리 유무
     private lazy var tailButtonGroup: UIView = createButtonGroup(
         title: "꼬리",
-        buttonTitles: ("보기", "닫기")
+        buttonTitles: ("있음", "없음")
     )
+
     
     //MARK: - 아빠 정보
     //아빠 이미지
@@ -79,11 +80,13 @@ class AddGrowthDiaryView: UIView {
             createTextFieldGroup(title: "종이 어떻게 되나요?", textField: speciesTextField),
             createShowGroupViewButton(title: "모프 여부가 어떻게 되나요?", contentView: morphTextField, buttonTitles: ("있음", "없음")),
             createTextFieldGroup(title: "해칭일이 어떻게 되나요?", textField: hatchDaysTextField),
-            createTextFieldGroup(title: "성별이 어떻게 되나요?", textField: genderTextField),
+//            createTextFieldGroup(title: "성별이 어떻게 되나요?", textField: genderTextField),
+            createGroup(title: "성별이 어떻게 되나요?", contentView: genderDropdownView),
             createTextFieldGroup(title: "무게가 어떻게 되나요?", textField: weightTextField),
-            createTextFieldGroup(title: "피딩 방식이 어떻게 되나요?", textField: feedMethodTextField),
+//            createTextFieldGroup(title: "피딩 방식이 어떻게 되나요?", textField: feedMethodTextField),
+            createGroup(title: "피딩 방식이 어떻게 되나요?", contentView: feedMethodDropdownView),
             tailButtonGroup,
-            createShowGroupViewButton(title: "부모 정보가 어떻게 되나요?", contentView: parentInfoStackView, buttonTitles: ("등록", "미등록"))
+            createShowGroupViewButton(title: "부모 정보가 어떻게 되나요?", contentView: parentInfoStackView, buttonTitles: ("등록", "미등록")),
             
         ])
         stackView.axis = .vertical
