@@ -44,4 +44,14 @@ class SpecialListView: UIView {
         tableView.separatorStyle = .none // 셀 선 제거
         tableView.register(SpecialListViewCell.self, forCellReuseIdentifier: "SpecialCell")
     }
+    
+    // UIMenu tableView에 대한 셀 등록 기능을 제공하는 메서드 추가
+    func registerCell(_ cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
+        tableView.register(cellClass, forCellReuseIdentifier: identifier)
+    }
+    
+    func pizza() {
+        tableView.layoutIfNeeded()
+        tableView.setNeedsLayout()
+    }
 }

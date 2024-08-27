@@ -59,6 +59,11 @@ class SpecialListViewCell: UITableViewCell {
         deleteButton.tintColor = .darkGray
         return deleteButton
     }()
+    // UIMenu 셀에서 메뉴 설정
+    func configure(with menu: UIMenu) {
+        deleteButton.menu = menu
+        deleteButton.showsMenuAsPrimaryAction = true
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -113,7 +118,7 @@ class SpecialListViewCell: UITableViewCell {
         contentView.backgroundColor = UIColor(named: "groupProfileBG")
         
     }
-    
+        
     // 셀 전체 프레임
     override func layoutSubviews() {
         super.layoutSubviews()
