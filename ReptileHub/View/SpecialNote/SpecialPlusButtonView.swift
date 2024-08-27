@@ -46,10 +46,10 @@ class SpecialPlusButtonView: UITableViewHeaderFooterView {
         plusButton.snp.makeConstraints{(make) in
             make.width.equalTo(contentView).offset(-30)
             make.centerX.equalTo(contentView)
-//            make.height.equalTo(90)
+            make.height.equalTo(90)
             make.bottom.equalToSuperview().inset(10)
-            self.plusButtonBottomConstraint = make.bottom.equalToSuperview().inset(10).constraint
-//            make.top.equalTo(safeAreaLayoutGuide.snp.top)
+//            self.plusButtonBottomConstraint = make.bottom.equalToSuperview().inset(10).constraint
+            make.top.equalTo(safeAreaLayoutGuide.snp.top)
         }
         
     }

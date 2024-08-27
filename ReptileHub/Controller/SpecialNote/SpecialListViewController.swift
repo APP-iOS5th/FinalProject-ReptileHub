@@ -59,4 +59,36 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
         self.navigationController?.pushViewController(specialDetailViewController, animated: true)
     }
     
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "SpecialPlusButton") as? SpecialPlusButtonView else {
+//            return UIView()
+//        }
+        let header = UIView()
+        header.backgroundColor = .purple
+        print(header)
+//        header.contentView.backgroundColor = .white
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        print(headerHeight)
+        return headerHeight
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let y = scrollView.contentOffset.y
+        if y > 0 {
+            self.headerHeight = 50
+        } else {
+            self.headerHeight = 100
+        }
+//        print(headerHeight)
+//        self.view.setNeedsLayout()
+//        self.view.layoutIfNeeded()
+        specialListView.pizza()
+        self.view.reloadInputViews()
+//        print(y)
+    }
+    
 }
