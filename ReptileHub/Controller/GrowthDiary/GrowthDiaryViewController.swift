@@ -29,6 +29,15 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         GrowthDiaryView.backgroundColor = .white
         GrowthDiaryView.cofigureCollectionView(delegate: self, dataSource: self)
         GrowthDiaryView.reigsterCollectionViewCell(GrowthDiaryListCollectionViewCell.self, forCellWithReuseIdentifier: GrowthDiaryListCollectionViewCell.identifier)
+        GrowthDiaryView.buttonTapped = { [weak self] in
+            self?.navigateToSecondViewController()
+        }
+        
+    }
+    
+    private func navigateToSecondViewController(){
+        let secondViewController = AddGrowthDiaryViewController()
+        navigationController?.pushViewController(secondViewController, animated: true)
     }
 }
 

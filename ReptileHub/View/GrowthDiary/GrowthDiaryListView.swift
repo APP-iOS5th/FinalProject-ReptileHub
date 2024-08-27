@@ -8,7 +8,11 @@
 import UIKit
 import SnapKit
 
-class GrowthDiaryListView: UIView {    
+class GrowthDiaryListView: UIView {
+    
+    //버튼 클릭 시 실행될 클로저
+    var buttonTapped: (() -> Void)?
+    
     //MARK: - 상단 텍스트 Label
     private lazy var GrowthDiaryTitleLabel: FontWeightLabel = {
         let label = FontWeightLabel()
@@ -48,6 +52,10 @@ class GrowthDiaryListView: UIView {
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         button.configuration = config
+        
+        button.addAction(UIAction{ [weak self] _ in
+            self?.buttonTapped?() //클로저가 실행된다.
+        }, for: .touchUpInside)
         return button
     }()
     
@@ -86,7 +94,7 @@ class GrowthDiaryListView: UIView {
         }
     }
     
-    //MARK: - Methods
+    //MARK: - Methods    
     func cofigureCollectionView(delegate: UICollectionViewDelegate, dataSource: UICollectionViewDataSource){
         GrowthDiaryListCollectionView.delegate = delegate
         GrowthDiaryListCollectionView.dataSource = dataSource
