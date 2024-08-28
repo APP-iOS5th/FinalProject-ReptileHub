@@ -18,60 +18,76 @@ class CommunityService {
 
     //MARK: - 커뮤니티 게시글 작성 후 등록 함수
     func createPost(userID: String, title: String, content: String, images: [Data], completion: @escaping (Error?) -> Void) {
-           uploadImages(images: images) { urls, errors in
-               if let errors = errors, !errors.isEmpty {
-                   completion(errors.first)
-                   return
-               }
-               
-               guard let urls = urls else {
-                   completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to upload images"]))
-                   return
-               }
-               
-               let postID = UUID().uuidString
-               let previewContent = String(content.prefix(40))
-               
-              
-              
-               // 1. 썸네일 정보
-               let thumbnailData: [String: Any] = [
-                   "postID": postID,
-                   "userID": userID,
-                   "thumbnail": urls.first ?? "", // 첫 번째 이미지를 썸네일로 사용
-                   "title": title,
-                   "previewContent": previewContent,
-                   "createdAt": FieldValue.serverTimestamp(),
-                   "likeCount": 0,
-                   "commentCount": 0
-        
-               ]
-               // 2. 썸네일 정보 저장
-               self.db.collection("posts").document(postID).setData(thumbnailData) { error in
-                   if let error = error {
-                       completion(error)
-                       return
-                   }
-               }
-               
-               // 3. 상세 정보
-               let postData: [String: Any] = [
-                   "postID": postID,
-                   "userID": userID,
-                   "title": title,
-                   "content": content,
-                   "imageURLs": urls,
-                   "createdAt": FieldValue.serverTimestamp(),
-                   "likeCount": 0,
-                   "commentCount": 0
-               ]
-               
-               // 4. 상세 정보 저장
-               self.db.collection("posts").document(postID).collection("post_details").document(postID).setData(postData) { error in
-                   completion(error)
-               }
-           }
-       }
+        uploadImages(images: images) { urls, errors in
+            if let errors = errors, !errors.isEmpty {
+                completion(errors.first)
+                return
+            }
+            
+            guard let urls = urls else {
+                completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to upload images"]))
+                return
+            }
+            
+            let postID = UUID().uuidString
+            let previewContent = String(content.prefix(40))
+            
+            let db = Firestore.firestore()
+            let userRef = db.collection("users").document(userID)
+            
+            db.runTransaction({ (transaction, errorPointer) -> Any? in
+                do {
+                    // 유저의 문서를 가져옴
+                    let userDocument = try transaction.getDocument(userRef)
+                    
+                    // 현재 게시글 개수를 가져와서 1을 추가
+                    let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
+                    transaction.updateData(["postCount": currentPostCount + 1], forDocument: userRef)
+                    
+                    // 썸네일 정보 저장
+                    let thumbnailData: [String: Any] = [
+                        "postID": postID,
+                        "userID": userID,
+                        "thumbnail": urls.first ?? "", // 첫 번째 이미지를 썸네일로 사용
+                        "title": title,
+                        "previewContent": previewContent,
+                        "createdAt": FieldValue.serverTimestamp(),
+                        "likeCount": 0,
+                        "commentCount": 0
+                    ]
+                    
+                    let postRef = db.collection("posts").document(postID)
+                    transaction.setData(thumbnailData, forDocument: postRef)
+                    
+                    // 상세 정보 저장
+                    let postData: [String: Any] = [
+                        "postID": postID,
+                        "userID": userID,
+                        "title": title,
+                        "content": content,
+                        "imageURLs": urls,
+                        "createdAt": FieldValue.serverTimestamp(),
+                        "likeCount": 0,
+                        "commentCount": 0
+                    ]
+                    
+                    let detailRef = postRef.collection("post_details").document(postID)
+                    transaction.setData(postData, forDocument: detailRef)
+                    
+                    return nil
+                } catch {
+                    errorPointer?.pointee = error as NSError
+                    return nil
+                }
+            }) { (result, error) in
+                if let error = error {
+                    completion(error)
+                } else {
+                    completion(nil)
+                }
+            }
+        }
+    }
     //MARK: - 차단된 유저 확인 후, 해당 유저 게시물 제외한 나머지 게시물 불러오기
     func fetchAllPostThumbnails(forCurrentUser currentUserID: String, completion:@escaping (Result<[ThumbnailPostResponse], Error>) -> Void) {
         let db = Firestore.firestore()
