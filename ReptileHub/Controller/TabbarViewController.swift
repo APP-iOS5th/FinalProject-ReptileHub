@@ -25,6 +25,7 @@ class TabbarViewController: UITabBarController {
         thirdNavigationController.tabBarItem = UITabBarItem(title: "프로필", image: UIImage(systemName: "person"), tag: 2)
         
         self.viewControllers = [firstNavigationController, secondNavigationController, thirdNavigationController]
+        self.tabBar.tintColor = .addBtnGraphTabbar
     }
     
     

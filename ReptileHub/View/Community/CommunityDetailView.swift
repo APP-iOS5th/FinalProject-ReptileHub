@@ -122,12 +122,10 @@ class CommunityDetailView: UIView {
     //MARK: - 스크롤뷰 세팅
     private func setupMainScrollView() {
         scrollView.alwaysBounceVertical = true
-        scrollView.backgroundColor = .green
         
         stackView.axis = .vertical
         stackView.distribution = .equalCentering
         stackView.alignment = .firstBaseline
-        stackView.backgroundColor = .red
         
         self.addSubview(scrollView)
         
@@ -152,7 +150,7 @@ class CommunityDetailView: UIView {
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
         profileImage.image = UIImage(systemName: "person")
-        profileImage.backgroundColor = .green
+        profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 30
         profileImage.clipsToBounds = true
     }
@@ -170,7 +168,6 @@ class CommunityDetailView: UIView {
         elementStackView.axis = .vertical
         elementStackView.distribution = .fillEqually
         elementStackView.alignment = .leading
-        elementStackView.backgroundColor = .systemPink
         
         elementStackView.addArrangedSubview(titleLabel)
         elementStackView.addArrangedSubview(nicknameLabel)
@@ -193,7 +190,6 @@ class CommunityDetailView: UIView {
         titleStackView.distribution = .fill
         titleStackView.alignment = .center
         titleStackView.spacing = 10
-        titleStackView.backgroundColor = .yellow
         
         titleStackView.addArrangedSubview(profileImage)
         titleStackView.addArrangedSubview(elementStackView)
@@ -222,7 +218,7 @@ class CommunityDetailView: UIView {
     
     //MARK: - 제목, 본문과의 구분선
     private func setupDivisionLine() {
-        divisionLine.backgroundColor = .lightGray
+        divisionLine.backgroundColor = .textFieldLine
         
         self.stackView.addArrangedSubview(divisionLine)
         
@@ -239,11 +235,9 @@ class CommunityDetailView: UIView {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fillEqually
         imageStackView.alignment = .center
-        imageStackView.backgroundColor = .green
         
         imageScrollView.alwaysBounceHorizontal = true
         imageScrollView.isPagingEnabled = true
-        imageScrollView.backgroundColor = .blue
         
         self.stackView.addArrangedSubview(imageScrollView)
         
@@ -277,7 +271,8 @@ class CommunityDetailView: UIView {
         }
         
         for imageView in imageViews {
-            imageView.backgroundColor = .gray
+            imageView.backgroundColor = .textFieldLine
+            
             imageStackView.addArrangedSubview(imageView)
             
             imageView.snp.makeConstraints { make in
@@ -291,7 +286,7 @@ class CommunityDetailView: UIView {
     
     //MARK: - 본문 이미지의 페이지 현황
     private func setupImagePageCountLabel() {
-        pageCountView.backgroundColor = .lightGray
+        pageCountView.backgroundColor = .gray.withAlphaComponent(0.5)
         pageCountView.layer.cornerRadius = 12
         
         pageCountView.addSubview(imagePageCount)
@@ -306,7 +301,6 @@ class CommunityDetailView: UIView {
         }
         
         imagePageCount.text = "1/\(contentImages.count)"
-        imagePageCount.backgroundColor = .lightGray
         
         imagePageCount.snp.makeConstraints { make in
             make.centerX.equalTo(pageCountView)
@@ -318,7 +312,7 @@ class CommunityDetailView: UIView {
     private func setupTextView() {
         contentText.text = "게시글 본문 예시 내용입니다."
         contentText.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        contentText.backgroundColor = .lightGray
+//        contentText.backgroundColor = .lightGray
         
         self.stackView.addArrangedSubview(contentText)
         
@@ -358,7 +352,7 @@ class CommunityDetailView: UIView {
     
     //MARK: - 본문과 댓글 사이의 구분선(두꺼움)
     private func setupDivisionThickLine() {
-        divisionThickLine.backgroundColor = .lightGray
+        divisionThickLine.backgroundColor = .textFieldLine
         
         self.stackView.addArrangedSubview(divisionThickLine)
         
@@ -374,13 +368,11 @@ class CommunityDetailView: UIView {
     private func setupCommentTableView() {
         let headerView: UILabel = UILabel()
         headerView.text = "댓글"
-        headerView.backgroundColor = .yellow
         headerView.frame = CGRect(x: 0, y: 0, width: 0, height: 40)
         
         
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
         commentTableView.isScrollEnabled = false
-        commentTableView.backgroundColor = .lightGray
         commentTableView.estimatedRowHeight = 60
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
@@ -413,17 +405,17 @@ class CommunityDetailView: UIView {
         commentTextView.font = UIFont.systemFont(ofSize: 18)
         commentTextView.isScrollEnabled = false
         commentTextView.textContainer.lineFragmentPadding = 15
-        commentTextView.backgroundColor = .lightGray
+        commentTextView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.6)
         
         placeHolder.text = "댓글을 남겨보세요"
         placeHolder.font = UIFont.systemFont(ofSize: 18, weight: .light)
-        placeHolder.textColor = .white
+        placeHolder.textColor = .textFieldPlaceholder
         
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25)
         let planeImage = UIImage(systemName: "paperplane.fill", withConfiguration: imageConfig)
         sendButton.setImage(planeImage, for: .normal)
-        
-        commentBackgroundView.backgroundColor = .gray
+        sendButton.tintColor = .addBtnGraphTabbar
+        commentBackgroundView.backgroundColor = .groupProfileBG
         
         self.addSubview(commentBackgroundView)
         
@@ -501,8 +493,6 @@ class CommunityDetailView: UIView {
             return
         }
         let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
-        print(round(scrollView.contentOffset.x))
-        print(scrollView.frame.width)
         self.imagePageCount.text = "\(Int(pageIndex) + 1)/\(self.contentImages.count)"
     }
     

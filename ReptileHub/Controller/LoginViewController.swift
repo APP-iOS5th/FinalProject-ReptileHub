@@ -20,9 +20,9 @@ class LoginViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("viewWillDisappear")
-        loginView.kakaoButton.removeTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
-        loginView.googleButton.removeTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
-        loginView.appleButton.removeTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
+//        loginView.kakaoButton.removeTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
+//        loginView.googleButton.removeTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
+//        loginView.appleButton.removeTarget(self, action: #selector(handleLogin(_:)), for: .touchUpInside)
     }
     
     private func setupView() {

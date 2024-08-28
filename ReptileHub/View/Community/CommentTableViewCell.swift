@@ -34,7 +34,7 @@ class CommentTableViewCell: UITableViewCell {
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
         profileImage.image = UIImage(systemName: "person")
-        profileImage.backgroundColor = .green
+        profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 20
         profileImage.clipsToBounds = true
         
@@ -58,15 +58,15 @@ class CommentTableViewCell: UITableViewCell {
         timestampLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
         timestampLabel.textColor = UIColor.lightGray
         
-        titleLabel.backgroundColor = .green
-        commentLabel.backgroundColor = .yellow
-        timestampLabel.backgroundColor = .blue
+//        titleLabel.backgroundColor = .green
+//        commentLabel.backgroundColor = .yellow
+//        timestampLabel.backgroundColor = .blue
         
         elementStackView.axis = .vertical
         elementStackView.distribution = .equalSpacing
         elementStackView.alignment = .firstBaseline
         elementStackView.spacing = 0
-        elementStackView.backgroundColor = .systemPink
+//        elementStackView.backgroundColor = .systemPink
         
         elementStackView.addArrangedSubview(titleLabel)
         elementStackView.addArrangedSubview(commentLabel)
