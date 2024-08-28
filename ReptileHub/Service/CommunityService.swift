@@ -286,24 +286,50 @@ class CommunityService {
       }
     
     //MARK: - 댓글 작성 함수
-    func addComment(postID:String,userID:String,content:String,completion:@escaping(Error?)->Void) {
+    func addComment(postID: String, userID: String, content: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let commentID = UUID().uuidString
         let createdAt = FieldValue.serverTimestamp()
+        let postRef = db.collection("posts").document(postID)
         
-        let commentData : [String:Any] = [
-            "commentID" : commentID,
-            "postID" : postID,
-            "userID" : userID,
-            "content" : content,
-            "createdAt" : createdAt,
-            "likeCount" : 0
+        let commentData: [String: Any] = [
+            "commentID": commentID,
+            "postID": postID,
+            "userID": userID,
+            "content": content,
+            "createdAt": createdAt,
+            "likeCount": 0
         ]
-        db.collection("posts").document(postID).collection("comments").document(commentID).setData(commentData) { error in
-            completion(error)
+        
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            // 현재 게시글을 가져옴
+            let postDocument: DocumentSnapshot
+            do {
+                postDocument = try transaction.getDocument(postRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            // 댓글 수를 가져와 1을 추가
+            let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": currentCommentCount + 1], forDocument: postRef)
+            
+            // 댓글 추가
+            let commentRef = postRef.collection("comments").document(commentID)
+            transaction.setData(commentData, forDocument: commentRef)
+            
+            return nil
+        }) { (result, error) in
+            if let error = error {
+                print("Failed to add comment: \(error.localizedDescription)")
+                completion(error)
+            } else {
+                print("댓글 추가 완료!!")
+                completion(nil)
+            }
         }
     }
-    
     //MARK: - 댓글 불러오기 함수
     func fetchComments(forPost postID:String, completion: @escaping(Result<[CommentResponse],Error>) -> Void) {
         let db = Firestore.firestore()
@@ -346,22 +372,41 @@ class CommunityService {
     }
     
     // MARK: - 댓글 삭제 함수
-       func deleteComment(postID: String, commentID: String, completion: @escaping (Error?) -> Void) {
-           let db = Firestore.firestore()
-           
-           let commentRef = db.collection("posts").document(postID).collection("comments").document(commentID)
-           
-           // 댓글 삭제
-           commentRef.delete { error in
-               if let error = error {
-                   print("Failed to delete comment: \(error.localizedDescription)")
-                   completion(error)
-               } else {
-                   print("댓글 삭제 완료!!")
-                   completion(nil)
-               }
-           }
-       }
+    func deleteComment(postID: String, commentID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let postRef = db.collection("posts").document(postID)
+        let commentRef = postRef.collection("comments").document(commentID)
+        
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            // 현재 게시글을 가져옴
+            let postDocument: DocumentSnapshot
+            do {
+                postDocument = try transaction.getDocument(postRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            // 댓글 수를 가져와 1을 감소
+            let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": max(currentCommentCount - 1, 0)], forDocument: postRef)
+            
+            // 댓글 삭제
+            transaction.deleteDocument(commentRef)
+            
+            return nil
+        }) { (result, error) in
+            if let error = error {
+                print("Failed to delete comment: \(error.localizedDescription)")
+                completion(error)
+            } else {
+                print("댓글 삭제 완료!!")
+                completion(nil)
+            }
+        }
+    }
+
+
     // MARK: - 댓글 수정 함수
     func updateComment(postID: String, commentID: String, newContent: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
