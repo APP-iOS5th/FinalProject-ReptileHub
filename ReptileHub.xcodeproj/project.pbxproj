@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */; };
+		460671352C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */; };
 		4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */; };
 		4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2E22C64D71700BCD451 /* AuthUser.swift */; };
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
@@ -101,6 +102,7 @@
 
 /* Begin PBXFileReference section */
 		460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "testVC-DiaryDetail,EditVC.swift"; sourceTree = "<group>"; };
+		460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestVC -BookmarkPostsViewController.swift"; sourceTree = "<group>"; };
 		4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementViewController.swift; sourceTree = "<group>"; };
 		4674B2E22C64D71700BCD451 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 				46DA262E2C6ED2DB005C7609 /* UserService.swift */,
 				46E37FCD2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift */,
 				460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */,
+				460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				46DA262F2C6ED2DB005C7609 /* UserService.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
 				58F3F6422C781DF500FDABD1 /* AddPostViewController.swift in Sources */,
+				460671352C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift in Sources */,
 				9F2BD4432C7BE977006FDD69 /* SpecialEditView.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,

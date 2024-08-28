@@ -285,6 +285,57 @@ class CommunityService {
           }
       }
     
+    // MARK: - 북마크 토글 함수
+    func toggleBookmarkPost(userID: String, postID: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+      
+        let userBookmarksRef = db.collection("users").document(userID).collection("bookmarkedPosts").document(postID)
+        
+        // Firestore 트랜잭션을 사용하여 북마크 토글 처리
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                let bookmarkDocument = try transaction.getDocument(userBookmarksRef)
+                
+                // 북마크가 이미 눌린 상태인지 확인
+                let hasBookmarked = bookmarkDocument.exists
+                
+                if hasBookmarked {
+                    // 북마크를 취소한 경우
+                    transaction.deleteDocument(userBookmarksRef)
+                } else {
+                    // 북마크를 추가한 경우
+                    transaction.setData(["createdAt": FieldValue.serverTimestamp()], forDocument: userBookmarksRef)
+                }
+                
+                return !hasBookmarked
+            } catch {
+                errorPointer?.pointee = error as NSError
+                return nil
+            }
+        }) { (result, error) in
+            if let error = error {
+                completion(.failure(error))
+            } else if let success = result as? Bool {
+                completion(.success(success))
+            }
+        }
+    }
+    
+    // MARK: - 특정 게시물이 북마크 상태인지 확인하는 함수
+    func isPostBookmarked(userID: String, postID: String, completion: @escaping (Bool) -> Void) {
+        let bookmarkRef = db.collection("users").document(userID).collection("bookmarkedPosts").document(postID)
+        
+        bookmarkRef.getDocument { document, error in
+            if let error = error {
+                print("Failed to check bookmark status: \(error.localizedDescription)")
+                completion(false)  // 오류 발생 시 기본적으로 북마크 상태가 아님으로 설정
+                return
+            }
+            
+            // 문서가 존재하면 북마크된 상태임
+            completion(document?.exists ?? false)
+        }
+    }
+
     //MARK: - 댓글 작성 함수
     func addComment(postID: String, userID: String, content: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
