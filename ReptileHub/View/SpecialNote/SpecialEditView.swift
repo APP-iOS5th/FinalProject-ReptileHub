@@ -108,20 +108,21 @@ class SpecialEditView: UIView {
         descriptionLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         return descriptionLabel
     }()
-    
+    private let textViewPlaceholder = "입력해주세요..."
     private lazy var descriptionTextView: UITextView = {
         let descriptionTextView = UITextView()
         descriptionTextView.textContainerInset = .init(top: 10, left: 10, bottom: 10, right: 10)
 //        descriptionTextView.contentInset = .init(top: 40, left: 30, bottom: 20, right: 10)
 //        descriptionTextView.backgroundColor = .brown
 //        descriptionTextView.textInputView.backgroundColor = UIColor(named: "Dark_Gray")
-        descriptionTextView.text = "입력해주세요..."
+        descriptionTextView.text = textViewPlaceholder
         descriptionTextView.font = .systemFont(ofSize: 15)
         descriptionTextView.textColor = .secondaryLabel
         descriptionTextView.backgroundColor = UIColor(named: "textFieldSegmentBG")
 //        descriptionTextView.delegate = self
         
         descriptionTextView.layer.cornerRadius = 5
+        descriptionTextView.delegate = self
         return descriptionTextView
     }()
     
@@ -222,5 +223,43 @@ class SpecialEditView: UIView {
             make.top.equalTo(descriptionTextView.snp.bottom).offset(30)
         }
     }
+    // textView placeholder 함수
+    @objc
+        private func didTapTextView(_ sender: Any) {
+            self.endEditing(true)
+        }
+    // textView countTextLabel 글자 수 세는 함수
+        private func updateCountLabel(characterCount: Int) {
+            countTextLabel.text = "\(characterCount)/1000"
+        }
 
+}
+//textView placeholder Delegate
+extension SpecialEditView: UITextViewDelegate {
+    func textViewDidBeginEditing(_ descriptionTextView: UITextView) {
+            if descriptionTextView.text == textViewPlaceholder {
+                descriptionTextView.text = nil
+                descriptionTextView.textColor = .black
+            }
+        }
+
+        func textViewDidEndEditing(_ descriptionTextView: UITextView) {
+            if descriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                descriptionTextView.text = textViewPlaceholder
+                descriptionTextView.textColor = .lightGray
+                updateCountLabel(characterCount: 0)
+            }
+        }
+
+        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+            let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
+            let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+
+            let characterCount = newString.count
+            guard characterCount <= 1000 else { return false }
+            updateCountLabel(characterCount: characterCount)
+
+            return true
+        }
 }
