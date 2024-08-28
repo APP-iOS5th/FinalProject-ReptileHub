@@ -130,19 +130,18 @@ class AddPostView: UIView {
         }
     }
     
-    func configureAddPostView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, phpickerDelegate: PHPickerViewControllerDelegate) {
+    func configureAddPostView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource) {
         imagePickerCollectionView.delegate = delegate
         imagePickerCollectionView.dataSource = datasource
-        picker.delegate = phpickerDelegate
     }
     
-    @objc func addImageButtonTapped() {
+    func createPHPickerVC() -> PHPickerViewController {
         var config = PHPickerConfiguration()
         config.selectionLimit = 0
         config.filter = .images
         
-        picker = PHPickerViewController(configuration: config)
-        print("피커 오픈")
+        return PHPickerViewController(configuration: config)
+        
     }
     
 }

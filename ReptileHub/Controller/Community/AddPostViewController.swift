@@ -18,7 +18,7 @@ class AddPostViewController: UIViewController {
         view.backgroundColor = .white
         
         self.view = addPostView
-        addPostView.configureAddPostView(delegate: self, datasource: self, phpickerDelegate: self)
+        addPostView.configureAddPostView(delegate: self, datasource: self)
     }
     
     
@@ -46,8 +46,9 @@ extension AddPostViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == 0 {
-            addPostView.addImageButtonTapped()
-            present(addPostView.picker, animated: true, completion: nil)
+            let picker = addPostView.createPHPickerVC()
+            picker.delegate = self
+            present(picker, animated: true, completion: nil)
         }
     }
 }
