@@ -22,13 +22,21 @@ class AddGrowthDiaryView: UIView {
     //해칭일
     private lazy var hatchDaysDatePicker: UIDatePicker = {
         let picker = UIDatePicker()
-        picker.preferredDatePickerStyle = .compact
+        picker.preferredDatePickerStyle = .inline
         picker.datePickerMode = .date
         return picker
     }()
     private lazy var hatchDaysTextField: UITextField = {
         let textField = createTextField(text: "해칭일을 선택해주세요.")
         textField.inputView = hatchDaysDatePicker
+        
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        toolbar.setItems([doneButton], animated: true)
+        textField.inputAccessoryView = toolbar
+        
         return textField
     }()
     
@@ -158,6 +166,7 @@ class AddGrowthDiaryView: UIView {
     
     private func setUI(){
         addSubview(scrollView)
+        
         scrollView.addSubview(contentView)
         contentView.addSubview(mainStackView)
         
@@ -177,6 +186,12 @@ class AddGrowthDiaryView: UIView {
         
         line.snp.makeConstraints { make in
             make.height.equalTo(1)
+        }
+    }
+    
+    @objc private func doneButtonTapped(){
+        UIView.animate(withDuration: 0.3) {
+            self.hatchDaysTextField.resignFirstResponder()
         }
     }
     
