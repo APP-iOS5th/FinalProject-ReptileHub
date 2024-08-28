@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */; };
 		4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */; };
 		4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2E22C64D71700BCD451 /* AuthUser.swift */; };
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
@@ -99,6 +100,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "testVC-DiaryDetail,EditVC.swift"; sourceTree = "<group>"; };
 		4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementViewController.swift; sourceTree = "<group>"; };
 		4674B2E22C64D71700BCD451 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				46F0F7F42C6B286300444C98 /* CommunityService.swift */,
 				46DA262E2C6ED2DB005C7609 /* UserService.swift */,
 				46E37FCD2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift */,
+				460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -517,6 +520,7 @@
 				46B0D99A2C78C17200697E7E /* PostEditViewController.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
+				460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */,
 				9F2BD43F2C7BCD68006FDD69 /* SpecialListViewController.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				C14FF36E2C75DB2800089C6D /* WritePostListViewController.swift in Sources */,

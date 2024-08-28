@@ -541,6 +541,86 @@ extension DiaryPostService {
         }
     }
 
+    //MARK: - 성장 일지 속 일기 수정 함수
+    func updateDiary(userID: String, diaryID: String, entryID: String, newTitle: String?, newContent: String?, newImages: [Data]?, existingImageURLs: [String]?, removedImageURLs: [String]?, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let entryRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("diary_entries").document(entryID)
+        let storageRef = Storage.storage().reference()
+
+        var updatedImageURLs: [String] = existingImageURLs ?? []
+        var errors: [Error] = []
+        let group = DispatchGroup()
+
+        // 1. 새로 추가된 이미지를 Firebase Storage에 업로드
+        if let newImages = newImages {
+            for imageData in newImages {
+                let fileName = UUID().uuidString + ".jpg"
+                let fileRef = storageRef.child("images/\(fileName)")
+                
+                group.enter()
+                fileRef.putData(imageData, metadata: nil) { _, error in
+                    if let error = error {
+                        errors.append(error)
+                        group.leave()
+                        return
+                    }
+                    
+                    fileRef.downloadURL { url, error in
+                        if let error = error {
+                            errors.append(error)
+                        } else if let url = url {
+                            updatedImageURLs.append(url.absoluteString)
+                        }
+                        group.leave()
+                    }
+                }
+            }
+        }
+
+        // 2. 기존에 있던 이미지 중 삭제된 이미지를 Firebase Storage에서 삭제
+        if let removedImageURLs = removedImageURLs {
+            for imageURL in removedImageURLs {
+                guard let fileName = extractFileName(from: imageURL) else { continue }
+                let fileRef = storageRef.child("images/\(fileName)")
+                
+                group.enter()
+                fileRef.delete { error in
+                    if let error = error {
+                        errors.append(error)
+                    } else {
+                        // 삭제된 이미지를 목록에서 제거
+                        updatedImageURLs.removeAll { $0 == imageURL }
+                    }
+                    group.leave()
+                }
+            }
+        }
+
+        // 3. 모든 작업이 완료되면 Firestore 업데이트
+        group.notify(queue: .main) {
+            if !errors.isEmpty {
+                completion(errors.first)
+                return
+            }
+            
+            var updatedData: [String: Any] = [:]
+            if let newTitle = newTitle {
+                updatedData["title"] = newTitle
+            }
+            if let newContent = newContent {
+                updatedData["content"] = newContent
+            }
+            updatedData["imageURLs"] = updatedImageURLs
+            updatedData["updatedAt"] = FieldValue.serverTimestamp()
+
+            // 4. Firestore 업데이트
+            entryRef.updateData(updatedData) { error in
+                completion(error)
+            }
+        }
+    }
     
 }
 
