@@ -162,12 +162,14 @@ class CommunityService {
     func fetchPostDetail(userID: String, postID: String, completion: @escaping (Result<PostDetailResponse, Error>) -> Void) {
         let postRef = db.collection("posts").document(postID)
         let userLikesRef = db.collection("users").document(userID).collection("likedPosts").document(postID)
-        
+        let userBookmarksRef = db.collection("users").document(userID).collection("bookmarkedPosts").document(postID)
+     
         // Firestore에서 여러 문서를 병렬로 가져오는 DispatchGroup 사용
         let group = DispatchGroup()
         
         var postDetailResponse: PostDetailResponse?
         var isLiked: Bool = false
+        var isBookmarked: Bool = false
         var fetchError: Error?
         
         group.enter()
@@ -208,7 +210,8 @@ class CommunityService {
                     likeCount: likeCount,
                     commentCount: commentCount,
                     createdAt: createdAt,
-                    isLiked: isLiked
+                    isLiked: isLiked,
+                    isBookmarked: isBookmarked
                 )
             } else {
                 fetchError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode data for postID \(postID)"])
@@ -228,12 +231,26 @@ class CommunityService {
             isLiked = document?.exists ?? false
         }
         
+        group.enter()
+          userBookmarksRef.getDocument { (document, error) in
+              defer { group.leave() }
+              
+              if let error = error {
+                  fetchError = error
+                  return
+              }
+              
+              // 북마크 여부 확인
+              isBookmarked = document?.exists ?? false
+          }
+        
         // 모든 비동기 작업이 끝난 후에 실행
         group.notify(queue: .main) {
             if let fetchError = fetchError {
                 completion(.failure(fetchError))
             } else if var postDetailResponse = postDetailResponse {
                 postDetailResponse.isLiked = isLiked
+                postDetailResponse.isBookmarked = isBookmarked
                 completion(.success(postDetailResponse))
             } else {
                 let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No post detail found for postID \(postID)"])
