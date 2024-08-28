@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AddGrowthDiaryView: UIView {
+class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     
     //MARK: - 자식정보
     //이미지
@@ -47,6 +47,44 @@ class AddGrowthDiaryView: UIView {
     func updateDateField(){
         hatchDaysTextField.text = hatchDaysDatePicker.date.formatted
     }
+    
+    private func addTapGestureRecognizer() {
+        // UITapGestureRecognizer 추가
+               let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOutsideDropdown))
+               tapGesture.cancelsTouchesInView = false // 다른 터치 이벤트와 충돌하지 않도록 설정
+               tapGesture.delegate = self // 델리게이트 설정
+               self.addGestureRecognizer(tapGesture)
+        }
+    
+    // 드롭다운 외부를 터치했을 때 호출되는 메서드
+       @objc private func handleTapOutsideDropdown(_ gesture: UITapGestureRecognizer) {
+           let location = gesture.location(in: self)
+
+                  // 첫 번째 드롭다운 외부를 터치했을 때
+                  if genderDropdownView.isOpen && !genderDropdownView.frame.contains(location) {
+                      genderDropdownView.closeDropdown()
+                  }
+
+                  // 두 번째 드롭다운 외부를 터치했을 때
+                  if feedMethodDropdownView.isOpen && !feedMethodDropdownView.frame.contains(location) {
+                      feedMethodDropdownView.closeDropdown()
+                  }
+       }
+
+       // UIGestureRecognizerDelegate 메서드: 드롭다운 내부의 터치 이벤트는 무시
+       func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+           if let touchedView = touch.view {
+                       if touchedView.isDescendant(of: genderDropdownView) {
+                           return false
+                       }
+                       if touchedView.isDescendant(of: feedMethodDropdownView) {
+                           return false
+                       }
+                   }
+                   return true
+
+       }
+
     
     //성별
     private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
@@ -157,6 +195,7 @@ class AddGrowthDiaryView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
+        addTapGestureRecognizer()
     }
     
     required init?(coder: NSCoder) {

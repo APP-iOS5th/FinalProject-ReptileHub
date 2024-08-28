@@ -10,7 +10,7 @@ import SnapKit
 class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private let menus: [String]
     private let title: String
-    private var isOpen = false
+    var isOpen = false
     
     private var selectedOption: String? {
         didSet {
@@ -74,6 +74,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         self.title = title
         super.init(frame: .zero)
         setupUI()
+        registerForNotifications()
     }
     
     required init?(coder: NSCoder) {
@@ -90,54 +91,202 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    // MARK: - Toggle Dropdown
-    private func toggleDropdown() {
+    //MARK: - 드롭다운 서택 시 실행되는 함수
+    private func toggleDropdown(){
+        //        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+        //              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+        //            print("Key window not found")
+        //            return
+        //        }
+        //        if !isOpen {
+        //            NotificationCenter.default.post(name: .dropdownDidOpen, object: self)
+        //        }
+        //        isOpen.toggle()
+        //
+        //        //        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+        //        //        let newImage = isOpen ? UIImage(systemName: "chevron.up", withConfiguration: imageConfig) : UIImage(systemName: "chevron.down", withConfiguration: imageConfig)
+        //        //        UIView.transition(with: titleButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+        //        //            self.titleButton.setImage(newImage, for: .normal)
+        //        //        }, completion: nil)
+        //        updateButtonIcon()
+        //        if isOpen {
+        //            print(isOpen)
+        //            // 드롭다운이 열릴 때 다른 드롭다운이 열려 있으면 닫기
+        //            print("A")
+        //            //            NotificationCenter.default.post(name: .dropdownDidOpen, object: self)
+        //
+        //            // 테이블 뷰를 윈도우에 추가
+        //            window.addSubview(tableView)
+        //            window.bringSubviewToFront(tableView)
+        //
+        //            tableView.snp.remakeConstraints { make in
+        //                make.top.equalTo(self.snp.bottom).offset(5)
+        //                make.leading.trailing.equalTo(self)
+        //                self.tableViewHeightConstraint = make.height.equalTo(0).constraint
+        //            }
+        //
+        //            window.layoutIfNeeded()
+        //
+        //            let newHeight = CGFloat(menus.count * 44)
+        //            tableViewHeightConstraint?.update(offset: newHeight)
+        //
+        //            tableView.isHidden = false
+        //
+        //            UIView.animate(withDuration: 0.3) {
+        //                window.layoutIfNeeded()
+        //            }
+        //        } else {
+        //            print(isOpen)
+        //            print("B")
+        //            closeDropdown()
+        //        }
+        
+        if isOpen {
+            closeDropdown()
+        } else {
+            openDropdown()
+        }
+    }
+    
+    //MARK: - 드롭다운 펼칠 때 함수
+    private func openDropdown() {
+        //드롭다운 뷰의 경우 맨위에 존재해야하므로 window에 추가해줘야한다.
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
             print("Key window not found")
             return
         }
         
-        isOpen.toggle()
+        //여러개의 드롭다운이 있을 경우 하나가 펼쳐지면 다른 드롭다운은 접어지게 하기위 NotificationCenter에 현재 객체의 신호를 보낸다.
+        NotificationCenter.default.post(name: .dropdownDidOpen, object: self)
+        isOpen = true
+        
+        updateButtonIcon()
+        
+        window.addSubview(tableView)
+        window.bringSubviewToFront(tableView)
+        
+        tableView.snp.remakeConstraints { make in
+            make.top.equalTo(self.snp.bottom).offset(5)
+            make.leading.trailing.equalTo(self)
+            self.tableViewHeightConstraint = make.height.equalTo(0).constraint
+        }
+        
+        window.layoutIfNeeded()
+        
+        let newHeight = CGFloat(menus.count * 45)
+        tableViewHeightConstraint?.update(offset: newHeight)
+        
+        tableView.isHidden = false
+        
+        UIView.animate(withDuration: 0.3) {
+            window.layoutIfNeeded()
+        }
+    }
+    
+    //MARK: - 드롭다운 선택 시 아이콘 변경 시키는 함수
+    private func updateButtonIcon() {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
-        // 아이콘 업데이트를 애니메이션으로 처리
         let newImage = isOpen ? UIImage(systemName: "chevron.up", withConfiguration: imageConfig) : UIImage(systemName: "chevron.down", withConfiguration: imageConfig)
-        newImage?.withTintColor(.red, renderingMode: .alwaysOriginal)
+        
         UIView.transition(with: titleButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
             self.titleButton.setImage(newImage, for: .normal)
         }, completion: nil)
-        
-        if isOpen {
-            // tableView를 윈도우에 추가
-            window.addSubview(tableView)
-            window.bringSubviewToFront(tableView)
-            
-            tableView.snp.remakeConstraints { make in
-                make.top.equalTo(self.snp.bottom).offset(5)
-                make.leading.trailing.equalTo(self)
-                self.tableViewHeightConstraint = make.height.equalTo(0).constraint
-            }
-            
-            window.layoutIfNeeded()
-            
-            let newHeight = CGFloat(menus.count * 44)
-            tableViewHeightConstraint?.update(offset: newHeight)
-            
-            tableView.isHidden = false
-            
-            UIView.animate(withDuration: 0.3) {
-                window.layoutIfNeeded()
-            }
-        } else {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.tableViewHeightConstraint?.update(offset: 0)
-                window.layoutIfNeeded()
-            }, completion: { _ in
-                self.tableView.isHidden = true
-                self.tableView.removeFromSuperview()
-            })
+    }
+    
+    //MARK: - dropdownDidOpen 알림을 수신할 때 호출
+    @objc private func handleDropdownDidOpen(_ notification: Notification) {
+        if let sender = notification.object as? DropDownView, sender !== self {
+            closeDropdown() // 다른 드롭다운이 열리면 현재 드롭다운을 닫음
         }
     }
+    
+    //MARK: - 드롭다운을 접을 떄 함수
+    @objc func closeDropdown(){
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+            print("Key window not found")
+            return
+        }
+        
+        guard isOpen else { return }
+        isOpen = false
+        
+        updateButtonIcon()
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            print("OK")
+            self.tableViewHeightConstraint?.update(offset: 0)
+            
+            window.layoutIfNeeded()
+        }, completion: { _ in
+            print("animated")
+            self.tableView.isHidden = true
+            self.tableView.removeFromSuperview()
+        })
+        
+        
+    }
+    
+    //MARK: - 실시간 드롭다운의 상태를 파악하기위해 관찰자를 추가한다.(name의 접근했을 때 selector이 실행된다)
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDropdownDidOpen(_:)), name: .dropdownDidOpen, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(closeDropdown), name: UITextField.textDidBeginEditingNotification, object: nil)
+    }
+    
+    //MARK: - 실시간 드롭다운의 상태를 제거한다.
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    //
+    //    private func toggleDropdown() {
+    //        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+    //              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+    //            print("Key window not found")
+    //            return
+    //        }
+    //
+    //        isOpen.toggle()
+    //        let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
+    //        // 아이콘 업데이트를 애니메이션으로 처리
+    //        let newImage = isOpen ? UIImage(systemName: "chevron.up", withConfiguration: imageConfig) : UIImage(systemName: "chevron.down", withConfiguration: imageConfig)
+    //        newImage?.withTintColor(.red, renderingMode: .alwaysOriginal)
+    //        UIView.transition(with: titleButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+    //            self.titleButton.setImage(newImage, for: .normal)
+    //        }, completion: nil)
+    //
+    //        if isOpen {
+    //            // tableView를 윈도우에 추가
+    //            window.addSubview(tableView)
+    //            window.bringSubviewToFront(tableView)
+    //
+    //            tableView.snp.remakeConstraints { make in
+    //                make.top.equalTo(self.snp.bottom).offset(5)
+    //                make.leading.trailing.equalTo(self)
+    //                self.tableViewHeightConstraint = make.height.equalTo(0).constraint
+    //            }
+    //
+    //            window.layoutIfNeeded()
+    //
+    //            let newHeight = CGFloat(menus.count * 44)
+    //            tableViewHeightConstraint?.update(offset: newHeight)
+    //
+    //            tableView.isHidden = false
+    //
+    //            UIView.animate(withDuration: 0.3) {
+    //                window.layoutIfNeeded()
+    //            }
+    //        } else {
+    //            UIView.animate(withDuration: 0.3, animations: {
+    //                self.tableViewHeightConstraint?.update(offset: 0)
+    //                window.layoutIfNeeded()
+    //            }, completion: { _ in
+    //                self.tableView.isHidden = true
+    //                self.tableView.removeFromSuperview()
+    //            })
+    //        }
+    //    }
     
     // MARK: - UITableViewDataSource & UITableViewDelegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -153,6 +302,10 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedOption = menus[indexPath.row]
-        toggleDropdown()
+        closeDropdown()
     }
+}
+
+extension Notification.Name {
+    static let dropdownDidOpen = Notification.Name("dropdownDidOpen")
 }
