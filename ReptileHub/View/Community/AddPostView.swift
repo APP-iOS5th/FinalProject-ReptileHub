@@ -23,7 +23,7 @@ class AddPostView: UIView {
     // selectedImages의 데이터화 배열
     var imageData: [Data] = []
     
-    
+
     // 키보드 탭 제스쳐
     lazy var tapGesture: UITapGestureRecognizer = {
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler))

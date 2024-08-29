@@ -18,6 +18,7 @@ class CommunityDetailView: UIView {
     // 키보드 델리겟 매니저
     let keyboardManager = KeyboardManager()
     
+    
     // 스크롤 뷰
     private let scrollView: UIScrollView = UIScrollView()
     private let stackView: UIStackView = UIStackView()
@@ -79,6 +80,7 @@ class CommunityDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         
         // 제스처 적용(슈퍼뷰 클릭시 키보드 내려감)
         self.addGestureRecognizer(tapGesture)

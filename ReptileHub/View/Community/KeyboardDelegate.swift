@@ -24,7 +24,6 @@ class KeyboardManager {
     // 델리게이트 변수
     weak var delegate: KeyboardNotificationDelegate?
     
-    
     // 키보드 나옴/숨김 NotificationCenter
     func showNoti() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardAction),
@@ -57,23 +56,22 @@ class KeyboardManager {
             print("키보드 열림")
             
             UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
-                        
+                
                 // 델리게이트를 통해 메서드 호출
                 self.delegate?.keyboardWillShow(keyboardSize: keyboardSize)
-    
-                    }, completion: nil)
+                
+            }, completion: nil)
             
-
             
         case UIResponder.keyboardWillHideNotification:
             print("키보드 닫힘")
             
             UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
-                        
+                
                 // 델리게이트를 통해 메서드 호출
                 self.delegate?.keyboardWillHide(keyboardSize: keyboardSize)
                 
-                    }, completion: nil)
+            }, completion: nil)
             
         default:
             return

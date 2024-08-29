@@ -351,22 +351,6 @@
 			path = GrowthDiary;
 			sourceTree = "<group>";
 		};
-		C1EBDFC72C782A2500B6CCBD /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				C12FC0EE2C790D19000BB52E /* ProfileView.swift */,
-				C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */,
-				C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */,
-				C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */,
-				C14FF3682C75DB2800089C6D /* WriteReplyListTableViewCell.swift */,
-				C154FA192C7C0F2C00624AA3 /* LikePostView.swift */,
-				C14FF3652C75DB2800089C6D /* LikePostTableViewCell.swift */,
-				C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */,
-				C14FF3602C75DB2800089C6D /* BlockUserTableViewCell.swift */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
 		9F2BD4322C75C431006FDD69 /* SpecialNote */ = {
 			isa = PBXGroup;
 			children = (
@@ -387,6 +371,22 @@
 				9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */,
 			);
 			path = SpecialNote;
+			sourceTree = "<group>";
+		};
+		C1EBDFC72C782A2500B6CCBD /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				C12FC0EE2C790D19000BB52E /* ProfileView.swift */,
+				C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */,
+				C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */,
+				C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */,
+				C14FF3682C75DB2800089C6D /* WriteReplyListTableViewCell.swift */,
+				C154FA192C7C0F2C00624AA3 /* LikePostView.swift */,
+				C14FF3652C75DB2800089C6D /* LikePostTableViewCell.swift */,
+				C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */,
+				C14FF3602C75DB2800089C6D /* BlockUserTableViewCell.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

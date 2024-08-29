@@ -13,10 +13,12 @@ protocol CommunityListViewDelegate: AnyObject {
 }
 
 class CommunityListView: UIView {
+    // 테스트 중~
+    var testData: [ThumbnailPostResponse] = []
 
     weak var delegate: CommunityListViewDelegate?
 
-    private let communityTableView: UITableView = UITableView(frame: .zero)
+    let communityTableView: UITableView = UITableView(frame: .zero)
     
     let addButton: UIButton = UIButton(type: .custom)
     
