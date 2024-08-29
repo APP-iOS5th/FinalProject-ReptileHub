@@ -234,7 +234,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         NotificationCenter.default.addObserver(self, selector: #selector(closeDropdown), name: UITextField.textDidBeginEditingNotification, object: nil)
     }
     
-    //MARK: - 실시간 드롭다운의 상태를 제거한다.
+    //MARK: - 실시간 드롭다운의 상태를 제거한다
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

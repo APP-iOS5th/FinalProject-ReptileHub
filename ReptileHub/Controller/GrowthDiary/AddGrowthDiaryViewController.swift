@@ -10,6 +10,7 @@ import UIKit
 class AddGrowthDiaryViewController: UIViewController {
 
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
+    let photoPickerManager = PhotoPickerManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +26,33 @@ class AddGrowthDiaryViewController: UIViewController {
             self?.datePickerValueChanged()
         }
         addGrowthDiaryView.addAction(action: action)
+        
+        setupGestureRecognizers()
     }
     
     private func datePickerValueChanged(){
         addGrowthDiaryView.updateDateField()
     }
+    
+    private func setupGestureRecognizers() {
+            for i in 1...3 {
+                if let imageView = addGrowthDiaryView.getImageView(at: i) {
+                    imageView.isUserInteractionEnabled = true
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped(_:)))
+                    imageView.addGestureRecognizer(tapGesture)
+                }
+            }
+        }
+    
+    @objc private func imageViewTapped(_ sender: UITapGestureRecognizer) {
+            guard let tappedImageView = sender.view as? UIImageView else { return }
+            
+            photoPickerManager.presentPhotoPicker(from: self) { selectedImages in
+                if let firstImage = selectedImages.first {
+                    tappedImageView.image = firstImage
+                }
+            }
+        }
 }
 
 #if DEBUG

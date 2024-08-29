@@ -12,7 +12,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     
     //MARK: - 자식정보
     //이미지
-    private lazy var thumbnailImageView: UIView = createImageVIew()// TODO: ImagePicker로 구현
+    private lazy var thumbnailImageView: UIImageView = createImageVIew()// TODO: ImagePicker로 구현
     //이름
     private lazy var nameTextField: UITextField = createTextField(text: "반려 도마뱀의 이름을 입력해주세요.")
     //종
@@ -159,6 +159,9 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         return stackView
     }()
     
+    
+    
+    
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             createThumbnailGroup(),
@@ -267,11 +270,26 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
+        imageView.isUserInteractionEnabled = true //제스터를 인식하기위해 설정
+        
         imageView.snp.makeConstraints { make in
             make.height.equalTo(250)
         }
         return imageView
     }
+    
+    // 이미지뷰에 제스처를 추가하는 메서드
+        func configureImageViewActions(target: Any, action: Selector) {
+            [thumbnailImageView, fatherImageView, motherImageView].forEach { imageView in
+                let tapGesture = UITapGestureRecognizer(target: target, action: action)
+                imageView.addGestureRecognizer(tapGesture)
+            }
+        }
+
+        // 특정 이미지뷰에 이미지를 설정하는 메서드
+        func setImage(_ image: UIImage, for imageView: UIImageView) {
+            imageView.image = image
+        }
     
     //button 생성
     private func createButton(title: String) -> UIButton {
@@ -384,6 +402,19 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         buttonStackView.distribution = .fillEqually
         
         return createGroup(title: title, contentView: buttonStackView)
+    }
+    
+    func getImageView(at index: Int) -> UIImageView?{
+        switch index{
+        case 1:
+            return thumbnailImageView
+        case 2:
+            return fatherImageView
+        case 3:
+            return motherImageView
+        default:
+            return nil
+        }
     }
     
     //MARK: - Action
