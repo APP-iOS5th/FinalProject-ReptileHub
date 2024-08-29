@@ -123,6 +123,15 @@ extension AddPostViewController: AddPostViewDelegate {
                 title: \(title)
                 content: \(content)
                 """)
+        let userID = "임시로 지정"
+        
+//        CommunityService.shared.createPost(userID: userID, title: title, content: content, images: imageData) { error in
+//            if let error = error {
+//                        print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
+//                    } else {
+//                        print("게시글 게시 성공")
+//                    }
+//        }
     }
     
     
