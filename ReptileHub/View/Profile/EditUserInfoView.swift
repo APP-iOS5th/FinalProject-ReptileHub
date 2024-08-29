@@ -10,7 +10,7 @@ import SnapKit
 
 class EditUserInfoView: UIView {
     
-//    let keyboardManager = KeyboardManager()
+    let keyboardManager = KeyboardManager()
 
     var ProfileImageEdit: UIImageView = {
         let imageView = UIImageView()
@@ -63,9 +63,9 @@ class EditUserInfoView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-//        keyboardManager.delegate = self
-//        keyboardManager.showNoti()
-//        keyboardManager.hideNoti()
+        keyboardManager.delegate = self
+        keyboardManager.showNoti()
+        keyboardManager.hideNoti()
         
         setupView()
     }
@@ -119,17 +119,28 @@ class EditUserInfoView: UIView {
     }
 }
 
-//extension EditUserInfoView: KeyboardNotificationDelegate {
-//    func keyboardWillShow(keyboardSize: CGRect) {
-//        print("keyboard Show")
-//        
-//        self.layoutIfNeeded()
-//    }
-//    
-//    func keyboardWillHide(keyboardSize: CGRect) {
-//        print("keyboard Hide")
-//        
-//        self.layoutIfNeeded()
-//
-//    }
-//}
+extension EditUserInfoView: KeyboardNotificationDelegate {
+    func keyboardWillShow(keyboardSize: CGRect) {
+        print("keyboard Show")
+        
+        ProfileImageEdit.snp.remakeConstraints { make in
+            make.topMargin.equalTo(100)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(100)
+        }
+//        self.frame.origin.y += 9999
+        self.layoutIfNeeded()
+    }
+    
+    func keyboardWillHide(keyboardSize: CGRect) {
+        print("keyboard Hide")
+        
+        ProfileImageEdit.snp.remakeConstraints { make in
+            make.topMargin.equalTo(40)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(100)
+        }
+        self.layoutIfNeeded()
+
+    }
+}
