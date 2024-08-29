@@ -56,7 +56,7 @@ class WritePostListTableViewCell: UITableViewCell {
         thumbnailImageView.contentMode = .scaleAspectFit
         thumbnailImageView.layer.cornerRadius = 5
         thumbnailImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        thumbnailImageView.backgroundColor = .green
+        thumbnailImageView.backgroundColor = .lightGray
         
         self.contentView.addSubview(thumbnailImageView)
         
@@ -72,7 +72,6 @@ class WritePostListTableViewCell: UITableViewCell {
         mainInfoStackView.axis = .vertical
         mainInfoStackView.distribution = .equalSpacing
         mainInfoStackView.alignment = .leading
-        mainInfoStackView.backgroundColor = .blue
         
         titleLabel.text = "공부는 말이야.."
         titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
@@ -101,7 +100,6 @@ class WritePostListTableViewCell: UITableViewCell {
         firstStackView.distribution = .equalSpacing
         firstStackView.alignment = .center
         firstStackView.spacing = 5
-        firstStackView.backgroundColor = .yellow
         
         commentCountLabel.text = "1234"
         commentCountLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
@@ -121,9 +119,8 @@ class WritePostListTableViewCell: UITableViewCell {
         secondStackView.distribution = .equalSpacing
         secondStackView.alignment = .center
         secondStackView.spacing = 10
-        secondStackView.backgroundColor = .red
         
-        nicknameLabel.text = "구현현서"
+        nicknameLabel.text = "은우성빈"
         nicknameLabel.font = UIFont.systemFont(ofSize: 12, weight: .ultraLight)
         timestampLabel.text = "24.08.05 17:00"
         timestampLabel.font = UIFont.systemFont(ofSize: 12, weight: .ultraLight)
@@ -161,4 +158,8 @@ class WritePostListTableViewCell: UITableViewCell {
         }
     }
     
+    func configure(with menu: UIMenu) {
+        menuButton.menu = menu
+        menuButton.showsMenuAsPrimaryAction = true
+    }
 }

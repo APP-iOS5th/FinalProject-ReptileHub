@@ -74,6 +74,7 @@
 		C154FA1A2C7C0F2C00624AA3 /* LikePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA192C7C0F2C00624AA3 /* LikePostView.swift */; };
 		C154FA1C2C7C11B500624AA3 /* WriteReplyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */; };
 		C154FA1E2C7C15D600624AA3 /* WritePostListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */; };
+		C154FA222C7C4D9F00624AA3 /* EditUserInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C154FA212C7C4D9F00624AA3 /* EditUserInfoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -145,6 +146,7 @@
 		C154FA192C7C0F2C00624AA3 /* LikePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikePostView.swift; sourceTree = "<group>"; };
 		C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteReplyListView.swift; sourceTree = "<group>"; };
 		C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritePostListView.swift; sourceTree = "<group>"; };
+		C154FA212C7C4D9F00624AA3 /* EditUserInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserInfoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				C12FC0EE2C790D19000BB52E /* ProfileView.swift */,
+				C154FA212C7C4D9F00624AA3 /* EditUserInfoView.swift */,
 				C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */,
 				C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */,
 				C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */,
@@ -482,6 +485,7 @@
 				C14FF36D2C75DB2800089C6D /* WritePostListTableViewCell.swift in Sources */,
 				C154FA1A2C7C0F2C00624AA3 /* LikePostView.swift in Sources */,
 				58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */,
+				C154FA222C7C4D9F00624AA3 /* EditUserInfoView.swift in Sources */,
 				589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */,
 				C14FF36C2C75DB2800089C6D /* BlockUserTableViewCell.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
