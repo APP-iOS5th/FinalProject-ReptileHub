@@ -12,7 +12,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     
     //MARK: - 자식정보
     //이미지
-    private lazy var thumbnailImageView: UIImageView = createImageVIew()// TODO: ImagePicker로 구현
+    private(set) lazy var thumbnailImageView: UIImageView = createImageVIew()// TODO: ImagePicker로 구현
     //이름
     private lazy var nameTextField: UITextField = createTextField(text: "반려 도마뱀의 이름을 입력해주세요.")
     //종
@@ -122,7 +122,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
 //    }
     //MARK: - 아빠 정보
     //아빠 이미지
-    private lazy var fatherImageView: UIImageView = createImageVIew()
+    private(set) lazy var fatherImageView: UIImageView = createImageVIew()
     //아빠 이름
     private lazy var fatherNameTextField: UITextField = createTextField(text: "이름을 입력해주세요.")
     //아빠 모프
@@ -130,7 +130,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     
     //MARK: - 엄마 정보
     //엄마 이미지
-    private lazy var motherImageView: UIImageView = createImageVIew()
+    private(set) lazy var motherImageView: UIImageView = createImageVIew()
     //엄마 이름
     private lazy var motherNameTextField: UITextField = createTextField(text: "이름을 입력해주세요.")
     //엄마 모프
@@ -404,18 +404,18 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         return createGroup(title: title, contentView: buttonStackView)
     }
     
-    func getImageView(at index: Int) -> UIImageView?{
-        switch index{
-        case 1:
-            return thumbnailImageView
-        case 2:
-            return fatherImageView
-        case 3:
-            return motherImageView
-        default:
-            return nil
-        }
-    }
+//    func getImageView(at index: Int) -> UIImageView?{
+//        switch index{
+//        case 1:
+//            return thumbnailImageView
+//        case 2:
+//            return fatherImageView
+//        case 3:
+//            return motherImageView
+//        default:
+//            return nil
+//        }
+//    }
     
     //MARK: - Action
     @objc private func showContent(_ sender: UIButton) {

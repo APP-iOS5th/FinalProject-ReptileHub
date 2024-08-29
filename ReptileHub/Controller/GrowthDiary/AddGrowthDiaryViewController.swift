@@ -6,17 +6,18 @@
 //
 
 import UIKit
+import PhotosUI
 
-class AddGrowthDiaryViewController: UIViewController {
-
+class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
-    let photoPickerManager = PhotoPickerManager()
+    private var selectedImageView: UIImageView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUP()
     }
-
+    
     func setUP(){
         self.title = "성장일지"
         self.view = addGrowthDiaryView
@@ -27,32 +28,52 @@ class AddGrowthDiaryViewController: UIViewController {
         }
         addGrowthDiaryView.addAction(action: action)
         
-        setupGestureRecognizers()
+        addGrowthDiaryView.configureImageViewActions(target: self, action: #selector(imageViewTapped(_:)))
+        
     }
     
     private func datePickerValueChanged(){
         addGrowthDiaryView.updateDateField()
     }
     
-    private func setupGestureRecognizers() {
-            for i in 1...3 {
-                if let imageView = addGrowthDiaryView.getImageView(at: i) {
-                    imageView.isUserInteractionEnabled = true
-                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped(_:)))
-                    imageView.addGestureRecognizer(tapGesture)
-                }
-            }
-        }
-    
     @objc private func imageViewTapped(_ sender: UITapGestureRecognizer) {
-            guard let tappedImageView = sender.view as? UIImageView else { return }
-            
-            photoPickerManager.presentPhotoPicker(from: self) { selectedImages in
-                if let firstImage = selectedImages.first {
-                    tappedImageView.image = firstImage
-                }
-            }
-        }
+        guard let tappedImageView = sender.view as? UIImageView else { return }
+        
+        selectedImageView = tappedImageView
+        
+        let photoLibrary = PHPhotoLibrary.shared()
+        var config = PHPickerConfiguration(photoLibrary: photoLibrary)
+        config.filter = .images
+        config.selectionLimit = 1
+        
+        // UIImagePickerController 설정
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
+    }
+}
+
+extension AddGrowthDiaryViewController: PHPickerViewControllerDelegate{
+    // PHPickerViewControllerDelegate 메서드: 이미지가 선택되었을 때 호출됩니다.
+       func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+           picker.dismiss(animated: true, completion: nil)
+           
+           guard let selectedImageView = selectedImageView else { return }
+           
+           // 첫 번째 선택된 이미지를 가져와 설정
+           if let result = results.first {
+               result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
+                   guard let self = self, let image = object as? UIImage, error == nil else {
+                       print("Error loading image: \(String(describing: error))")
+                       return
+                   }
+                   
+                   DispatchQueue.main.async {
+                       self.addGrowthDiaryView.setImage(image, for: selectedImageView)
+                   }
+               }
+           }
+       }
 }
 
 #if DEBUG

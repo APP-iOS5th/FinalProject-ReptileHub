@@ -42,7 +42,6 @@
 		589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFC2C608FF100812D17 /* ProfileViewController.swift */; };
 		589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */; };
 		589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */; };
-		792DB0892C801CF200E3F085 /* PhotoPickerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792DB0882C801CF200E3F085 /* PhotoPickerManager.swift */; };
 		793E9CE12C7CDF8F00DB4B30 /* DropDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */; };
 		793E9CE52C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E9CE42C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift */; };
 		7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449B2C6AEC7100765A80 /* Spacing.swift */; };
@@ -92,7 +91,6 @@
 		589CCFFC2C608FF100812D17 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityViewController.swift; sourceTree = "<group>"; };
 		589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryViewController.swift; sourceTree = "<group>"; };
-		792DB0882C801CF200E3F085 /* PhotoPickerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerManager.swift; sourceTree = "<group>"; };
 		793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownView.swift; sourceTree = "<group>"; };
 		793E9CE42C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrowthDiaryViewController.swift; sourceTree = "<group>"; };
 		7968449B2C6AEC7100765A80 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
@@ -251,7 +249,6 @@
 				7968449B2C6AEC7100765A80 /* Spacing.swift */,
 				798476402C70E05200895D2D /* EmptyView.swift */,
 				79BCE2732C72F775002F630C /* FontWeightLabel.swift */,
-				792DB0882C801CF200E3F085 /* PhotoPickerManager.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -384,7 +381,6 @@
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				798476412C70E05200895D2D /* EmptyView.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
-				792DB0892C801CF200E3F085 /* PhotoPickerManager.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */,
