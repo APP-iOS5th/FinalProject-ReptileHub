@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
+class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate {
     
     //MARK: - 자식정보
     //이미지
@@ -69,6 +69,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         if feedMethodDropdownView.isOpen && !feedMethodDropdownView.frame.contains(location) {
             feedMethodDropdownView.closeDropdown()
         }
+        self.endEditing(true)
+
     }
     
     // UIGestureRecognizerDelegate 메서드: 드롭다운 내부의 터치 이벤트는 무시
@@ -199,6 +201,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         super.init(frame: frame)
         setUI()
         addTapGestureRecognizer()
+        configureTextFields()
     }
     
     required init?(coder: NSCoder) {
@@ -516,6 +519,23 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
             showButton.configuration?.baseForegroundColor = .black
         }
     }
+    private func configureTextFields() {
+           nameTextField.delegate = self
+           speciesTextField.delegate = self
+           morphTextField.delegate = self
+           hatchDaysTextField.delegate = self
+           weightTextField.delegate = self
+           fatherNameTextField.delegate = self
+           fatherMorphTextField.delegate = self
+           motherNameTextField.delegate = self
+           motherMorphTextField.delegate = self
+       }
+       
+       // UITextFieldDelegate 메서드: Return 키를 눌렀을 때 키보드 닫기
+       func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+           textField.resignFirstResponder() // 키보드를 닫음
+           return true
+       }
 }
 
 #if DEBUG

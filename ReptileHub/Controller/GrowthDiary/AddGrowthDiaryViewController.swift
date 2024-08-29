@@ -37,6 +37,8 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     }
     
     @objc private func imageViewTapped(_ sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+        
         guard let tappedImageView = sender.view as? UIImageView else { return }
         
         selectedImageView = tappedImageView
