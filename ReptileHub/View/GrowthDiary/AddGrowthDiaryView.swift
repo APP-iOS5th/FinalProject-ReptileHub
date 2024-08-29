@@ -50,41 +50,41 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     
     private func addTapGestureRecognizer() {
         // UITapGestureRecognizer 추가
-               let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOutsideDropdown))
-               tapGesture.cancelsTouchesInView = false // 다른 터치 이벤트와 충돌하지 않도록 설정
-               tapGesture.delegate = self // 델리게이트 설정
-               self.addGestureRecognizer(tapGesture)
-        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOutsideDropdown))
+        tapGesture.cancelsTouchesInView = false // 다른 터치 이벤트와 충돌하지 않도록 설정
+        tapGesture.delegate = self // 델리게이트 설정
+        self.addGestureRecognizer(tapGesture)
+    }
     
     // 드롭다운 외부를 터치했을 때 호출되는 메서드
-       @objc private func handleTapOutsideDropdown(_ gesture: UITapGestureRecognizer) {
-           let location = gesture.location(in: self)
-
-                  // 첫 번째 드롭다운 외부를 터치했을 때
-                  if genderDropdownView.isOpen && !genderDropdownView.frame.contains(location) {
-                      genderDropdownView.closeDropdown()
-                  }
-
-                  // 두 번째 드롭다운 외부를 터치했을 때
-                  if feedMethodDropdownView.isOpen && !feedMethodDropdownView.frame.contains(location) {
-                      feedMethodDropdownView.closeDropdown()
-                  }
-       }
-
-       // UIGestureRecognizerDelegate 메서드: 드롭다운 내부의 터치 이벤트는 무시
-       func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-           if let touchedView = touch.view {
-                       if touchedView.isDescendant(of: genderDropdownView) {
-                           return false
-                       }
-                       if touchedView.isDescendant(of: feedMethodDropdownView) {
-                           return false
-                       }
-                   }
-                   return true
-
-       }
-
+    @objc private func handleTapOutsideDropdown(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: self)
+        
+        // 첫 번째 드롭다운 외부를 터치했을 때
+        if genderDropdownView.isOpen && !genderDropdownView.frame.contains(location) {
+            genderDropdownView.closeDropdown()
+        }
+        
+        // 두 번째 드롭다운 외부를 터치했을 때
+        if feedMethodDropdownView.isOpen && !feedMethodDropdownView.frame.contains(location) {
+            feedMethodDropdownView.closeDropdown()
+        }
+    }
+    
+    // UIGestureRecognizerDelegate 메서드: 드롭다운 내부의 터치 이벤트는 무시
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if let touchedView = touch.view {
+            if touchedView.isDescendant(of: genderDropdownView) {
+                return false
+            }
+            if touchedView.isDescendant(of: feedMethodDropdownView) {
+                return false
+            }
+        }
+        return true
+        
+    }
+    
     
     //성별
     private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
@@ -97,29 +97,29 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         title: "꼬리",
         buttonTitles: ("있음", "없음")
     )
-//    private lazy var hatchDaysDatePicker: UIDatePicker = {
-//        let picker = UIDatePicker()
-//        picker.preferredDatePickerStyle = .wheels
-//        picker.datePickerMode = .date
-//        picker.addTarget(self, action: #selector(dateChange), for: .valueChanged)
-//        return picker
-//    }()
-//    
-//    //해칭일 날짜 textField
-//    private lazy var hatchDaysTextFiled: UITextField = {
-//        let textField = createTextField(text: Date().toString())
-//        textField.inputView = hatchDaysDatePicker
-//        return textField
-//    }()
+    //    private lazy var hatchDaysDatePicker: UIDatePicker = {
+    //        let picker = UIDatePicker()
+    //        picker.preferredDatePickerStyle = .wheels
+    //        picker.datePickerMode = .date
+    //        picker.addTarget(self, action: #selector(dateChange), for: .valueChanged)
+    //        return picker
+    //    }()
+    //
+    //    //해칭일 날짜 textField
+    //    private lazy var hatchDaysTextFiled: UITextField = {
+    //        let textField = createTextField(text: Date().toString())
+    //        textField.inputView = hatchDaysDatePicker
+    //        return textField
+    //    }()
     
-
+    
     // 텍스트 필드에 들어갈 텍스트를 DateFormatter 변환
-//    private func dateFormat(date: Date) -> String {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy / MM / dd"
-//        
-//        return formatter.string(from: date)
-//    }
+    //    private func dateFormat(date: Date) -> String {
+    //        let formatter = DateFormatter()
+    //        formatter.dateFormat = "yyyy / MM / dd"
+    //
+    //        return formatter.string(from: date)
+    //    }
     //MARK: - 아빠 정보
     //아빠 이미지
     private(set) lazy var fatherImageView: UIImageView = createImageVIew()
@@ -279,26 +279,38 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     }
     
     // 이미지뷰에 제스처를 추가하는 메서드
-        func configureImageViewActions(target: Any, action: Selector) {
-            [thumbnailImageView, fatherImageView, motherImageView].forEach { imageView in
-                let tapGesture = UITapGestureRecognizer(target: target, action: action)
-                imageView.addGestureRecognizer(tapGesture)
-            }
+    func configureImageViewActions(target: Any, action: Selector) {
+        [thumbnailImageView, fatherImageView, motherImageView].forEach { imageView in
+            let tapGesture = UITapGestureRecognizer(target: target, action: action)
+            imageView.addGestureRecognizer(tapGesture)
         }
-
-        // 특정 이미지뷰에 이미지를 설정하는 메서드
-        func setImage(_ image: UIImage, for imageView: UIImageView) {
-            imageView.image = image
-        }
+    }
+    
+    // 특정 이미지뷰에 이미지를 설정하는 메서드
+    func setImage(_ image: UIImage, for imageView: UIImageView) {
+        imageView.image = image
+    }
     
     //button 생성
     private func createButton(title: String) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
+        var config = UIButton.Configuration.filled()
+        config.title = title
+        
+        var ButtonText = AttributedString(title)
+
+        var Attributes = AttributeContainer()
+        Attributes.font = UIFont.systemFont(ofSize: 14)
+        ButtonText.mergeAttributes(Attributes)
+        config.attributedTitle = ButtonText
+        
+        config.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
+        config.baseForegroundColor = .black
+        config.cornerStyle = .medium // 모서리 둥글게 설정
+        
+        let button = UIButton(configuration: config)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 5
+        
         return button
     }
     
@@ -341,7 +353,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
     }
     
     //버튼으로 contentview가 보이는 그룹
-    private func createShowGroupViewButton(title: String, contentView: UIView, buttonTitles: (String,String)) -> UIView {
+    private func createShowGroupViewButton(title: String, contentView: UIView, buttonTitles: (String ,String)) -> UIView {
         let label = UILabel()
         label.text = title
         label.font = UIFont.systemFont(ofSize: 20)
@@ -355,18 +367,23 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         showAttributes.font = UIFont.systemFont(ofSize: 14)
         showButtonText.mergeAttributes(showAttributes)
         showConfig.attributedTitle = showButtonText
+        showConfig.baseBackgroundColor = .systemBlue
+        showConfig.baseForegroundColor = .white
+        
         showButton.configuration = showConfig
         
         //MARK: - 없음/미등록 버튼
         let hideButton = UIButton()
         var hideConfig = UIButton.Configuration.filled()
-        
         var hideButtonText = AttributedString(buttonTitles.1)
         
         var hideAttributes = AttributeContainer()
         hideAttributes.font = UIFont.systemFont(ofSize: 14)
         hideButtonText.mergeAttributes(hideAttributes)
         hideConfig.attributedTitle = hideButtonText
+        hideConfig.attributedTitle = hideButtonText
+        hideConfig.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
+        hideConfig.baseForegroundColor = .black
         hideButton.configuration = hideConfig
         
         let buttonStackView = UIStackView(arrangedSubviews: [showButton, hideButton])
@@ -383,7 +400,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
             make.edges.equalToSuperview()
         }
         
-        contentView.isHidden = true
+        contentView.isHidden = false
         
         showButton.addTarget(self, action: #selector(showContent(_:)), for: .touchUpInside)
         hideButton.addTarget(self, action: #selector(hideContent(_:)), for: .touchUpInside)
@@ -401,36 +418,102 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate {
         buttonStackView.spacing = 20
         buttonStackView.distribution = .fillEqually
         
+        // 초기 상태에서 첫 번째 버튼을 활성화된 상태로 설정
+        firstButton.isSelected = true
+        updateButtonSelection(firstButton, secondButton) // 초기 상태 설정
+        
+        firstButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        secondButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        
         return createGroup(title: title, contentView: buttonStackView)
     }
-    
-//    func getImageView(at index: Int) -> UIImageView?{
-//        switch index{
-//        case 1:
-//            return thumbnailImageView
-//        case 2:
-//            return fatherImageView
-//        case 3:
-//            return motherImageView
-//        default:
-//            return nil
-//        }
-//    }
+    private func updateButtonSelection(_ firstButton: UIButton, _ secondButton: UIButton) {
+        // 첫 번째 버튼
+        if firstButton.isSelected {
+            var config = firstButton.configuration ?? UIButton.Configuration.filled()
+            config.baseBackgroundColor = .systemBlue
+            config.baseForegroundColor = .white
+            firstButton.configuration = config
+        } else {
+            var config = firstButton.configuration ?? UIButton.Configuration.filled()
+            config.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
+            config.baseForegroundColor = .black
+            firstButton.configuration = config
+        }
+        
+        // 두 번째 버튼
+        if secondButton.isSelected {
+            var config = secondButton.configuration ?? UIButton.Configuration.filled()
+            config.baseBackgroundColor = .systemBlue
+            config.baseForegroundColor = .white
+            secondButton.configuration = config
+        } else {
+            var config = secondButton.configuration ?? UIButton.Configuration.filled()
+            config.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
+            config.baseForegroundColor = .black
+            secondButton.configuration = config
+        }
+    }
     
     //MARK: - Action
+    
+    @objc private func buttonTapped(_ sender: UIButton) {
+        guard let buttonStackView = sender.superview as? UIStackView else { return }
+        
+        let firstButton = buttonStackView.arrangedSubviews[0] as! UIButton
+        let secondButton = buttonStackView.arrangedSubviews[1] as! UIButton
+        
+        if sender == firstButton {
+            firstButton.isSelected = true
+            secondButton.isSelected = false
+        } else {
+            firstButton.isSelected = false
+            secondButton.isSelected = true
+        }
+        
+        updateButtonSelection(firstButton, secondButton)
+    }
+    
+    
     @objc private func showContent(_ sender: UIButton) {
-        if let stackView = sender.superview?.superview as? UIStackView, let contentView = stackView.arrangedSubviews.last {
+        if let stackView = sender.superview?.superview as? UIStackView,
+           let contentView = stackView.arrangedSubviews.last,
+           let buttonStackView = stackView.arrangedSubviews[1] as? UIStackView,
+           let showButton = buttonStackView.arrangedSubviews[0] as? UIButton,
+           let hideButton = buttonStackView.arrangedSubviews[1] as? UIButton {
+            
             UIView.animate(withDuration: 0.2) {
                 contentView.isHidden = false
             }
+            
+            // showButton을 선택 상태로 설정
+            showButton.configuration?.baseBackgroundColor = .systemBlue
+            showButton.configuration?.baseForegroundColor = .white
+            
+            // hideButton을 기본 상태로 설정
+            hideButton.configuration?.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
+            hideButton.configuration?.baseForegroundColor = .black
         }
     }
     
     @objc private func hideContent(_ sender: UIButton) {
-        if let stackView = sender.superview?.superview as? UIStackView, let contentView = stackView.arrangedSubviews.last {
+        if let stackView = sender.superview?.superview as? UIStackView,
+           let contentView = stackView.arrangedSubviews.last,
+           let buttonStackView = stackView.arrangedSubviews[1] as? UIStackView,
+           let showButton = buttonStackView.arrangedSubviews[0] as? UIButton,
+           let hideButton = buttonStackView.arrangedSubviews[1] as? UIButton {
+            
             UIView.animate(withDuration: 0.2) {
                 contentView.isHidden = true
             }
+            
+            // hideButton을 선택 상태로 설정
+            hideButton.configuration?.baseBackgroundColor = .systemBlue
+            hideButton.configuration?.baseForegroundColor = .white
+            
+            // showButton을 기본 상태로 설정
+            showButton.configuration?.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
+            showButton.configuration?.baseForegroundColor = .black
         }
     }
 }
