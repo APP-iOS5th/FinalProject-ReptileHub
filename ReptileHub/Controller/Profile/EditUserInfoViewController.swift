@@ -7,8 +7,9 @@
 
 import UIKit
 import SnapKit
+import PhotosUI
 
-class EditUserInfoViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     private let editUserInfoView = EditUserInfoView()
     
     private var isImageChanged = false  // 이미지가 변경되었는지 확인하는 플래그
@@ -25,30 +26,17 @@ class EditUserInfoViewController: UIViewController, UIImagePickerControllerDeleg
         editUserInfoView.ProfileNameEdit.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         editUserInfoView.UserInfoCancelButton.addTarget(self, action: #selector(cancelButtonTouch), for: .touchUpInside)
         editUserInfoView.UserInfoSaveButton.addTarget(self, action: #selector(saveButtonTouch), for: .touchUpInside)
-        
     }
     
     @objc func selectImage() {
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = .photoLibrary
-        imagePickerController.allowsEditing = false
-        imagePickerController.sourceType = .camera
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images  // 이미지 필터링 설정
+        configuration.selectionLimit = 1  // 한 번에 하나의 이미지 선택
 
-        present(imagePickerController, animated: true, completion: nil)
-    }
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
 
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let selectedImage = info[.originalImage] as? UIImage {
-            editUserInfoView.ProfileImageEdit.image = selectedImage
-            isImageChanged = true  // 이미지가 변경되었음을 표시
-            updateSaveButtonState()
-        }
-        dismiss(animated: true, completion: nil)
-    }
-
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
+        present(picker, animated: true, completion: nil)
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {
@@ -62,7 +50,6 @@ class EditUserInfoViewController: UIViewController, UIImagePickerControllerDeleg
         editUserInfoView.UserInfoSaveButton.alpha = shouldEnableSaveButton ? 1.0 : 0.5
     }
     
-    // MARK: - 키보드 return 누르면 내려가는 기능
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -75,5 +62,30 @@ class EditUserInfoViewController: UIViewController, UIImagePickerControllerDeleg
     @objc func cancelButtonTouch() {
         print("취소 ~")
         dismiss(animated: true)
+    }
+}
+
+extension EditUserInfoViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let result = results.first else { return }
+        
+        if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error loading image: \(error.localizedDescription)")
+                    return
+                }
+                if let image = image as? UIImage {
+                    DispatchQueue.main.async {
+                        self.editUserInfoView.ProfileImageEdit.image = image
+                        self.isImageChanged = true  // 이미지가 변경되었음을 표시
+                        self.updateSaveButtonState()
+                    }
+                }
+            }
+        }
     }
 }
