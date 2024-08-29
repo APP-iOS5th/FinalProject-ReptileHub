@@ -18,7 +18,10 @@ class AddPostViewController: UIViewController {
         view.backgroundColor = .white
         
         self.view = addPostView
-        addPostView.configureAddPostView(delegate: self, datasource: self)
+        addPostView.configureAddPostView(delegate: self, datasource: self, textViewDelegate: self)
+        
+        // 등록하기 버튼 델리겟
+        addPostView.delegate = self
     }
     
     
@@ -35,10 +38,15 @@ extension AddPostViewController: UICollectionViewDelegate, UICollectionViewDataS
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PHPickerCell", for: indexPath) as! PHPickerCollectionViewCell
         
         if indexPath.item == 0 {
-            cell.imageView.image = UIImage(systemName: "camera")
+            let config = UIImage.SymbolConfiguration(pointSize: 25, weight: .light)
+            let cameraImage = UIImage(systemName: "camera", withConfiguration: config)
+            cell.imageView.image = cameraImage
+            cell.imageView.contentMode = .center
             cell.deleteButton.isHidden = true
         } else {
             cell.imageView.image = addPostView.selectedImages[indexPath.item - 1]
+            cell.imageView.contentMode = .scaleAspectFill
+            cell.delegate = self
         }
         
         return cell
@@ -63,12 +71,59 @@ extension AddPostViewController: PHPickerViewControllerDelegate {
                 if let image = object as? UIImage {
                     DispatchQueue.main.async {
                         // 피커에서 추가로 이미지 선택할 경우 이미지 배열에 추가해서 선택한 사진 바로 리로드
-                        self.addPostView.selectedImages.append(image)
-                        self.addPostView.imagePickerCollectionView.reloadData()
+                        if self.addPostView.selectedImages.count < 5{
+                            self.addPostView.selectedImages.append(image)
+                            self.addPostView.imagePickerCollectionView.reloadData()
+                            
+                            if let imageData = image.jpegData(compressionQuality: 0.8) {
+                                self.addPostView.imageData.append(imageData)
+                            }
+                            
+                        } else {
+                            print("이미 선택된 이미지가 5개 입니다.")
+                            return
+                        }
                     }
                 }
             }
         }
     }
+    
+}
+
+extension AddPostViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        if textView.text == "" {
+            self.addPostView.textViewPlaceholder.isHidden = false
+        } else {
+            self.addPostView.textViewPlaceholder.isHidden = true
+        }
+    }
+}
+
+
+extension AddPostViewController: PHPickerCollectionViewCellDelegate {
+    
+    func didTapDeleteButton(indexPath: IndexPath) {
+        print("콜렉션 뷰 셀 삭제버튼 클릭.")
+        
+        self.addPostView.selectedImages.remove(at: indexPath.item - 1)
+        self.addPostView.imagePickerCollectionView.reloadData()
+        print("콜렉션 뷰 셀 삭제 후 selectedImages : \(self.addPostView.selectedImages)")
+    }
+    
+}
+
+
+extension AddPostViewController: AddPostViewDelegate {
+    func didTapPostButton(imageData: [Data], title: String, content: String) {
+        print("""
+                [현재 등록할 게시글 내용]
+                imageData: \(imageData)
+                title: \(title)
+                content: \(content)
+                """)
+    }
+    
     
 }

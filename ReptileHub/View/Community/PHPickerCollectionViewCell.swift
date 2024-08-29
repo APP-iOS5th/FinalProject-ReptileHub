@@ -8,15 +8,22 @@
 import UIKit
 import SnapKit
 
+protocol PHPickerCollectionViewCellDelegate: AnyObject {
+    // 셀 삭제 버튼
+    func didTapDeleteButton(indexPath: IndexPath)
+    
+}
+
 class PHPickerCollectionViewCell: UICollectionViewCell {
     
-    var imageView: UIImageView = UIImageView()
+    weak var delegate: PHPickerCollectionViewCellDelegate?
     
-    let deleteButton: UIButton = UIButton(type: .custom)
+    lazy var imageView: UIImageView = UIImageView()
+    
+    lazy var deleteButton: UIButton = UIButton(type: .custom)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .red
         configureCell()
     }
     
@@ -24,13 +31,21 @@ class PHPickerCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // 셀 재사용시 deleteButton 사라짐 방지
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        imageView.image = nil
+        deleteButton.isHidden = false
+        delegate = nil
+    }
+    
     //MARK: - setup Cell
     private func configureCell() {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
-        imageView.backgroundColor = .yellow
-        imageView.tintColor = .green
+        imageView.backgroundColor = .imagePicker
         
         deleteButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         deleteButton.addTarget(self, action: #selector(deleteAction), for: .touchUpInside)
@@ -40,13 +55,15 @@ class PHPickerCollectionViewCell: UICollectionViewCell {
         self.contentView.addSubview(deleteButton)
         
         imageView.snp.makeConstraints { make in
-            make.top.leading.equalTo(self.contentView).offset(10)
-            make.trailing.bottom.equalTo(self.contentView).offset(-10)
+            make.top.equalTo(self.contentView).offset(10)
+            make.leading.equalTo(self.contentView.snp.leading)
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-20)
+            make.bottom.equalTo(self.contentView).offset(-10)
         }
         
         deleteButton.snp.makeConstraints { make in
             make.top.equalTo(self.contentView.snp.top)
-            make.trailing.equalTo(self.contentView.snp.trailing)
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
             make.width.height.equalTo(30)
         }
         
@@ -54,6 +71,11 @@ class PHPickerCollectionViewCell: UICollectionViewCell {
     
     @objc
     private func deleteAction() {
-        print("이미지 셀 삭제 클릭.")
+        if let collectionView = superview as? UICollectionView {
+            if let indexPath = collectionView.indexPath(for: self) {
+                delegate?.didTapDeleteButton(indexPath: indexPath)
+            }
+        }
+
     }
 }

@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
-        KakaoSDK.initSDK(appKey:"25341b37449f188d938947e3b8529700")
+        KakaoSDK.initSDK(appKey:"안 알랴줌~")
        
         
         AuthService.shared.addAuthStateDidChangeListener { user in

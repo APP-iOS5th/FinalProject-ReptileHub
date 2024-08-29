@@ -9,10 +9,19 @@ import UIKit
 import SnapKit
 import PhotosUI
 
+protocol AddPostViewDelegate: AnyObject {
+    func didTapPostButton(imageData: [Data], title: String, content: String)
+}
+
 class AddPostView: UIView {
+    
+    weak var delegate: AddPostViewDelegate?
     
     // PhPicker에서 선택한 이미지들
     var selectedImages: [UIImage?] = []
+    
+    // selectedImages의 데이터화 배열
+    var imageData: [Data] = []
     
     
     // 키보드 탭 제스쳐
@@ -22,11 +31,14 @@ class AddPostView: UIView {
         return tap
     }()
     
+    let keyboardManager = KeyboardManager()
+    
     var imagePickerCollectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
-    private let titleTextField: UITextField = UITextField()
+    let titleTextField: UITextField = UITextField()
     
-    private let contentTextView: UITextView = UITextView()
+    let contentTextView: UITextView = UITextView()
+    let textViewPlaceholder: UILabel = UILabel()
     
     private let postButton: UIButton = UIButton(type: .system)
     
@@ -40,6 +52,13 @@ class AddPostView: UIView {
         
         // 제스처 적용(슈퍼뷰 클릭시 키보드 내려감)
         self.addGestureRecognizer(tapGesture)
+        
+        keyboardManager.delegate = self
+        keyboardManager.showNoti()
+        keyboardManager.hideNoti()
+        
+        selectedImages.removeAll()
+        imageData.removeAll()
         
         setupImagePickerCollectionView()
         setupTitleTextView()
@@ -66,15 +85,15 @@ class AddPostView: UIView {
         layout.itemSize = CGSize(width: 90, height: 90)
         
         imagePickerCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        imagePickerCollectionView.backgroundColor = .lightGray
         imagePickerCollectionView.register(PHPickerCollectionViewCell.self, forCellWithReuseIdentifier: "PHPickerCell")
+        imagePickerCollectionView.showsHorizontalScrollIndicator = false
         
         self.addSubview(imagePickerCollectionView)
         
         imagePickerCollectionView.snp.makeConstraints { make in
             make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(10)
             make.leading.equalTo(self.snp.leading).offset(24)
-            make.trailing.equalTo(self.snp.trailing).offset(-24)
+            make.trailing.equalTo(self.snp.trailing)
             make.height.equalTo(90)
         }
     }
@@ -89,7 +108,7 @@ class AddPostView: UIView {
         titleTextField.snp.makeConstraints { make in
             make.top.equalTo(imagePickerCollectionView.snp.bottom).offset(15)
             make.leading.equalTo(imagePickerCollectionView.snp.leading)
-            make.trailing.equalTo(imagePickerCollectionView.snp.trailing)
+            make.trailing.equalTo(self.snp.trailing).offset(-24)
             make.height.equalTo(40)
         }
     }
@@ -97,17 +116,28 @@ class AddPostView: UIView {
     
     //MARK: - content TextView setup
     private func setupContentTextView() {
-        contentTextView.layer.borderColor = UIColor.lightGray.cgColor
-        contentTextView.layer.borderWidth = 1.0
-        contentTextView.layer.cornerRadius = 10
+        contentTextView.backgroundColor = .imagePicker
+        contentTextView.layer.cornerRadius = 5
+        contentTextView.font = UIFont.systemFont(ofSize: 17)
+        
+        textViewPlaceholder.text = "내용을 입력해주세요"
+        textViewPlaceholder.font = UIFont.systemFont(ofSize: 17, weight: .light)
+        textViewPlaceholder.textColor = .textFieldPlaceholder
         
         self.addSubview(contentTextView)
         
         contentTextView.snp.makeConstraints { make in
-            make.top.equalTo(titleTextField.snp.bottom).offset(15)
+            make.top.equalTo(titleTextField.snp.bottom).offset(25)
             make.leading.equalTo(titleTextField.snp.leading)
-            make.trailing.equalTo(titleTextField.snp.trailing)
+            make.trailing.equalTo(self.snp.trailing).offset(-24)
             make.height.greaterThanOrEqualTo(200)
+        }
+        
+        self.addSubview(textViewPlaceholder)
+        
+        textViewPlaceholder.snp.makeConstraints { make in
+            make.top.equalTo(contentTextView.snp.top).offset(8)
+            make.leading.equalTo(contentTextView.snp.leading).offset(8)
         }
         
     }
@@ -118,26 +148,33 @@ class AddPostView: UIView {
         postButton.setTitle("등록하기", for: .normal)
         postButton.backgroundColor = .addBtnGraphTabbar
         postButton.setTitleColor(.white, for: .normal)
-        postButton.layer.cornerRadius = 10
+        postButton.layer.cornerRadius = 5
+        postButton.addTarget(self, action: #selector(postButtonAction), for: .touchUpInside)
         
         self.addSubview(postButton)
         
         postButton.snp.makeConstraints { make in
-            make.top.equalTo(contentTextView.snp.bottom).offset(15)
+            make.top.equalTo(contentTextView.snp.bottom).offset(25)
             make.leading.equalTo(contentTextView.snp.leading)
             make.trailing.equalTo(contentTextView.snp.trailing)
-            make.height.equalTo(45)
+            make.height.equalTo(50)
         }
     }
     
-    func configureAddPostView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource) {
+    @objc
+    private func postButtonAction() {
+        delegate?.didTapPostButton(imageData: imageData, title: titleTextField.text ?? "nil", content: contentTextView.text ?? "nil")
+    }
+    
+    func configureAddPostView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, textViewDelegate: UITextViewDelegate) {
         imagePickerCollectionView.delegate = delegate
         imagePickerCollectionView.dataSource = datasource
+        contentTextView.delegate = textViewDelegate
     }
     
     func createPHPickerVC() -> PHPickerViewController {
         var config = PHPickerConfiguration()
-        config.selectionLimit = 0
+        config.selectionLimit = 5
         config.filter = .images
         
         return PHPickerViewController(configuration: config)
@@ -146,3 +183,47 @@ class AddPostView: UIView {
     
 }
 
+
+extension AddPostView: KeyboardNotificationDelegate {
+    func keyboardWillShow(keyboardSize: CGRect) {
+        print("keyboard Show")
+        
+        if isTextViewFirstResponder() {
+            self.imagePickerCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(self.snp.top)
+                make.leading.equalTo(self.snp.leading).offset(24)
+                make.trailing.equalTo(self.snp.trailing)
+                make.height.equalTo(90)
+            }
+            
+            // 레이아웃 변화를 애니메이션으로 적용
+            self.layoutIfNeeded()
+        }
+    }
+    
+    func keyboardWillHide(keyboardSize: CGRect) {
+        print("keyboardW Hide")
+        
+        if isTextViewFirstResponder() {
+            self.imagePickerCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(10)
+                make.leading.equalTo(self.snp.leading).offset(24)
+                make.trailing.equalTo(self.snp.trailing)
+                make.height.equalTo(90)
+            }
+            
+            // 레이아웃 변화를 애니메이션으로 적용
+            self.layoutIfNeeded()
+        }
+    }
+    
+    private func isTextViewFirstResponder() -> Bool {
+        // 모든 서브뷰를 검색해서 UITextView가 첫 번째 응답자인지 확인함
+        for subview in self.subviews {
+            if let textView = subview as? UITextView, textView.isFirstResponder {
+                return true
+            }
+        }
+        return false
+    }
+}
