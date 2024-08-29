@@ -70,7 +70,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             feedMethodDropdownView.closeDropdown()
         }
         self.endEditing(true)
-
+        
     }
     
     // UIGestureRecognizerDelegate 메서드: 드롭다운 내부의 터치 이벤트는 무시
@@ -202,6 +202,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         setUI()
         addTapGestureRecognizer()
         configureTextFields()
+        registerForKeyboardNotifications()
     }
     
     required init?(coder: NSCoder) {
@@ -300,7 +301,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         config.title = title
         
         var ButtonText = AttributedString(title)
-
+        
         var Attributes = AttributeContainer()
         Attributes.font = UIFont.systemFont(ofSize: 14)
         ButtonText.mergeAttributes(Attributes)
@@ -520,22 +521,74 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         }
     }
     private func configureTextFields() {
-           nameTextField.delegate = self
-           speciesTextField.delegate = self
-           morphTextField.delegate = self
-           hatchDaysTextField.delegate = self
-           weightTextField.delegate = self
-           fatherNameTextField.delegate = self
-           fatherMorphTextField.delegate = self
-           motherNameTextField.delegate = self
-           motherMorphTextField.delegate = self
-       }
-       
-       // UITextFieldDelegate 메서드: Return 키를 눌렀을 때 키보드 닫기
-       func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-           textField.resignFirstResponder() // 키보드를 닫음
-           return true
-       }
+        nameTextField.delegate = self
+        speciesTextField.delegate = self
+        morphTextField.delegate = self
+        hatchDaysTextField.delegate = self
+        weightTextField.delegate = self
+        fatherNameTextField.delegate = self
+        fatherMorphTextField.delegate = self
+        motherNameTextField.delegate = self
+        motherMorphTextField.delegate = self
+    }
+    
+    // UITextFieldDelegate 메서드: Return 키를 눌렀을 때 키보드 닫기
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // 키보드를 닫음
+        return true
+    }
+    
+    private func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+    }
+    
+    private func findFirstResponder(in view: UIView) -> UIView? {
+        for subview in view.subviews {
+            if subview.isFirstResponder {
+                return subview
+            }
+            if let recursiveSubview = findFirstResponder(in: subview) {
+                return recursiveSubview
+            }
+        }
+        return nil
+    }
+
+      
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height
+            // 현재 스크롤 뷰의 기존 contentInset을 가져와서 조정
+            var contentInset = scrollView.contentInset
+            contentInset.bottom = keyboardHeight
+            scrollView.contentInset = contentInset
+            scrollView.verticalScrollIndicatorInsets = contentInset
+
+            // 현재 활성화된 텍스트 필드가 있는 경우, 그것이 가려지지 않도록 스크롤
+            if let activeField = findFirstResponder(in: self) {
+                let visibleRect = self.bounds.inset(by: scrollView.contentInset)
+                let activeFieldFrame = activeField.convert(activeField.bounds, to: self)
+                
+                if !visibleRect.contains(activeFieldFrame) {
+                    scrollView.scrollRectToVisible(activeFieldFrame, animated: true)
+                }
+            }
+        }
+    }
+
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        // 키보드가 내려갈 때, 스크롤뷰의 인셋을 원래대로 돌려놓음
+        let contentInset = UIEdgeInsets.zero
+        scrollView.contentInset = contentInset
+        scrollView.verticalScrollIndicatorInsets = contentInset
+    }
+
+      deinit {
+          NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+          NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+      }
 }
 
 #if DEBUG

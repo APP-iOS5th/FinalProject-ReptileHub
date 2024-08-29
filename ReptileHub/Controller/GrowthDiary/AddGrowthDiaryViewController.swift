@@ -28,13 +28,18 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         }
         addGrowthDiaryView.addAction(action: action)
         
+        
+        
         addGrowthDiaryView.configureImageViewActions(target: self, action: #selector(imageViewTapped(_:)))
         
     }
     
+    
+    
     private func datePickerValueChanged(){
         addGrowthDiaryView.updateDateField()
     }
+    
     
     @objc private func imageViewTapped(_ sender: UITapGestureRecognizer) {
         self.view.endEditing(true)
