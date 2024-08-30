@@ -33,6 +33,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         addGrowthDiaryView.buttonTapped = { [weak self] in
             self?.uploadGrowthDiary()
         }
+        
     }
     
     private func uploadGrowthDiary(){
@@ -41,6 +42,8 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         DiaryPostService.shared.registerGrowthDiary(userID: "TmIYwsxUilXYTACIGEYXiWomF2I3", diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { error in
             if let error = error{
                 print(error.localizedDescription)
+            }else{
+                self.navigationController?.popViewController(animated: true)
             }
         }
     }

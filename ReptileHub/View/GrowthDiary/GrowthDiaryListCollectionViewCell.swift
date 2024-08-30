@@ -7,8 +7,13 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
+
+let imageCache = NSCache<NSString, UIImage>()
 
 class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
+
+
     static let identifier = "GrowthDiaryListCell"
     
     private lazy var GrowthDiaryItemImage: UIImageView = {
@@ -65,18 +70,93 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
+    
     func configure(imageName: String, title: String, date: String){
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: URL(string: imageName)!){
-                if let image = UIImage(data: data){
-                    DispatchQueue.main.async { [weak self] in
-                        self?.GrowthDiaryItemImage.image = image
-                    }
-                }
-            }
-        }
-        
+//        if let url = URL(string: imageName){
+//            GrowthDiaryItemImage.kf.setImage(with: url,
+//                                             placeholder: nil,
+//                                             options: [.transition(.fade(1.2))],
+//                                             completionHandler: nil)
+//            GrowthDiaryItemImage.setImage(with: imageName)
+//        }
+        GrowthDiaryItemImage.loadImage(from: imageName)
         GrowthDiaryItemTitle.text = title
         GrowthDiaryItemDate.text = date
     }
+}
+
+extension UIImageView {
+    func loadImage(from urlString: String, retryCount: Int = 3) {
+        if let cachedImage = imageCache.object(forKey: urlString as NSString) {
+            print("이미지 캐시에서 로드: \(urlString)")
+            self.image = cachedImage
+            return
+        }
+
+        guard let url = URL(string: urlString) else {
+            print("잘못된 URL: \(urlString)")
+            return
+        }
+        
+        print("URL 세션으로 이미지 다운로드 시작: \(urlString)")
+        
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            if let error = error {
+                print("이미지 다운로드 실패: \(error.localizedDescription)")
+                
+                // 네트워크 연결이 중단되었을 때 재시도
+                if retryCount > 0 {
+                    print("재시도 남은 횟수: \(retryCount), 다시 시도 중...")
+                    self?.loadImage(from: urlString, retryCount: retryCount - 1)
+                } else {
+                    print("재시도 횟수를 초과하여 이미지 로드를 포기합니다.")
+                }
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                print("서버 응답 오류: \(String(describing: response))")
+                return
+            }
+            
+            guard let data = data else {
+                print("이미지 데이터가 없음")
+                return
+            }
+            
+            guard let image = UIImage(data: data) else {
+                print("데이터를 이미지로 변환할 수 없음")
+                return
+            }
+            
+            imageCache.setObject(image, forKey: urlString as NSString)
+            
+            DispatchQueue.main.async {
+                print("이미지 UI 업데이트: \(urlString)")
+                self?.image = image
+            }
+        }.resume()
+    }
+}
+
+extension UIImageView {
+  func setImage(with urlString: String) {
+    ImageCache.default.retrieveImage(forKey: urlString, options: nil) { result in
+      switch result {
+      case .success(let value):
+        if let image = value.image {
+          //캐시가 존재하는 경우
+          self.image = image
+        } else {
+          //캐시가 존재하지 않는 경우
+          guard let url = URL(string: urlString) else { return }
+          let resource = ImageResource(downloadURL: url, cacheKey: urlString)
+          self.kf.setImage(with: resource)
+        }
+      case .failure(let error):
+        print(error)
+      }
+    }
+  }
 }

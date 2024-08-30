@@ -25,15 +25,8 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         setUp()
     }
     
-    private func setUp(){
-        self.view = GrowthDiaryView
-        GrowthDiaryView.backgroundColor = .white
-        GrowthDiaryView.cofigureCollectionView(delegate: self, dataSource: self)
-        GrowthDiaryView.reigsterCollectionViewCell(GrowthDiaryListCollectionViewCell.self, forCellWithReuseIdentifier: GrowthDiaryListCollectionViewCell.identifier)
-        GrowthDiaryView.buttonTapped = { [weak self] in
-            self?.navigateToSecondViewController()
-        }
-        
+    override func viewIsAppearing(_ animated: Bool) {
+        print("viewisappearing")
         DiaryPostService.shared.fetchGrowthThumbnails(for: "TmIYwsxUilXYTACIGEYXiWomF2I3") { response in
             switch response{
                 
@@ -53,6 +46,18 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         
         print("abcdegdsafdssdfsdfasdfsdfsdfsdf")
         print(self.thumbnailData)
+    }
+    
+    private func setUp(){
+        self.view = GrowthDiaryView
+        GrowthDiaryView.backgroundColor = .white
+        GrowthDiaryView.cofigureCollectionView(delegate: self, dataSource: self)
+        GrowthDiaryView.reigsterCollectionViewCell(GrowthDiaryListCollectionViewCell.self, forCellWithReuseIdentifier: GrowthDiaryListCollectionViewCell.identifier)
+        GrowthDiaryView.buttonTapped = { [weak self] in
+            self?.navigateToSecondViewController()
+        }
+        
+     
     }
     
     private func navigateToSecondViewController(){
