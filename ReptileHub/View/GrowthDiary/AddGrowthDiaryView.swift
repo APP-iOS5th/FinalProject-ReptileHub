@@ -14,7 +14,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     
     //MARK: - 자식정보
     //이미지
-    private(set) lazy var thumbnailImageView: UIImageView = createImageVIew()// TODO: ImagePicker로 구현
+    private(set) lazy var thumbnailImageView: UIImageView = createImageVIew()
     //이름
     private lazy var nameTextField: UITextField = createTextField(text: "반려 도마뱀의 이름을 입력해주세요.")
     //종
@@ -26,12 +26,13 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         let picker = UIDatePicker()
         picker.preferredDatePickerStyle = .inline
         picker.datePickerMode = .date
+        picker.setDate(Date(), animated: true)
         return picker
     }()
     private lazy var hatchDaysTextField: UITextField = {
         let textField = createTextField(text: "해칭일을 선택해주세요.")
         textField.inputView = hatchDaysDatePicker
-        
+//        textField.text = Date().formatted
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         
@@ -86,9 +87,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             }
         }
         return true
-        
     }
-    
     
     //성별
     private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
@@ -556,6 +555,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             showButton.configuration?.baseForegroundColor = .black
         }
     }
+    
     private func configureTextFields() {
         nameTextField.delegate = self
         speciesTextField.delegate = self
@@ -597,7 +597,6 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         return nil
     }
     
-    
     @objc private func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
@@ -629,6 +628,13 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == hatchDaysTextField && textField.text?.isEmpty ?? true{
+            let datePicker = textField.inputView as? UIDatePicker
+            textField.text = datePicker?.date.formatted
+        }
     }
 }
 
