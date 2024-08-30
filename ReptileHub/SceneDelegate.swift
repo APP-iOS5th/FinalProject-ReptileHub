@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import GoogleSignIn
+import KakaoSDKAuth
+import FirebaseAuth
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -17,7 +20,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         
-        self.window?.rootViewController = TabbarViewController()
+        if let currentUser = Auth.auth().currentUser {
+            print("과연 지금 유저는? ---------------  \(currentUser.uid)")
+                    // 유저가 로그인 되어 있는 경우 TabbarViewController 설정
+                    let tabVC = TabbarViewController()
+                    window?.rootViewController = tabVC
+                } else {
+                    // 유저가 로그인 되어 있지 않은 경우 LoginViewController 설정
+                    let loginVC = LoginViewController()
+                    window?.rootViewController = loginVC
+                }
         self.window?.makeKeyAndVisible()
     }
 
@@ -49,6 +61,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            let _ = GIDSignIn.sharedInstance.handle(url)
+            
+        }
+                
+        if let url = URLContexts.first?.url {
+                if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                    _ = AuthController.handleOpenUrl(url: url)
+                }
+            }
+        }
 
 }
 
