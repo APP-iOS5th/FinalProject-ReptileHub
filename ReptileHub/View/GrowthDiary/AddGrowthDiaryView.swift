@@ -270,10 +270,10 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //ImageView 생성
     private func createImageVIew() -> UIImageView{
         let imageView = UIImageView()
-        // TODO: 추후 이미지 선택으로 바꿔야함
-        imageView.image = UIImage(named: "tempImage")
-        imageView.contentMode = .scaleAspectFill
+        imageView.image = UIImage(systemName: "plus")
+        imageView.contentMode = .center
         imageView.clipsToBounds = true
+        imageView.backgroundColor = .lightGray
         imageView.layer.cornerRadius = 10
         imageView.isUserInteractionEnabled = true //제스터를 인식하기위해 설정
         
@@ -294,6 +294,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     // 특정 이미지뷰에 이미지를 설정하는 메서드
     func setImage(_ image: UIImage, for imageView: UIImageView) {
         imageView.image = image
+        imageView.contentMode = .scaleAspectFill
     }
     
     //button 생성
