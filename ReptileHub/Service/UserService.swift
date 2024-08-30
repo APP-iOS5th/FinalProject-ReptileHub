@@ -137,12 +137,13 @@ class UserService {
                   let uid = data["uid"] as? String,
                   let name = data["name"] as? String,
                   let profileImageURL = data["profileImageURL"] as? String,
-                  let loginType = data["loginType"] as? String,
-                  let lizardCount = data["lizardCount"] as? Int,
-                  let postCount = data["postCount"] as? Int else {
+                  let loginType = data["loginType"] as? String else {
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid user data"])))
                 return
             }
+            
+            let lizardCount = data["lizardCount"] as? Int ?? 0
+            let postCount = data["postCount"] as? Int ?? 0
             
             let userProfile = UserProfile(uid: uid, name: name, profileImageURL: profileImageURL, loginType: loginType, lizardCount: lizardCount, postCount: postCount)
             completion(.success(userProfile))

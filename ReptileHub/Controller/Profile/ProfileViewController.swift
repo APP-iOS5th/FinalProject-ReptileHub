@@ -18,6 +18,21 @@ class ProfileViewController: UIViewController {
     override func loadView() {
         super.viewDidLoad()
         
+        
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        UserService.shared.fetchUserProfile(uid: uid) { results in
+            switch results {
+                
+            case .success(let profile):
+                print("porfile \(profile)")
+            case .failure(let error):
+                print("error \(error.localizedDescription)")
+            }
+        }
+        
+        
+        
         self.navigationItem.title = "프로필"
         
         self.view = profileView
