@@ -89,33 +89,16 @@ class SpecialDetailView: UIView {
     
     
     
-    // 뷰 레이아웃
+    //MARK: -  뷰 레이아웃
     private func detailsetupUI() {
         self.backgroundColor = .white
         
-//        view.addSubview(specialImages)
-//        view.addSubview(imageRectangle)
-//        view.addSubview(imageCountNumber)
         self.addSubview(specialTitle)
         self.addSubview(specialLizardName)
         self.addSubview(dateLabel)
         self.addSubview(specialLine)
         self.addSubview(specialText)
         
-//        specialImages.snp.makeConstraints{(make) in
-//            make.width.equalTo(100)
-//            make.height.equalTo(100)
-//            make.centerX.equalTo(self.view)
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin)
-//
-//        }
-        
-//        pageCountView.snp.makeConstraints{(make) in
-//
-//        }
-//        imagePageCount.snp.makeConstraints{(make) in
-//
-//        }
         specialTitle.snp.makeConstraints{(make) in
             make.leading.equalTo(self).offset(20)
             make.top.equalTo(imageScrollView.snp.bottom).offset(20)
@@ -141,7 +124,7 @@ class SpecialDetailView: UIView {
         }
     }
     
-    // 이미지 스크롤 뷰 레이아웃
+    //MARK: -  이미지 스크롤 뷰 레이아웃
     private func setupImageScrollView() {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fill
@@ -193,7 +176,7 @@ class SpecialDetailView: UIView {
             }
         }
     }
-    // 이미지 카운트 레이아웃
+    //MARK: - 이미지 카운트 레이아웃
     private func setupImagePageCountLabel() {
         pageCountView.backgroundColor = .lightGray
         pageCountView.layer.cornerRadius = 12
@@ -221,7 +204,7 @@ class SpecialDetailView: UIView {
     
     
 }
-// 이미지 스크롤 카운트
+//MARK: - 이미지 스크롤 카운트
 extension SpecialDetailView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView.frame.width > 0 else {

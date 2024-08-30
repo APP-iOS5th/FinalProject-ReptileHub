@@ -20,7 +20,7 @@ class SpecialDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    // Navigationbar & UIMenu
+    //MARK: - Navigationbar & UIMenu
     private func setupNavigationBar() {
         navigationItem.title = "특이사항"
         
