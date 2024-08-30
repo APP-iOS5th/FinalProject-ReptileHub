@@ -6,15 +6,20 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class TabbarViewController: UITabBarController {
-    
+
     let communityVC = CommunityViewController()
     let diaryVC = GrowthDiaryViewController()
-    let profileVC = CommunityViewController()
+    let profileVC = ProfileViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let user = Auth.auth().currentUser {
+            print("currentUser -----  \(user.uid)")
+        }
 
         let firstNavigationController = UINavigationController(rootViewController: communityVC)
         let secondNavigationController = UINavigationController(rootViewController: diaryVC)
@@ -27,9 +32,9 @@ class TabbarViewController: UITabBarController {
         self.viewControllers = [firstNavigationController, secondNavigationController, thirdNavigationController]
     }
     
-
-    
-    
+    deinit {
+           print("TabbarViewController deinit")
+       }
 
     
 
