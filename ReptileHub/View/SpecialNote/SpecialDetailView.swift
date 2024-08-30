@@ -119,7 +119,7 @@ class SpecialDetailView: UIView {
         }
         specialText.snp.makeConstraints{(make) in
             make.centerX.equalTo(self)
-            make.width.equalToSuperview().offset(-50)
+            make.width.equalToSuperview().offset(-40)
             make.top.equalTo(specialLine.snp.bottom).offset(20)
         }
     }
