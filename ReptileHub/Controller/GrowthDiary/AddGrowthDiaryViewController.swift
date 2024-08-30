@@ -7,6 +7,7 @@
 
 import UIKit
 import PhotosUI
+import FirebaseAuth
 
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -36,7 +37,17 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     }
     
     private func uploadGrowthDiary(){
-        print("업로드 버튼")
+        guard let userId = Auth.auth().getUserID() else {
+            return
+        }
+        let result = addGrowthDiaryView.growthDiaryRequestData()
+        DiaryPostService.shared.registerGrowthDiary(userID: userId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
+            if let error = error{
+                print(error.localizedDescription)
+            }else{
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
     }
     
     private func datePickerValueChanged(){

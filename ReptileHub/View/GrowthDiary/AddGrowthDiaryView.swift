@@ -9,9 +9,14 @@ import UIKit
 import SnapKit
 
 class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate, KeyboardNotificationDelegate {
+
+    typealias request = (GrowthDiaryRequest, [Data?])
     
     var buttonTapped: (()->Void)?
     let keyboardManager = KeyboardManager()
+    private var morphSelected = false
+    private var tailSelected = true
+    private var parentSelected = true
     
     //MARK: - 자식정보
     //이미지
@@ -22,6 +27,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     private lazy var speciesTextField: UITextField = createTextField(text: "반려 도마뱀의 종을 입력해주세요.")
     //모프
     private lazy var morphTextField: UITextField = createTextField(text: "모프를 입력해주세요.")
+    private lazy var morphChoice = createShowGroupViewButton(title: "모프 여부가 어떻게 되나요?", contentView: morphTextField, buttonTitles: ("있음", "없음"))
     //해칭일
     private lazy var hatchDaysDatePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -199,7 +205,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             createThumbnailGroup(),
             createTextFieldGroup(title: "이름이 어떻게 되나요?", textField: nameTextField),
             createTextFieldGroup(title: "종이 어떻게 되나요?", textField: speciesTextField),
-            createShowGroupViewButton(title: "모프 여부가 어떻게 되나요?", contentView: morphTextField, buttonTitles: ("있음", "없음")),
+            morphChoice,
             createGroup(title: "해칭일이 어떻게 되나요?", contentView: hatchDaysTextField),
             //            createTextFieldGroup(title: "성별이 어떻게 되나요?", textField: genderTextField),
             createGroup(title: "성별이 어떻게 되나요?", contentView: genderDropdownView),
@@ -428,6 +434,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         hideConfig.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
         hideConfig.baseForegroundColor = .black
         hideButton.configuration = hideConfig
+        hideButton.tag = 2
         
         let buttonStackView = UIStackView(arrangedSubviews: [showButton, hideButton])
         buttonStackView.axis = .horizontal
@@ -473,6 +480,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     private func updateButtonSelection(_ firstButton: UIButton, _ secondButton: UIButton) {
         // 첫 번째 버튼
         if firstButton.isSelected {
+            tailSelected = true
             var config = firstButton.configuration ?? UIButton.Configuration.filled()
             config.baseBackgroundColor = .systemBlue
             config.baseForegroundColor = .white
@@ -486,6 +494,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         
         // 두 번째 버튼
         if secondButton.isSelected {
+            tailSelected = false
             var config = secondButton.configuration ?? UIButton.Configuration.filled()
             config.baseBackgroundColor = .systemBlue
             config.baseForegroundColor = .white
@@ -496,6 +505,20 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             config.baseForegroundColor = .black
             secondButton.configuration = config
         }
+    }
+    
+    func growthDiaryRequestData() -> request{
+        let lizardInfo = LizardInfo(name: nameTextField.text ?? "이름 없음", species: speciesTextField.text ?? "종 없음", morph: morphTextField.text, hatchDays: hatchDaysDatePicker.date, gender: Gender(rawValue: genderDropdownView.selectedOption!)!, weight: Int(weightTextField.text ?? "0")!, feedMethod: feedMethodDropdownView.selectedOption!, tailexistence: tailSelected)
+        var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
+        if parentSelected{
+            let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
+            imageData.append(motherImageView.image?.pngData())
+            let father = ParentInfo(name: fatherNameTextField.text ?? "이름 없음", morph: fatherMorphTextField.text)
+            imageData.append(fatherImageView.image?.pngData())
+            let parent = Parents(mother: mother, father: father)
+            return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData)
+        }
+        return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData)
     }
     
     //MARK: - Action
@@ -516,7 +539,6 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         updateButtonSelection(firstButton, secondButton)
     }
     
-    
     @objc private func showContent(_ sender: UIButton) {
         if let stackView = sender.superview?.superview as? UIStackView,
            let contentView = stackView.arrangedSubviews.last,
@@ -527,6 +549,14 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             UIView.animate(withDuration: 0.2) {
                 contentView.isHidden = false
             }
+            if showButton.layer.name == "있음"{
+                self.morphSelected = true
+                print(morphSelected)
+            }else{
+                self.parentSelected = true
+                print(parentSelected)
+            }
+            
             
             // showButton을 선택 상태로 설정
             showButton.configuration?.baseBackgroundColor = .systemBlue
@@ -545,10 +575,16 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
            let showButton = buttonStackView.arrangedSubviews[0] as? UIButton,
            let hideButton = buttonStackView.arrangedSubviews[1] as? UIButton {
             
+            if hideButton.layer.name == "없음"{
+                self.morphSelected = false
+            }else{
+                self.parentSelected = false
+            }
+            
             UIView.animate(withDuration: 0.2) {
                 contentView.isHidden = true
             }
-            
+            morphSelected = false
             // hideButton을 선택 상태로 설정
             hideButton.configuration?.baseBackgroundColor = .systemBlue
             hideButton.configuration?.baseForegroundColor = .white
