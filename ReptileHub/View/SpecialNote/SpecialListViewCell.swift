@@ -21,9 +21,9 @@ class SpecialListViewCell: UITableViewCell {
     // 셀 이미지 뷰
     private lazy var specialImageView: UIImageView = {
         let specialImageView = UIImageView()
-        specialImageView.image = UIImage(named: "Snowball")
+        specialImageView.image = UIImage(systemName: "camera")
         specialImageView.layer.cornerRadius = 5
-        specialImageView.contentMode = .scaleAspectFill
+        specialImageView.contentMode = .scaleAspectFit // scaleAspectFill?
         return specialImageView
     }()
     // 셀 제목
