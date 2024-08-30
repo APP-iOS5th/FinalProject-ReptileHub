@@ -8,9 +8,10 @@
 import UIKit
 import SnapKit
 
-class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate {
+class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate, KeyboardNotificationDelegate {
     
     var buttonTapped: (()->Void)?
+    let keyboardManager = KeyboardManager()
     
     //MARK: - 자식정보
     //이미지
@@ -90,7 +91,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     }
     
     //성별
-    private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
+    private lazy var genderDropdownView = DropDownView(options: [Gender.male.rawValue, Gender.female.rawValue, Gender.unKnown.rawValue], title: "성별을 선택해주세요.")
     //무게
     private lazy var weightTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
     //피딩 방식
@@ -232,7 +233,10 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         setUI()
         addTapGestureRecognizer()
         configureTextFields()
-        registerForKeyboardNotifications()
+        keyboardManager.showNoti()
+        keyboardManager.hideNoti()
+        keyboardManager.delegate = self
+//        registerForKeyboardNotifications()
     }
     
     required init?(coder: NSCoder) {
@@ -495,7 +499,6 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     }
     
     //MARK: - Action
-    
     @objc private func buttonTapped(_ sender: UIButton) {
         guard let buttonStackView = sender.superview as? UIStackView else { return }
         
@@ -578,13 +581,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         textField.resignFirstResponder() // 키보드를 닫음
         return true
     }
-    
-    private func registerForKeyboardNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
-    }
-    
+
     private func findFirstResponder(in view: UIView) -> UIView? {
         for subview in view.subviews {
             if subview.isFirstResponder {
@@ -597,32 +594,18 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         return nil
     }
     
-    @objc private func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-            let keyboardHeight = keyboardFrame.height
-            // 현재 스크롤 뷰의 기존 contentInset을 가져와서 조정
-            var contentInset = scrollView.contentInset
-            contentInset.bottom = keyboardHeight
-            scrollView.contentInset = contentInset
-            scrollView.verticalScrollIndicatorInsets = contentInset
-            
-            // 현재 활성화된 텍스트 필드가 있는 경우, 그것이 가려지지 않도록 스크롤
-            if let activeField = findFirstResponder(in: self) {
-                let visibleRect = self.bounds.inset(by: scrollView.contentInset)
-                let activeFieldFrame = activeField.convert(activeField.bounds, to: self)
-                
-                if !visibleRect.contains(activeFieldFrame) {
-                    scrollView.scrollRectToVisible(activeFieldFrame, animated: true)
-                }
-            }
+    func keyboardWillShow(keyboardSize: CGRect) {
+        scrollView.snp.updateConstraints { make in
+            make.bottom.equalToSuperview().offset(-keyboardSize.height)
         }
+        self.layoutIfNeeded()
     }
     
-    @objc private func keyboardWillHide(_ notification: Notification) {
-        // 키보드가 내려갈 때, 스크롤뷰의 인셋을 원래대로 돌려놓음
-        let contentInset = UIEdgeInsets.zero
-        scrollView.contentInset = contentInset
-        scrollView.verticalScrollIndicatorInsets = contentInset
+    func keyboardWillHide(keyboardSize: CGRect) {
+        scrollView.snp.updateConstraints { make in
+            make.bottom.equalToSuperview()
+        }
+        self.layoutIfNeeded()
     }
     
     deinit {

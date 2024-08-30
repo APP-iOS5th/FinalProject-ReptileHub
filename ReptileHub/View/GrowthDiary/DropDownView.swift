@@ -12,7 +12,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private let title: String
     var isOpen = false
     
-    private var selectedOption: String? {
+    private(set) var selectedOption: String? {
         didSet {
             titleButton.setTitle(selectedOption ?? title, for: .normal)
         }
