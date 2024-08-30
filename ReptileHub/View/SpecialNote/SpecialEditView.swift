@@ -7,52 +7,64 @@
 
 import UIKit
 import SnapKit
+import PhotosUI
+
+protocol SpecialEditViewDelegate: AnyObject {
+    func didTapPostButton(imageData: [Data], title: String, content: String)
+}
 
 class SpecialEditView: UIView {
     
+    weak var delegate: SpecialEditViewDelegate?
     
     override init(frame: CGRect) {
         super .init(frame: .zero)
         
+        // 제스처 적용(슈퍼뷰 클릭시 키보드 내려감)
+        self.addGestureRecognizer(tapGesture)
+        keyboardManager.delegate = self
+        keyboardManager.showNoti()
+        keyboardManager.hideNoti()
+        selectedImages.removeAll()
+        imageData.removeAll()
+        setupImagePickerCollectionView()
         setupUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    //MARK: 갤러리 선택 버튼 - 버튼 클릭 시 갤러리 표시
-    private lazy var imageButton: UIButton = {
-        let imageButton = UIButton()
-        imageButton.setImage(UIImage(systemName: "camera.fill"), for: .normal)
-        imageButton.tintColor = UIColor(named: "imagePickerPlaceholderColor")
-        imageButton.backgroundColor = UIColor(named: "imagePickerColor")
-        imageButton.layer.cornerRadius = 5
-//        imageButton.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        imageButton.layer.shadowOpacity = 0.5
-//        imageButton.layer.shadowColor = UIColor.darkGray.cgColor
-        return imageButton
+    // MARK: - 키보드 탭 제스쳐
+    lazy var tapGesture: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
+        tap.cancelsTouchesInView = false // 터치 이벤트를 취소하지 않도록 설정
+        return tap
     }()
     
-    //MARK: 날짜 (datePicker로 수정)
+    let keyboardManager = KeyboardManager()
+    // super view 클릭시 키보드 내려감
+    @objc
+    func tapHandler(_ sender: UIView) {
+        specialTitle.resignFirstResponder()
+        descriptionTextView.resignFirstResponder()
+    }
+    //MARK: - 이미지 선택 버튼 - CollectionView, PHPickerView
+    // PhPicker에서 선택한 이미지들
+    var selectedImages: [UIImage?] = []
+    
+    // selectedImages의 데이터화 배열
+    var imageData: [Data] = []
+    // 이미지 선택 CollectionView
+    var imagePickerCollectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+    var picker: PHPickerViewController = PHPickerViewController(configuration: PHPickerConfiguration())
+    
+    //MARK: - 날짜 (datePicker로 수정)
     private lazy var dateLabel: UILabel = {
         let dateLabel = UILabel()
         dateLabel.text = "날짜"
         dateLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         dateLabel.textColor = .lightGray
         return dateLabel
-    }()
-    
-    private lazy var dateButton: UIButton = {
-        let dateButton = UIButton()
-        dateButton.setTitle("yyyy.mm.dd", for: .normal)
-        dateButton.setTitleColor(UIColor(named: "textFieldTitleColor"), for: .normal)
-        dateButton.layer.cornerRadius = 5
-        dateButton.backgroundColor = UIColor(named: "datePickerBG")
-//        dateButton.layer.shadowOffset = CGSize(width: 1, height: 1)
-//        dateButton.layer.shadowOpacity = 0.5
-//        dateButton.layer.shadowColor = UIColor.darkGray.cgColor
-        return dateButton
     }()
     
     private lazy var datePicker: UIDatePicker = {
@@ -68,13 +80,13 @@ class SpecialEditView: UIView {
         return datePicker
     }()
     
-    // MARK: Selectors
+    // MARK: DatePicker Selectors
     @objc
     private func handleDatePicker(_ sender: UIDatePicker) {
         print(sender.date)
     }
     
-    //MARK: 제목 입력
+    //MARK: - 제목 입력
     private lazy var specialTitle: UITextField = {
         let specialTitle = UITextField()
         specialTitle.placeholder = "제목"
@@ -84,7 +96,7 @@ class SpecialEditView: UIView {
         specialTitle.layer.masksToBounds = true
         return specialTitle
     }()
-    
+    // specialTitle border 구현
     private lazy var border: CALayer = {
         let border = CALayer()
         let width = CGFloat(1.0)
@@ -94,40 +106,39 @@ class SpecialEditView: UIView {
         return border
     }()
     
-    // specialTitle border 구현
     override func layoutSubviews() {
             super.layoutSubviews()
             specialTitle.layer.addSublayer(border)
         }
     
-    //MARK: 설명 입력
+    //MARK: - 설명 입력
     private lazy var descriptionLabel: UILabel = {
         let descriptionLabel = UILabel()
         descriptionLabel.text = "설명"
         descriptionLabel.textColor = .black
-        descriptionLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        descriptionLabel.font = UIFont.systemFont(ofSize: 20)
         return descriptionLabel
     }()
-    private let textViewPlaceholder = "입력해주세요..."
+    // textView placeholder
+    let textViewPlaceholder: UILabel = {
+        let textViewPlaceholder = UILabel()
+        textViewPlaceholder.text = "내용을 입력해주세요"
+        textViewPlaceholder.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        textViewPlaceholder.textColor = .textFieldPlaceholder
+        return textViewPlaceholder
+    }()
     private lazy var descriptionTextView: UITextView = {
         let descriptionTextView = UITextView()
         descriptionTextView.textContainerInset = .init(top: 10, left: 10, bottom: 10, right: 10)
-//        descriptionTextView.contentInset = .init(top: 40, left: 30, bottom: 20, right: 10)
-//        descriptionTextView.backgroundColor = .brown
-//        descriptionTextView.textInputView.backgroundColor = UIColor(named: "Dark_Gray")
-        descriptionTextView.text = textViewPlaceholder
         descriptionTextView.font = .systemFont(ofSize: 15)
         descriptionTextView.textColor = .secondaryLabel
         descriptionTextView.backgroundColor = UIColor(named: "textFieldSegmentBG")
-//        descriptionTextView.delegate = self
-        
         descriptionTextView.layer.cornerRadius = 5
-        descriptionTextView.delegate = self
         return descriptionTextView
     }()
     
     
-    //MARK: 설명 글자 수 카운트 및 제한 표시
+    //MARK: - 설명 글자 수 카운트 및 제한 표시
     private lazy var countTextLabel: UILabel = {
         let countTextLabel = UILabel()
         countTextLabel.text = "0/1000"
@@ -136,9 +147,9 @@ class SpecialEditView: UIView {
         return countTextLabel
     }()
     
-    //MARK: 등록 버튼
+    //MARK: - 등록 버튼
     private lazy var saveButton: UIButton = {
-        let saveButton = UIButton()
+        let saveButton = UIButton(type: .system)
         saveButton.setTitle("등록하기", for: .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         saveButton.backgroundColor = UIColor(named: "addBtnGraphTabbarColor")
@@ -148,43 +159,30 @@ class SpecialEditView: UIView {
         saveButton.layer.shadowOffset = CGSize(width: 1, height: 1)
         saveButton.layer.shadowOpacity = 0.5
         saveButton.layer.shadowColor = UIColor.darkGray.cgColor
+        saveButton.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
         return saveButton
     }()
     
+    // MARK: - 레이아웃
     private func setupUI() {
         self.backgroundColor = .white
-//        navigationItem.title = "특이사항"
         
-        self.addSubview(imageButton)
         self.addSubview(dateLabel)
-//        view.addSubview(dateButton)
         self.addSubview(datePicker)
         self.addSubview(specialTitle)
         self.addSubview(descriptionLabel)
         self.addSubview(descriptionTextView)
+        self.addSubview(textViewPlaceholder)
         self.addSubview(countTextLabel)
         self.addSubview(saveButton)
         
         //MARK: -- UI AutoLayout
         
-        imageButton.snp.makeConstraints{(make) in
-            make.width.equalTo(100)
-            make.height.equalTo(100)
-            make.leading.equalTo(20)
-            make.top.equalTo(self.safeAreaLayoutGuide.snp.topMargin).offset(15)
-        }
-        
         dateLabel.snp.makeConstraints{ (make) in
             make.leading.equalTo(25)
-            make.top.equalTo(imageButton.snp.bottomMargin).offset(30)
+            make.top.equalTo(imagePickerCollectionView.snp.bottomMargin).offset(30)
             
         }
-        
-//        dateButton.snp.makeConstraints{(make) in
-//            make.width.equalTo(130)
-//            make.leading.equalTo(20)
-//            make.top.equalTo(dateLabel.snp.bottomMargin).offset(20)
-//        }
         
         datePicker.snp.makeConstraints{(make) in
             make.width.equalTo(100)
@@ -211,6 +209,11 @@ class SpecialEditView: UIView {
             make.top.equalTo(descriptionLabel.snp.bottom).offset(20)
         }
         
+        textViewPlaceholder.snp.makeConstraints { make in
+            make.top.equalTo(descriptionTextView.snp.top).offset(8)
+            make.leading.equalTo(descriptionTextView.snp.leading).offset(14)
+        }
+        
         countTextLabel.snp.makeConstraints{(make) in
             make.trailing.equalTo(descriptionTextView.snp.trailingMargin)
             make.bottom.equalTo(descriptionTextView.snp.bottomMargin)
@@ -223,43 +226,91 @@ class SpecialEditView: UIView {
             make.top.equalTo(descriptionTextView.snp.bottom).offset(30)
         }
     }
-    // textView placeholder 함수
+    //MARK: - 이미지피커 콜렉션뷰 setup
+    private func setupImagePickerCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 0
+        layout.itemSize = CGSize(width: 90, height: 90)
+        
+        imagePickerCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        imagePickerCollectionView.register(SpecialPHPickerCollectionViewCell.self, forCellWithReuseIdentifier: "PHPickerCell")
+        imagePickerCollectionView.showsHorizontalScrollIndicator = false
+        
+        self.addSubview(imagePickerCollectionView)
+        
+        imagePickerCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(10)
+            make.leading.equalTo(self.snp.leading).offset(24)
+            make.trailing.equalTo(self.snp.trailing)
+            make.height.equalTo(90)
+        }
+    }
+
+    //MARK: - saveButton 액션 함수
     @objc
-        private func didTapTextView(_ sender: Any) {
-            self.endEditing(true)
-        }
-    // textView countTextLabel 글자 수 세는 함수
-        private func updateCountLabel(characterCount: Int) {
-            countTextLabel.text = "\(characterCount)/1000"
-        }
+    private func saveButtonAction() {
+        delegate?.didTapPostButton(imageData: imageData, title: specialTitle.text ?? "nil", content: descriptionTextView.text ?? "nil")
+    }
+    //MARK: - Delegate
+    func configureSpecialEditView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, textViewDelegate: UITextViewDelegate) {
+        imagePickerCollectionView.delegate = delegate
+        imagePickerCollectionView.dataSource = datasource
+        descriptionTextView.delegate = textViewDelegate
+    }
+    //MARK: - PHPicker 함수
+    func createPHPickerVC() -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 5
+        config.filter = .images
+        
+        return PHPickerViewController(configuration: config)
+        
+    }
 
 }
-//textView placeholder Delegate
-extension SpecialEditView: UITextViewDelegate {
-    func textViewDidBeginEditing(_ descriptionTextView: UITextView) {
-            if descriptionTextView.text == textViewPlaceholder {
-                descriptionTextView.text = nil
-                descriptionTextView.textColor = .black
+
+// MARK: - 키보드 관련
+extension SpecialEditView: KeyboardNotificationDelegate {
+    func keyboardWillShow(keyboardSize: CGRect) {
+        print("keyboard Show")
+        
+        if isTextViewFirstResponder() {
+            self.imagePickerCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(self.snp.top)
+                make.leading.equalTo(self.snp.leading).offset(24)
+                make.trailing.equalTo(self.snp.trailing)
+                make.height.equalTo(90)
+            }
+            
+            // 레이아웃 변화를 애니메이션으로 적용
+            self.layoutIfNeeded()
+        }
+    }
+    
+    func keyboardWillHide(keyboardSize: CGRect) {
+        print("keyboardW Hide")
+        
+        if isTextViewFirstResponder() {
+            self.imagePickerCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(10)
+                make.leading.equalTo(self.snp.leading).offset(24)
+                make.trailing.equalTo(self.snp.trailing)
+                make.height.equalTo(90)
+            }
+            
+            // 레이아웃 변화를 애니메이션으로 적용
+            self.layoutIfNeeded()
+        }
+    }
+    
+    private func isTextViewFirstResponder() -> Bool {
+        // 모든 서브뷰를 검색해서 UITextView가 첫 번째 응답자인지 확인함
+        for subview in self.subviews {
+            if let textView = subview as? UITextView, textView.isFirstResponder {
+                return true
             }
         }
-
-        func textViewDidEndEditing(_ descriptionTextView: UITextView) {
-            if descriptionTextView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                descriptionTextView.text = textViewPlaceholder
-                descriptionTextView.textColor = .lightGray
-                updateCountLabel(characterCount: 0)
-            }
-        }
-
-        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-            let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
-            let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
-
-            let characterCount = newString.count
-            guard characterCount <= 1000 else { return false }
-            updateCountLabel(characterCount: characterCount)
-
-            return true
-        }
+        return false
+    }
 }
