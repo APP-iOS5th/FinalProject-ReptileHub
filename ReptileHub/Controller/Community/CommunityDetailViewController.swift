@@ -12,6 +12,8 @@ class CommunityDetailViewController: UIViewController {
 
     let detailView = CommunityDetailView()
     
+    var postDetailData: PostDetailResponse?
+    
     private var menuButton: UIBarButtonItem = UIBarButtonItem()
   
     

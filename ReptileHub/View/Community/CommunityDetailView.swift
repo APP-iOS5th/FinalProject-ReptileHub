@@ -12,6 +12,62 @@ class CommunityDetailView: UIView {
     
     var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~", "링딩동", "다크초코 6.7만 달성~", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~",]
     
+    var postDetailData: PostDetailResponse? {
+        didSet {
+            guard let postDetailData = postDetailData else { return }
+            
+            // 기존의 이미지를 지우고 새로 설정
+            contentImages.removeAll()
+            imageViews.removeAll()
+            imageStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            
+            // 비동기 이미지 로드
+            for url in postDetailData.imageURLs {
+                guard let imageURL = URL(string: url) else { continue }
+                URLSession.shared.dataTask(with: imageURL) { [weak self] data, response, error in
+                    guard let self = self,
+                          let data = data,
+                          error == nil,
+                          let image = UIImage(data: data) else { return }
+                    
+                    DispatchQueue.main.async {
+                        let imageView = UIImageView(image: image)
+                        imageView.contentMode = .scaleAspectFit
+                        self.contentImages.append(imageView)
+                        
+                        // 이미지가 로드될 때마다 imageStackView 업데이트
+                        self.updateImageStackView()
+                    }
+                }.resume()
+            }
+            
+            
+            self.titleLabel.text = postDetailData.title
+            self.contentText.text = postDetailData.content
+            self.likeCount.text = "\(postDetailData.likeCount)"
+            self.commentCount.text = "\(postDetailData.commentCount)"
+            self.timestampLabel.text = "\(postDetailData.createdAt!)"
+            self.imagePageCount.text = "1/\(postDetailData.imageURLs.count)"
+        }
+    }
+    
+    var postUserProfile: UserProfile? {
+        didSet {
+            guard let postUserProfile = postUserProfile else { return }
+            URLSession.shared.dataTask(with: URL(string: postUserProfile.profileImageURL)!) { [weak self] data, response, error in
+                guard let self,
+                      let data = data,
+                      response != nil,
+                      error == nil else { return }
+                DispatchQueue.main.async {
+                    self.profileImage.image = UIImage(data: data) ?? UIImage()
+                }
+            }.resume()
+            
+            self.nicknameLabel.text = postUserProfile.name
+        }
+    }
+    
     // 키보드 탭 제스쳐
     lazy var tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
     
@@ -32,6 +88,7 @@ class CommunityDetailView: UIView {
     private let elementStackView: UIStackView = UIStackView()
     
     private let likeButton: UIButton = UIButton()
+    private var likeButtonToggle: Bool?
     
     private var menuButton: UIBarButtonItem = UIBarButtonItem()
     
@@ -41,16 +98,12 @@ class CommunityDetailView: UIView {
     private let divisionLine: UIView = UIView()
     
     // 본문 이미지
-    private let contentImages: [UIImageView] = [
-        UIImageView(image: UIImage(named: "choba")),
-        UIImageView(image: UIImage(named: "cookie")),
-        UIImageView(image: UIImage(named: "cookie")),
-    ]
+    lazy var contentImages: [UIImageView] = []
     private var imageViews: [UIView] = []
     private let imageStackView: UIStackView = UIStackView()
     private let imageScrollView: UIScrollView = UIScrollView()
     // 이미지 개수 나타내는 UI
-    private let imagePageCount: UILabel = UILabel()
+    lazy var imagePageCount: UILabel = UILabel()
     private let pageCountView: UIView = UIView()
     
     // 본문 텍스트
@@ -80,7 +133,7 @@ class CommunityDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         
         // 제스처 적용(슈퍼뷰 클릭시 키보드 내려감)
         self.addGestureRecognizer(tapGesture)
@@ -113,12 +166,37 @@ class CommunityDetailView: UIView {
         super.init(coder: coder)
     }
     
+    
+    private func updateImageStackView() {
+        // 이미지 스택 뷰의 기존 콘텐츠를 제거
+        imageStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        for imageView in contentImages {
+            let containerView = UIView()
+            containerView.addSubview(imageView)
+            
+            imageView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+                make.width.equalTo(self.frame.width) // 스크롤뷰 너비에 맞춤
+                make.height.equalTo(230) // 고정 높이
+            }
+            
+            imageStackView.addArrangedSubview(containerView)
+            containerView.snp.makeConstraints { make in
+                make.width.equalTo(self.imageScrollView.snp.width) // 스크롤뷰와 같은 너비
+                make.height.equalTo(230)
+            }
+        }
+        
+        imageStackView.layoutIfNeeded() // 레이아웃 업데이트
+    }
+    
     // super view 클릭시 키보드 내려감
     @objc
     func tapHandler(_ sender: UIView) {
         commentTextView.resignFirstResponder()
     }
-
+    
     
     
     //MARK: - 스크롤뷰 세팅
@@ -177,12 +255,33 @@ class CommunityDetailView: UIView {
     }
     
     
+    @objc
+    private func toggleButton() {
+        print("좋아요 버튼 토글.")
+        CommunityService.shared.toggleLikePost(userID: UserService.shared.currentUserId, postID: postDetailData!.postID) { result in
+            switch result {
+            case .success(let boolValue):
+                print("토글 성공")
+                self.likeButtonToggle = boolValue
+                print("토글 현황 : \(boolValue)")
+                if self.likeButtonToggle! {
+                    self.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                } else {
+                    self.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                }
+            case .failure(let error):
+                print("토글 실패 : \(error.localizedDescription)")
+            }
+        }
+    }
+    
     //MARK: - title StackView + 좋아요 버튼
     private func setupTitleStackView() {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
         let heartImage = UIImage(systemName: "heart", withConfiguration: imageConfig)
         
         likeButton.setImage(heartImage, for: .normal)
+        likeButton.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
         
         likeButton.snp.makeConstraints { make in
             make.width.equalTo(40)
@@ -237,9 +336,11 @@ class CommunityDetailView: UIView {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fillEqually
         imageStackView.alignment = .center
+        imageStackView.backgroundColor = .yellow
         
         imageScrollView.alwaysBounceHorizontal = true
         imageScrollView.isPagingEnabled = true
+        imageScrollView.backgroundColor = .green
         
         self.stackView.addArrangedSubview(imageScrollView)
         
@@ -257,12 +358,13 @@ class CommunityDetailView: UIView {
             make.top.leading.trailing.bottom.equalTo(imageScrollView)
         }
         
-        for i in 0..<contentImages.count {
+        for i in 0..<(contentImages.count) {
             let imageView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 230))
             
             contentImages[i].contentMode = .scaleAspectFit
             
             imageView.addSubview(contentImages[i])
+            
             
             contentImages[i].snp.makeConstraints { make in
                 make.centerX.equalTo(imageView)
@@ -302,7 +404,7 @@ class CommunityDetailView: UIView {
             make.bottom.equalTo(imageScrollView.snp.bottom).offset(-10)
         }
         
-        imagePageCount.text = "1/\(contentImages.count)"
+        imagePageCount.text = "1/\(postDetailData?.imageURLs.count)"
         
         imagePageCount.snp.makeConstraints { make in
             make.centerX.equalTo(pageCountView)
@@ -314,7 +416,7 @@ class CommunityDetailView: UIView {
     private func setupTextView() {
         contentText.text = "게시글 본문 예시 내용입니다."
         contentText.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-//        contentText.backgroundColor = .lightGray
+        //        contentText.backgroundColor = .lightGray
         
         self.stackView.addArrangedSubview(contentText)
         

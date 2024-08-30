@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class TabbarViewController: UITabBarController {
 
@@ -27,9 +28,6 @@ class TabbarViewController: UITabBarController {
         self.viewControllers = [firstNavigationController, secondNavigationController, thirdNavigationController]
         self.tabBar.tintColor = .addBtnGraphTabbar
     }
-    
-    
-
-    
 
 }
+
