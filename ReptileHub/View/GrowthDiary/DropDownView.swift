@@ -136,7 +136,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         
         tableView.isHidden = false
         
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.1) {
             self.tableViewHeightConstraint?.update(offset: targetHeight)
             window.layoutIfNeeded()
         }
@@ -160,9 +160,15 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         let newImage = isOpen ? UIImage(systemName: "chevron.up", withConfiguration: imageConfig) : UIImage(systemName: "chevron.down", withConfiguration: imageConfig)
         
-        UIView.transition(with: titleButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+        UIView.transition(with: titleButton, duration: 0.1, options: .transitionCrossDissolve, animations: {
             self.titleButton.setImage(newImage, for: .normal)
         }, completion: nil)
+    }
+    
+    @objc func closeDropdownOnScroll() {
+        if isOpen {
+            closeDropdown()
+        }
     }
     
     @objc func closeDropdown(){
@@ -177,7 +183,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         
         updateButtonIcon()
         
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.1, animations: {
             self.tableViewHeightConstraint?.update(offset: 0)
             window.layoutIfNeeded()
         }, completion: { _ in

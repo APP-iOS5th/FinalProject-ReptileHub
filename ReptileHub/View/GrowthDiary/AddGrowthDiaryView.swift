@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate {
+class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate {
     
     //MARK: - 자식정보
     //이미지
@@ -194,6 +194,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = true
         scrollView.alwaysBounceVertical = true
+        scrollView.delegate = self
         return scrollView
     }()
     
@@ -532,6 +533,11 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         motherMorphTextField.delegate = self
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        genderDropdownView.closeDropdownOnScroll()
+        feedMethodDropdownView.closeDropdownOnScroll()
+    }
+    
     // UITextFieldDelegate 메서드: Return 키를 눌렀을 때 키보드 닫기
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // 키보드를 닫음
@@ -555,8 +561,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         }
         return nil
     }
-
-      
+    
+    
     @objc private func keyboardWillShow(_ notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
@@ -565,7 +571,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             contentInset.bottom = keyboardHeight
             scrollView.contentInset = contentInset
             scrollView.verticalScrollIndicatorInsets = contentInset
-
+            
             // 현재 활성화된 텍스트 필드가 있는 경우, 그것이 가려지지 않도록 스크롤
             if let activeField = findFirstResponder(in: self) {
                 let visibleRect = self.bounds.inset(by: scrollView.contentInset)
@@ -577,18 +583,18 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             }
         }
     }
-
+    
     @objc private func keyboardWillHide(_ notification: Notification) {
         // 키보드가 내려갈 때, 스크롤뷰의 인셋을 원래대로 돌려놓음
         let contentInset = UIEdgeInsets.zero
         scrollView.contentInset = contentInset
         scrollView.verticalScrollIndicatorInsets = contentInset
     }
-
-      deinit {
-          NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-          NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-      }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
 }
 
 #if DEBUG
