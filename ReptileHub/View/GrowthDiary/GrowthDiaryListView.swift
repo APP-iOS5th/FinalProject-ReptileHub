@@ -138,6 +138,8 @@ class GrowthDiaryListView: UIView {
         GrowthDiaryListCollectionView.setNeedsLayout()
         GrowthDiaryListCollectionView.layoutIfNeeded()
         
+        print("contentSize.height",GrowthDiaryListCollectionView.contentSize.height)
+        
         if GrowthDiaryListCollectionView.contentSize.height > GrowthDiaryListCollectionView.bounds.height{
             GrowthDiaryListCollectionView.isScrollEnabled = true
         }else{

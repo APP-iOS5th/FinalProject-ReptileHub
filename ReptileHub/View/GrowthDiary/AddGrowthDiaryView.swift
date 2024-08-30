@@ -126,7 +126,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //    }
     
     // TODO: textfield 공백및 띄어쓰기 처리해주기 -> 에러처리 입력해달라고 에러를 하나 만들어야함(귀찮)
-    
+    // TODO: 날짜 기본값 오늘로 넣기
     // TODO: escaping으로 깔끔하게 하자
     func requestData() -> (GrowthDiaryRequest, [Data])
     {

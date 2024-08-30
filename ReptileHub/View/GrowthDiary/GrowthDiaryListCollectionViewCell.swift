@@ -73,14 +73,13 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
     
     
     func configure(imageName: String, title: String, date: String){
-//        if let url = URL(string: imageName){
+        if let url = URL(string: imageName){
 //            GrowthDiaryItemImage.kf.setImage(with: url,
 //                                             placeholder: nil,
 //                                             options: [.transition(.fade(1.2))],
 //                                             completionHandler: nil)
-//            GrowthDiaryItemImage.setImage(with: imageName)
-//        }
-        GrowthDiaryItemImage.loadImage(from: imageName)
+            GrowthDiaryItemImage.setImage(with: imageName)
+        }
         GrowthDiaryItemTitle.text = title
         GrowthDiaryItemDate.text = date
     }

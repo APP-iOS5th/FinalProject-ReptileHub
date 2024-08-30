@@ -24,9 +24,9 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         super.viewDidLoad()
         setUp()
     }
-    
+//    
     override func viewIsAppearing(_ animated: Bool) {
-        print("viewisappearing")
+        super.viewIsAppearing(animated)
         DiaryPostService.shared.fetchGrowthThumbnails(for: "TmIYwsxUilXYTACIGEYXiWomF2I3") { response in
             switch response{
                 
@@ -39,6 +39,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
                 print()
                 print(thumbnail)
                 self.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
+                self.GrowthDiaryView.updateScrollState()
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -47,7 +48,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         print("abcdegdsafdssdfsdfasdfsdfsdfsdf")
         print(self.thumbnailData)
     }
-    
+//    
     private func setUp(){
         self.view = GrowthDiaryView
         GrowthDiaryView.backgroundColor = .white
@@ -56,8 +57,6 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         GrowthDiaryView.buttonTapped = { [weak self] in
             self?.navigateToSecondViewController()
         }
-        
-     
     }
     
     private func navigateToSecondViewController(){
@@ -72,6 +71,7 @@ extension GrowthDiaryViewController{
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // TODO: 실제 존재하는 Model의 개수
+        print("제발",thumbnailData.count)
         print()
         print()
         print()
