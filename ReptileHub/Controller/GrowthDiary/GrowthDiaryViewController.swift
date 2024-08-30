@@ -13,6 +13,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
+    private var thumbnailData: [ThumbnailResponse] = []
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -33,6 +34,25 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
             self?.navigateToSecondViewController()
         }
         
+        DiaryPostService.shared.fetchGrowthThumbnails(for: "TmIYwsxUilXYTACIGEYXiWomF2I3") { response in
+            switch response{
+                
+            case .success(let thumbnail):
+                self.thumbnailData = thumbnail
+                print()
+                print()
+                print()
+                print()
+                print()
+                print(thumbnail)
+                self.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+        print("abcdegdsafdssdfsdfasdfsdfsdfsdf")
+        print(self.thumbnailData)
     }
     
     private func navigateToSecondViewController(){
@@ -47,13 +67,19 @@ extension GrowthDiaryViewController{
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // TODO: 실제 존재하는 Model의 개수
-        if mydata.count == 0{
+        print()
+        print()
+        print()
+        print()
+        print()
+        print("fsdfdasfsdfsdfsdfsdfdsf", self.thumbnailData)
+        if self.thumbnailData.count == 0{
             emptyView.configure("등록된 반려도마뱀이 없습니다.")
             collectionView.backgroundView = emptyView
         }else{
             collectionView.backgroundView = nil
         }
-        return mydata.count
+        return self.thumbnailData.count
     }
     
     //데이터 소스 개체에 컬레션 보기에서 지정된 항목에 해당하는 셀을 요청합니다.
@@ -64,7 +90,7 @@ extension GrowthDiaryViewController{
         }
         
         // TODO: 실제 모델을 넘기고 configure함수에서 .image, .tile. timestamp로 cell에 넣기
-        cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", date: Date())
+        cell.configure(imageName: thumbnailData[indexPath.item].thumbnail, title: thumbnailData[indexPath.item].name, date: thumbnailData[indexPath.item].diary_id)
         return cell
     }
 }

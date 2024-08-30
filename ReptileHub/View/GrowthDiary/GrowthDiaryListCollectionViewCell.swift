@@ -65,9 +65,18 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(imageName: String, title: String, date: Date){
-        GrowthDiaryItemImage.image = UIImage(named: imageName)
+    func configure(imageName: String, title: String, date: String){
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: URL(string: imageName)!){
+                if let image = UIImage(data: data){
+                    DispatchQueue.main.async { [weak self] in
+                        self?.GrowthDiaryItemImage.image = image
+                    }
+                }
+            }
+        }
+        
         GrowthDiaryItemTitle.text = title
-        GrowthDiaryItemDate.text = "\(date.formatted) 생성"
+        GrowthDiaryItemDate.text = date
     }
 }

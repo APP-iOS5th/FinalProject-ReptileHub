@@ -36,7 +36,13 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     }
     
     private func uploadGrowthDiary(){
-        print("업로드 버튼")
+        
+        let result = addGrowthDiaryView.requestData()
+        DiaryPostService.shared.registerGrowthDiary(userID: "TmIYwsxUilXYTACIGEYXiWomF2I3", diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { error in
+            if let error = error{
+                print(error.localizedDescription)
+            }
+        }
     }
     
     private func datePickerValueChanged(){
@@ -65,25 +71,26 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
 
 extension AddGrowthDiaryViewController: PHPickerViewControllerDelegate{
     // PHPickerViewControllerDelegate 메서드: 이미지가 선택되었을 때 호출됩니다.
-       func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-           picker.dismiss(animated: true, completion: nil)
-           
-           guard let selectedImageView = selectedImageView else { return }
-           
-           // 첫 번째 선택된 이미지를 가져와 설정
-           if let result = results.first {
-               result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
-                   guard let self = self, let image = object as? UIImage, error == nil else {
-                       print("Error loading image: \(String(describing: error))")
-                       return
-                   }
-                   
-                   DispatchQueue.main.async {
-                       self.addGrowthDiaryView.setImage(image, for: selectedImageView)
-                   }
-               }
-           }
-       }
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let selectedImageView = selectedImageView else { return }
+        
+        // 첫 번째 선택된 이미지를 가져와 설정
+        if let result = results.first {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
+                guard let self = self, let image = object as? UIImage, error == nil else {
+                    print("Error loading image: \(String(describing: error))")
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.addGrowthDiaryView.setImage(image, for: selectedImageView)
+                    print(type(of: image))
+                }
+            }
+        }
+    }
 }
 
 #if DEBUG

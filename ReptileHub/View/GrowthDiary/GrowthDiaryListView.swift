@@ -22,7 +22,7 @@ class GrowthDiaryListView: UIView {
     }()
     
     //MARK: - 성장일지 목록 CollectionView
-    private lazy var GrowthDiaryListCollectionView: UICollectionView = {
+    private(set) lazy var GrowthDiaryListCollectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         view.showsVerticalScrollIndicator = false //수직 스크롤표시 없애기
         return view

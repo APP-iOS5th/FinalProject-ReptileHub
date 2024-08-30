@@ -89,9 +89,63 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         
     }
     
+    //    struct GrowthDiaryRequest:Codable {
+    //        var lizardInfo: LizardInfo
+    //        var parentInfo: Parents?
+    //    }
+    
+    //    struct LizardInfo:Codable {
+    //        var name: String
+    //        var species: String
+    //        var morph: String?
+    //        var hatchDays: Date
+    //        var gender:Gender
+    //        var weight: Int
+    //        var feedMethod: String
+    //        var tailexistence: Bool
+    //        var imageURL: String?
+    //    }
+    //
+    //    // 도마뱀 등록할떄 성별
+    //    enum Gender:String,Codable {
+    //        case male = "male"
+    //        case female = "female"
+    //        case unKnown = "unKnown"
+    //    }
+    //
+    //    // 도마뱀 부모 정보
+    //    struct ParentInfo:Codable {
+    //        var name: String
+    //        var morph: String?
+    //        var imageURL: String?
+    //    }
+    //
+    //    struct Parents:Codable {
+    //        var mother: ParentInfo
+    //        var father: ParentInfo
+    //    }
+    
+    // TODO: textfield 공백및 띄어쓰기 처리해주기 -> 에러처리 입력해달라고 에러를 하나 만들어야함(귀찮)
+    
+    // TODO: escaping으로 깔끔하게 하자
+    func requestData() -> (GrowthDiaryRequest, [Data])
+    {
+        // TODO: 테스트 용이라 !사용 바꿔야함
+        // TODO: 무게는 숫자만 되게 수정
+        let gender = Gender.male
+        let imageData: [Data] = [thumbnailImageView.image!.pngData()!, fatherImageView.image!.pngData()!, motherImageView.image!.pngData()!]
+        
+        let lizardInfo = LizardInfo(name: nameTextField.text!, species: speciesTextField.text!, hatchDays: hatchDaysDatePicker.date, gender: gender, weight: Int(weightTextField.text!)!, feedMethod: "자율", tailexistence: true)
+        let mother = ParentInfo(name: motherNameTextField.text!, morph: motherMorphTextField.text!)
+        let father = ParentInfo(name: fatherNameTextField.text!, morph: fatherMorphTextField.text!)
+        let parent = Parents(mother: mother, father: father)
+        let request = GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent)
+        
+        return (request, imageData)
+    }
     
     //성별
-    private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "기타"], title: "성별을 선택해주세요.")
+    private lazy var genderDropdownView = DropDownView(options: ["수컷", "암컷", "미구분"], title: "성별을 선택해주세요.")
     //무게
     private lazy var weightTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
     //피딩 방식
