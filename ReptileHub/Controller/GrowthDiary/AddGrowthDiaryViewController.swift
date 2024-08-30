@@ -28,13 +28,16 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         }
         addGrowthDiaryView.addAction(action: action)
         
-        
-        
         addGrowthDiaryView.configureImageViewActions(target: self, action: #selector(imageViewTapped(_:)))
         
+        addGrowthDiaryView.buttonTapped = { [weak self] in
+            self?.uploadGrowthDiary()
+        }
     }
     
-    
+    private func uploadGrowthDiary(){
+        print("업로드 버튼")
+    }
     
     private func datePickerValueChanged(){
         addGrowthDiaryView.updateDateField()

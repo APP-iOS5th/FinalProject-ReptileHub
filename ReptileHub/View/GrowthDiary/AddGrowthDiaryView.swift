@@ -10,6 +10,8 @@ import SnapKit
 
 class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate {
     
+    var buttonTapped: (()->Void)?
+    
     //MARK: - 자식정보
     //이미지
     private(set) lazy var thumbnailImageView: UIImageView = createImageVIew()// TODO: ImagePicker로 구현
@@ -161,8 +163,36 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         return stackView
     }()
     
-    
-    
+    //MARK: - 성장일지 등록버튼
+    private lazy var uploadGrowthDiaryButton: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
+        
+        var config = UIButton.Configuration.filled()
+        
+        //AttributedString 설정
+        var buttonText = AttributedString("등록하기") //텍스트 정의
+        
+        //AttributeContainer 생성 및 폰트, 색상 설정
+        var attributes = AttributeContainer()
+        attributes.font = UIFont.systemFont(ofSize: 18, weight: .semibold) //폰트크기 설정
+        
+        //AttributedString에 속성 적용
+        buttonText.mergeAttributes(attributes)
+        
+        config.attributedTitle = buttonText
+        // TODO: ColorSet으로 설정해서 사용하기
+        config.baseBackgroundColor = UIColor(red: 11.0/255.0, green: 71.0/255.0, blue: 59.0/255.0, alpha: 1.0)
+        config.baseForegroundColor = .white
+        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
+        button.configuration = config
+        
+        button.addAction(UIAction{ [weak self] _ in
+            self?.buttonTapped?() //클로저가 실행된다.
+        }, for: .touchUpInside)
+        return button
+    }()
     
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -178,7 +208,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             createGroup(title: "피딩 방식이 어떻게 되나요?", contentView: feedMethodDropdownView),
             tailButtonGroup,
             createShowGroupViewButton(title: "부모 정보가 어떻게 되나요?", contentView: parentInfoStackView, buttonTitles: ("등록", "미등록")),
-            
+            uploadGrowthDiaryButton
         ])
         stackView.axis = .vertical
         stackView.spacing = 20
@@ -222,7 +252,9 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         }
         
         contentView.snp.makeConstraints { make in
-            make.edges.equalTo(scrollView)
+            make.leading.trailing.equalTo(scrollView)
+            make.top.equalTo(scrollView).offset(30)
+            make.bottom.equalTo(scrollView).offset(-30)
             make.width.equalTo(scrollView)
         }
         
@@ -274,6 +306,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         imageView.contentMode = .center
         imageView.clipsToBounds = true
         imageView.backgroundColor = .lightGray
+        imageView.layer.borderWidth = 1.0
+        imageView.layer.borderColor = CGColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
         imageView.layer.cornerRadius = 10
         imageView.isUserInteractionEnabled = true //제스터를 인식하기위해 설정
         
