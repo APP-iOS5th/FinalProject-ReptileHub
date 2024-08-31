@@ -10,7 +10,8 @@ import PhotosUI
 import FirebaseAuth
 
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
+    var previousViewController: GrowthDiaryViewController?
+
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
     private var selectedImageView: UIImageView?
     
@@ -46,6 +47,9 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
             if let error = error{
                 print(error.localizedDescription)
             }else{
+                if let previousVC = self?.previousViewController{
+                    previousVC.updateImage()
+                }
                 self?.navigationController?.popViewController(animated: true)
             }
         }

@@ -9,11 +9,12 @@ import UIKit
 import FirebaseAuth
 
 class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    let mydata: [Int] = [1, 2, 3, 9, 9 ,9 ,9 ,9] //개수를 파악하기 위한 임시 데이터
     private let GrowthDiaryView = GrowthDiaryListView()
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
+    private var shouldReloadImage = false
+    
     private var thumbnailData = [ThumbnailResponse]()
     
     override func viewDidLayoutSubviews() {
@@ -23,18 +24,10 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
-        guard let userId = Auth.auth().getUserID() else {
-            return
-        }
-        DiaryPostService.shared.fetchGrowthThumbnails(for: userId) { response in
-            switch response{
-                
-            case .success(let data):
-                self.thumbnailData = data
-                self.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
+        
+        if shouldReloadImage {
+            self.loadData()
+            shouldReloadImage = false
         }
     }
     
@@ -51,7 +44,29 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         GrowthDiaryView.buttonTapped = { [weak self] in
             self?.navigateToSecondViewController()
         }
+        loadData()
+    }
+    
+    func loadData(){
+        guard let userId = Auth.auth().getUserID() else {
+            return
+        }
         
+        DiaryPostService.shared.fetchGrowthThumbnails(for: userId) { response in
+            switch response{
+                
+            case .success(let data):
+                self.thumbnailData = data
+                self.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func updateImage() {
+        // 다른 뷰 컨트롤러에서 돌아왔을 때 이미지를 다시 로드해야 하는 경우
+        shouldReloadImage = true
     }
     
     private func navigateToSecondViewController(){
