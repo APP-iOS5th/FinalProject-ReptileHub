@@ -17,17 +17,17 @@ class CommunityViewController: UIViewController {
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
     
     private let communityListView = CommunityListView()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view = communityListView
-
+        
         communityListView.delegate = self
         communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
         title = "홈"
-
+        
         setupSearchButton()
     }
     
@@ -59,8 +59,8 @@ class CommunityViewController: UIViewController {
     }
     
     
-
-
+    
+    
 }
 
 extension CommunityViewController: CommunityListViewDelegate {
@@ -83,14 +83,14 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! CommunityTableViewCell
-
+        
         let fetchData = self.fetchTestData[indexPath.row]
         
         
         cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: "\(fetchData.createdAt!)", commentCount: fetchData.commentCount, likeCount: fetchData.likeCount)
         
         UserService.shared.fetchUserProfile(uid: fetchData.userID) { result in
-
+            
             switch result {
             case .success(let userData):
                 print("현재 유저 정보 가져오기 성공 : \(userData)")
@@ -99,38 +99,40 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                 print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
             }
         }
-//        cell.testUserProfile = self.fetchUserProfile
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = CommunityDetailViewController()
-
+        
+        var postDetailResponse: PostDetailResponse = PostDetailResponse(postID: "", userID: "", title: "", content: "", imageURLs: [], likeCount: 0, commentCount: 0, createdAt: Date(), isLiked: false)
+        
         CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: self.fetchTestData[indexPath.row].postID) { result in
             switch result {
             case .success(let postDetail):
-                print("상세 게시글 가져오기 성공 : \(postDetail)")
-                detailViewController.detailView.postDetailData = postDetail
+                print("상세 게시글 가져오기 성공")
+                postDetailResponse = postDetail
+                
+                UserService.shared.fetchUserProfile(uid: self.fetchTestData[indexPath.row].userID) { result in
+                    switch result {
+                    case .success(let userData):
+                        print("현재 유저 정보 가져오기 성공")
+                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt: "\(String(describing: postDetailResponse.createdAt))", imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID)
+                        detailViewController.hidesBottomBarWhenPushed = true
+                        self.navigationController?.pushViewController(detailViewController, animated: true)
+                    case .failure(let error):
+                        print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
+                    }
+                }
+                
             case .failure(let error):
                 print("상세 게시글 가져오기 실패 : \(error.localizedDescription)")
             }
         }
         
-        UserService.shared.fetchUserProfile(uid: self.fetchTestData[indexPath.row].userID) { result in
-
-            switch result {
-            case .success(let userData):
-                print("현재 유저 정보 가져오기 성공 : \(userData)")
-                detailViewController.detailView.postUserProfile = userData
-                detailViewController.hidesBottomBarWhenPushed = true
-                self.navigationController?.pushViewController(detailViewController, animated: true)
-            case .failure(let error):
-                print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
-            }
-        }
         
-
+        
+        
     }
 }
 

@@ -14,6 +14,8 @@ class CommunityDetailViewController: UIViewController {
     
     var postDetailData: PostDetailResponse?
     
+    var fetchComments: [CommentResponse] = []
+    
     private var menuButton: UIBarButtonItem = UIBarButtonItem()
   
     
@@ -28,12 +30,18 @@ class CommunityDetailViewController: UIViewController {
         setupDetailView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        detailView.initHeightValue()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        detailView.remakeTableView()
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(true)
+        
+        CommunityService.shared.fetchComments(forPost: detailView.postID) { result in
+            switch result {
+            case .success(let comments):
+                print("해당 게시글의 모든 댓글 가져오기 성공")
+                self.fetchComments = comments
+            case .failure(let error):
+                print("해당 게시글의 모든 댓글 가져오기 실패 : \(error.localizedDescription)")
+            }
+        }
     }
     
 
@@ -82,13 +90,25 @@ extension CommunityDetailViewController: UIScrollViewDelegate {
 
 extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        detailView.dummyData.count
+//        detailView.dummyData.count
+        self.fetchComments.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
         cell.commentText = detailView.dummyData[indexPath.row]
-        cell.configureCell()
+        
+        let commentData = self.fetchComments[indexPath.row]
+        
+        UserService.shared.fetchUserProfile(uid: self.fetchComments[indexPath.row].userID) { result in
+            switch result {
+            case .success(let userData):
+                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: "\(commentData.createdAt!)")
+            case .failure(let error):
+                print("CommunityDetailVC 유저 정보 가져오기 실패 : \(error.localizedDescription)")
+            }
+        }
+        
         return cell
     }
     

@@ -182,9 +182,9 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int) {
-        if let url = URL(string: imageName) {
-            thumbnailImageView.setImage(with: imageName)
-        }
+
+        thumbnailImageView.setImage(with: imageName)
+        
         titleLabel.text = title
         contentLabel.text = content
         timestampLabel.text = createAt
