@@ -22,13 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         KakaoSDK.initSDK(appKey:"안알랴줌")
        
         
-        AuthService.shared.addAuthStateDidChangeListener { user in
-            if user != nil {
-                self.showMainViewController()
-            } else {
-                self.showLoginViewController()
-            }
-        }
+//        AuthService.shared.addAuthStateDidChangeListener { user in
+//            if user != nil {
+//                self.showMainViewController()
+//            } else {
+//                self.showLoginViewController()
+//            }
+//        }
         
         return true
     }
