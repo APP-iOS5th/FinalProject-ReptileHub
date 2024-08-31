@@ -52,12 +52,13 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
             return
         }
         
-        DiaryPostService.shared.fetchGrowthThumbnails(for: userId) { response in
+        DiaryPostService.shared.fetchGrowthThumbnails(for: userId) {[weak self] response in
             switch response{
                 
             case .success(let data):
-                self.thumbnailData = data
-                self.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
+                self?.thumbnailData = data
+                self?.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
+                self?.GrowthDiaryView.updateScrollState()
             case .failure(let error):
                 print(error.localizedDescription)
             }
