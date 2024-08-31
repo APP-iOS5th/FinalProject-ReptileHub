@@ -18,6 +18,7 @@ class GrowthDiaryListView: UIView {
         let label = FontWeightLabel()
         label.numberOfLines = 0
         label.setFontWeightText(fullText: "사랑하는 반려도마뱀의 하루하루를 기록해보세요!", boldText: "하루하루를 기록해보세요!", fontSize: 28, weight: .bold)
+        label.textColor = UIColor.textFieldTitle
         return label
     }()
     
@@ -48,7 +49,7 @@ class GrowthDiaryListView: UIView {
         
         config.attributedTitle = buttonText
         // TODO: ColorSet으로 설정해서 사용하기
-        config.baseBackgroundColor = UIColor(red: 11.0/255.0, green: 71.0/255.0, blue: 59.0/255.0, alpha: 1.0)
+        config.baseBackgroundColor = UIColor.addBtnGraphTabbar
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         button.configuration = config

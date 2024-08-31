@@ -23,13 +23,14 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
     private lazy var GrowthDiaryItemTitle: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = UIColor.textFieldTitle
         return label
     }()
     
     private lazy var GrowthDiaryItemDate: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .gray
+        label.textColor = UIColor.textFieldPlaceholder
         return label
     }()
     

@@ -39,7 +39,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     private lazy var hatchDaysTextField: UITextField = {
         let textField = createTextField(text: "해칭일을 선택해주세요.")
         textField.inputView = hatchDaysDatePicker
-//        textField.text = Date().formatted
+        textField.textColor = UIColor.textFieldTitle
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         
@@ -150,7 +150,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //구분선
     private lazy var line: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = UIColor.textFieldBorderLine
         return view
     }()
     //엄마, 아빠정보 스택 뷰
@@ -160,7 +160,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             line,
             createParentInfoSubGroup(title: "엄마 도마뱀", imageView: motherImageView, nameTextField: motherNameTextField, morphTextField: motherMorphTextField)
         ])
-        stackView.backgroundColor = .lightGray
+        stackView.backgroundColor = UIColor.groupProfileBG
         stackView.axis = .vertical
         stackView.layer.cornerRadius = 10
         stackView.spacing = 20
@@ -188,8 +188,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         buttonText.mergeAttributes(attributes)
         
         config.attributedTitle = buttonText
-        // TODO: ColorSet으로 설정해서 사용하기
-        config.baseBackgroundColor = UIColor(red: 11.0/255.0, green: 71.0/255.0, blue: 59.0/255.0, alpha: 1.0)
+        config.baseBackgroundColor = UIColor.addBtnGraphTabbar
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         button.configuration = config
@@ -287,12 +286,13 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //TextField 생성
     private func createTextField(text: String) -> UITextField{
         let textField = UITextField()
-        textField.placeholder = text
+        textField.attributedPlaceholder = NSAttributedString(string: text, attributes: [NSAttributedString.Key.foregroundColor : UIColor.textFieldPlaceholder])
         textField.font = UIFont.systemFont(ofSize: 16)
+        textField.textColor = UIColor.textFieldTitle
         textField.layer.borderWidth = 1.0
         textField.layer.cornerRadius = 5
-        textField.layer.borderColor = CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
-        textField.backgroundColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5)
+        textField.layer.borderColor = UIColor.textFieldLine.cgColor
+        textField.backgroundColor = UIColor.textFieldSegmentBG
         
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 13, height: 0))
         textField.leftView = paddingView
@@ -300,7 +300,6 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         
         textField.rightView = paddingView
         textField.rightViewMode = .always
-        
         textField.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
@@ -311,12 +310,13 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //ImageView 생성
     private func createImageVIew() -> UIImageView{
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "plus")
+        imageView.image = UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = UIColor.textFieldPlaceholder
         imageView.contentMode = .center
         imageView.clipsToBounds = true
-        imageView.backgroundColor = .lightGray
+        imageView.backgroundColor = UIColor.imagePicker
         imageView.layer.borderWidth = 1.0
-        imageView.layer.borderColor = CGColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        imageView.layer.borderColor = UIColor.imagePicker.cgColor
         imageView.layer.cornerRadius = 10
         imageView.isUserInteractionEnabled = true //제스터를 인식하기위해 설정
         
@@ -352,13 +352,15 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         ButtonText.mergeAttributes(Attributes)
         config.attributedTitle = ButtonText
         
-        config.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
-        config.baseForegroundColor = .black
+        config.baseBackgroundColor = UIColor.textFieldSegmentBG
+        config.baseForegroundColor = UIColor.textFieldPlaceholder
         config.cornerStyle = .medium // 모서리 둥글게 설정
         
         let button = UIButton(configuration: config)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         button.layer.cornerRadius = 5
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.textFieldBorderLine.cgColor
         
         return button
     }
@@ -368,6 +370,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         let titleLabel = UILabel()
         titleLabel.text = title
         titleLabel.font = UIFont.systemFont(ofSize: 20)
+        titleLabel.textColor = UIColor.textFieldTitle
         
         let stackView = UIStackView(arrangedSubviews: [titleLabel, contentView])
         stackView.axis = .vertical
@@ -406,6 +409,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         let label = UILabel()
         label.text = title
         label.font = UIFont.systemFont(ofSize: 20)
+        label.textColor = UIColor.textFieldTitle
         
         //MARK: - 있음/등록 버튼
         let showButton = UIButton()
@@ -416,8 +420,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         showAttributes.font = UIFont.systemFont(ofSize: 14)
         showButtonText.mergeAttributes(showAttributes)
         showConfig.attributedTitle = showButtonText
-        showConfig.baseBackgroundColor = .systemBlue
-        showConfig.baseForegroundColor = .white
+        showConfig.baseBackgroundColor = UIColor.textFieldLine
+        showConfig.baseForegroundColor = UIColor.textFieldTitle
         
         showButton.configuration = showConfig
         
@@ -431,8 +435,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         hideButtonText.mergeAttributes(hideAttributes)
         hideConfig.attributedTitle = hideButtonText
         hideConfig.attributedTitle = hideButtonText
-        hideConfig.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
-        hideConfig.baseForegroundColor = .black
+        hideConfig.baseBackgroundColor = UIColor.textFieldSegmentBG
+        hideConfig.baseForegroundColor = UIColor.textFieldPlaceholder
         hideButton.configuration = hideConfig
         hideButton.tag = 2
         
@@ -482,13 +486,13 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         if firstButton.isSelected {
             tailSelected = true
             var config = firstButton.configuration ?? UIButton.Configuration.filled()
-            config.baseBackgroundColor = .systemBlue
+            config.baseBackgroundColor = UIColor.booleanButton
             config.baseForegroundColor = .white
             firstButton.configuration = config
         } else {
             var config = firstButton.configuration ?? UIButton.Configuration.filled()
-            config.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
-            config.baseForegroundColor = .black
+            config.baseBackgroundColor = UIColor.textFieldSegmentBG
+            config.baseForegroundColor = UIColor.textFieldPlaceholder
             firstButton.configuration = config
         }
         
@@ -496,13 +500,13 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         if secondButton.isSelected {
             tailSelected = false
             var config = secondButton.configuration ?? UIButton.Configuration.filled()
-            config.baseBackgroundColor = .systemBlue
+            config.baseBackgroundColor = UIColor.booleanButton
             config.baseForegroundColor = .white
             secondButton.configuration = config
         } else {
             var config = secondButton.configuration ?? UIButton.Configuration.filled()
-            config.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
-            config.baseForegroundColor = .black
+            config.baseBackgroundColor = UIColor.textFieldSegmentBG
+            config.baseForegroundColor = UIColor.textFieldPlaceholder
             secondButton.configuration = config
         }
     }
@@ -560,12 +564,12 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             
             
             // showButton을 선택 상태로 설정
-            showButton.configuration?.baseBackgroundColor = .systemBlue
-            showButton.configuration?.baseForegroundColor = .white
+            showButton.configuration?.baseBackgroundColor = UIColor.textFieldLine
+            showButton.configuration?.baseForegroundColor = UIColor.textFieldTitle
             
             // hideButton을 기본 상태로 설정
-            hideButton.configuration?.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
-            hideButton.configuration?.baseForegroundColor = .black
+            hideButton.configuration?.baseBackgroundColor = UIColor.textFieldSegmentBG
+            hideButton.configuration?.baseForegroundColor = UIColor.textFieldPlaceholder
         }
     }
     
@@ -587,12 +591,12 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             }
             morphSelected = false
             // hideButton을 선택 상태로 설정
-            hideButton.configuration?.baseBackgroundColor = .systemBlue
-            hideButton.configuration?.baseForegroundColor = .white
+            hideButton.configuration?.baseBackgroundColor = UIColor.textFieldLine
+            hideButton.configuration?.baseForegroundColor = UIColor.textFieldTitle
             
             // showButton을 기본 상태로 설정
-            showButton.configuration?.baseBackgroundColor = UIColor(cgColor: CGColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5))
-            showButton.configuration?.baseForegroundColor = .black
+            showButton.configuration?.baseBackgroundColor = UIColor.textFieldSegmentBG
+            showButton.configuration?.baseForegroundColor = UIColor.textFieldPlaceholder
         }
     }
     

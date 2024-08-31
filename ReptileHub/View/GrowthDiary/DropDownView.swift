@@ -15,6 +15,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private(set) var selectedOption: String? {
         didSet {
             titleButton.setTitle(selectedOption ?? title, for: .normal)
+            titleButton.setTitleColor(UIColor.textFieldTitle, for: .normal)
         }
     }
     
@@ -25,13 +26,13 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         let button = UIButton()
         var config = UIButton.Configuration.filled()
         config.title = title
-        config.baseForegroundColor = .gray
-        config.baseBackgroundColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 0.5)
+        config.baseForegroundColor = UIColor.textFieldPlaceholder
+        config.baseBackgroundColor = UIColor.textFieldSegmentBG
         config.image = image
         config.imagePlacement = .trailing
         config.imagePadding = 10
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 13, bottom: 0, trailing: 13)
-        config.background.strokeColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
+        config.background.strokeColor = UIColor.textFieldBorderLine
         config.background.strokeWidth = 1.0
         config.background.cornerRadius = 5.0
         config.attributedTitle?.font = UIFont.systemFont(ofSize: 16)
@@ -52,9 +53,9 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         tableView.isScrollEnabled = false
         tableView.layer.borderWidth = 1.0
         tableView.layer.cornerRadius = 5
-        tableView.layer.borderColor = UIColor.lightGray.cgColor
+        tableView.layer.borderColor = UIColor.textFieldBorderLine.cgColor
         tableView.isHidden = true
-        tableView.backgroundColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
+        tableView.backgroundColor = UIColor.textFieldSegmentBG
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
@@ -159,7 +160,6 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private func updateButtonIcon() {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 10, weight: .bold)
         let newImage = isOpen ? UIImage(systemName: "chevron.up", withConfiguration: imageConfig) : UIImage(systemName: "chevron.down", withConfiguration: imageConfig)
-        
         UIView.transition(with: titleButton, duration: 0.1, options: .transitionCrossDissolve, animations: {
             self.titleButton.setImage(newImage, for: .normal)
         }, completion: nil)
@@ -215,7 +215,13 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = menus[indexPath.row]
-        cell.backgroundColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
+        cell.textLabel?.textColor = UIColor.textFieldTitle
+        cell.backgroundColor = UIColor.textFieldSegmentBG
+        
+        //선택 시 배경 색사 설정
+        let selectedView = UIView()
+        selectedView.backgroundColor = UIColor.imagePicker
+        cell.selectedBackgroundView = selectedView
         return cell
     }
     
