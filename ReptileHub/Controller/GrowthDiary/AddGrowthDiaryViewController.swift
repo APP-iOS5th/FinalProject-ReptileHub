@@ -41,6 +41,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
             return
         }
         let result = addGrowthDiaryView.growthDiaryRequestData()
+        print(result.1)
         DiaryPostService.shared.registerGrowthDiary(userID: userId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
             if let error = error{
                 print(error.localizedDescription)

@@ -65,9 +65,9 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(imageName: String, title: String, date: Date){
-        GrowthDiaryItemImage.image = UIImage(named: imageName)
+    func configure(imageName: String, title: String, date: String){
+        GrowthDiaryItemImage.setImage(with: imageName)
         GrowthDiaryItemTitle.text = title
-        GrowthDiaryItemDate.text = "\(date.formatted) 생성"
+        GrowthDiaryItemDate.text = "\(date) 생성"
     }
 }
