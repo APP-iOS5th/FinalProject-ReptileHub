@@ -268,7 +268,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         
         mainStackView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.leading.trailing.equalTo(scrollView).inset(24)
+            make.leading.trailing.equalTo(scrollView).inset(Spacing.mainSpacing)
         }
         
         line.snp.makeConstraints { make in
