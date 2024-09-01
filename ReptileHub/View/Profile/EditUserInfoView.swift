@@ -11,10 +11,14 @@ import SnapKit
 class EditUserInfoView: UIView {
     
     let keyboardManager = KeyboardManager()
+    
+    // UserProfile 더미 데이터
+    let users: [UserProfile] = [
+        UserProfile(uid: "1001", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
+    ]
 
     var ProfileImageEdit: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "profile")
         imageView.layer.cornerRadius = 50
         imageView.clipsToBounds = true
         return imageView
@@ -25,12 +29,12 @@ class EditUserInfoView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .bold)
         let image = UIImage(systemName: "pencil", withConfiguration: imageConfig)
                 
-        button.backgroundColor = .lightGray
+        button.backgroundColor = .imagePicker
         button.layer.cornerRadius = CGFloat(15)
-        button.layer.borderColor = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
-        button.layer.borderWidth = CGFloat(2)
+//        button.layer.borderColor = UIColor(.imagePicker).cgColor
+//        button.layer.borderWidth = CGFloat(2)
         button.setImage(image, for: .normal)
-        button.tintColor = .black
+        button.tintColor = .imagePickerPlaceholder
         
         return button
     }()
@@ -60,6 +64,15 @@ class EditUserInfoView: UIView {
         return button
     }()
     
+    private lazy var buttonStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [UserInfoCancelButton, UserInfoSaveButton])
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.spacing = 8
+        return stackView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -68,6 +81,7 @@ class EditUserInfoView: UIView {
         keyboardManager.hideNoti()
         
         setupView()
+        setProfileImageEdit()
     }
     
     required init?(coder: NSCoder) {
@@ -80,8 +94,9 @@ class EditUserInfoView: UIView {
         self.addSubview(ProfileImageEdit)
         self.addSubview(imagePickerButton)
         self.addSubview(ProfileNameEdit)
-        self.addSubview(UserInfoCancelButton)
-        self.addSubview(UserInfoSaveButton)
+        self.addSubview(buttonStackView)
+//        self.addSubview(UserInfoCancelButton)
+//        self.addSubview(UserInfoSaveButton)
         
         
         ProfileImageEdit.snp.makeConstraints { make in
@@ -103,19 +118,29 @@ class EditUserInfoView: UIView {
             make.height.equalTo(40)
         }
         
-        UserInfoSaveButton.snp.makeConstraints { make in
+        buttonStackView.snp.makeConstraints { make in
             make.top.equalTo(ProfileNameEdit.snp.bottom).offset(20)
-            make.trailing.equalToSuperview().offset(-40)
-            make.width.equalTo(150)
+            make.leading.trailing.equalTo(ProfileNameEdit)
+        }
+        
+        UserInfoSaveButton.snp.makeConstraints { make in
+//            make.top.equalTo(ProfileNameEdit.snp.bottom).offset(20)
+//            make.trailing.equalToSuperview().offset(-40)
+            
+            make.width.lessThanOrEqualTo(150)
             make.height.equalTo(50)
         }
     
         UserInfoCancelButton.snp.makeConstraints { make in
-            make.top.equalTo(ProfileNameEdit.snp.bottom).offset(20)
-            make.leading.equalToSuperview().offset(40)
-            make.width.equalTo(150)
+//            make.top.equalTo(ProfileNameEdit.snp.bottom).offset(20)
+//            make.leading.equalToSuperview().offset(40)
+            make.width.lessThanOrEqualTo(150)
             make.height.equalTo(50)
         }
+    }
+    
+    private func setProfileImageEdit() {
+        ProfileImageEdit.image = UIImage(named: users[0].profileImageURL)
     }
 }
 

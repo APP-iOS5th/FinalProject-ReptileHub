@@ -32,6 +32,11 @@ class ProfileViewController: UIViewController {
         profileView.logoutButton.addTarget(self, action: #selector(logoutButtonTouch), for: .touchUpInside)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        profileView.updateScrollState()
+    }
+    
     @objc func editUserInfo() {
         let editController = EditUserInfoViewController()
         
