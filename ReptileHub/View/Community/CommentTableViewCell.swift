@@ -9,9 +9,6 @@ import UIKit
 
 class CommentTableViewCell: UITableViewCell {
     
-    var commentText: String?
-    
-    
     // 상단 게시글 정보
     private let profileImage: UIImageView = UIImageView()
     
@@ -36,15 +33,7 @@ class CommentTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//        // Initialization code
-//    }
-//
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//        // Configure the view for the selected state
-//    }
+
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
@@ -66,23 +55,23 @@ class CommentTableViewCell: UITableViewCell {
     private func setupElementStackView() {
         nameLabel.text = "부천 정구현"
         nameLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
-        commentLabel.text = commentText
+        nameLabel.sizeToFit()
+        nameLabel.backgroundColor = .green
+
+        commentLabel.text = "테스트 내용"
+        commentLabel.backgroundColor = .red
         commentLabel.numberOfLines = 0
         commentLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         timestampLabel.text = "24.08.09 17:31"
         timestampLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
         timestampLabel.textColor = UIColor.lightGray
-        
-//        titleLabel.backgroundColor = .green
-//        commentLabel.backgroundColor = .yellow
-//        timestampLabel.backgroundColor = .blue
-        
+        timestampLabel.backgroundColor = .green
+
         elementStackView.axis = .vertical
-        elementStackView.distribution = .equalSpacing
+        elementStackView.distribution = .fill
         elementStackView.alignment = .firstBaseline
         elementStackView.spacing = 0
-//        elementStackView.backgroundColor = .systemPink
-        
+
         elementStackView.addArrangedSubview(nameLabel)
         elementStackView.addArrangedSubview(commentLabel)
         elementStackView.addArrangedSubview(timestampLabel)
@@ -99,15 +88,18 @@ class CommentTableViewCell: UITableViewCell {
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(elementStackView.snp.top)
             make.leading.equalTo(elementStackView.snp.leading)
+            make.height.equalTo(15)
         }
         timestampLabel.snp.makeConstraints { make in
             make.leading.equalTo(elementStackView.snp.leading)
             make.bottom.equalTo(elementStackView.snp.bottom)
+            make.height.equalTo(13)
         }
         commentLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom)
             make.leading.equalTo(elementStackView.snp.leading)
             make.bottom.equalTo(timestampLabel.snp.top)
+            make.height.equalTo(30).priority(250)
         }
     }
     

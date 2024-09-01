@@ -10,8 +10,6 @@ import SnapKit
 
 class CommunityDetailView: UIView {
     
-    var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.",]
-    
     var postID: String = "nil"
     
     // 키보드 탭 제스쳐
@@ -64,7 +62,7 @@ class CommunityDetailView: UIView {
     private let divisionThickLine: UIView = UIView()
     
     // 댓글 부분
-    private let commentTableView: UITableView = UITableView(frame: .zero)
+    let commentTableView: UITableView = UITableView(frame: .zero)
     
     // 댓글의 높이를 계산하기위한 변수
     private var tableViewHeight: CGFloat = 0.0
@@ -142,13 +140,13 @@ class CommunityDetailView: UIView {
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.leading.trailing.bottom.equalTo(scrollView.contentLayoutGuide)
+            make.top.leading.trailing.bottom.equalTo(scrollView)
             make.width.equalTo(scrollView.snp.width)
         }
         
-        let stackViewHeight = stackView.heightAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
-        stackViewHeight.priority = .defaultLow
-        stackViewHeight.isActive = true
+//        let stackViewHeight = stackView.heightAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
+//        stackViewHeight.priority = .defaultLow
+//        stackViewHeight.isActive = true
     }
     
     //MARK: - 프로필 이미지
@@ -182,21 +180,6 @@ class CommunityDetailView: UIView {
     @objc
     private func toggleButton() {
         print("좋아요 버튼 토글.")
-//        CommunityService.shared.toggleLikePost(userID: UserService.shared.currentUserId, postID: postDetailData!.postID) { result in
-//            switch result {
-//            case .success(let boolValue):
-//                print("토글 성공")
-//                self.likeButtonToggle = boolValue
-//                print("토글 현황 : \(boolValue)")
-//                if self.likeButtonToggle! {
-//                    self.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-//                } else {
-//                    self.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
-//                }
-//            case .failure(let error):
-//                print("토글 실패 : \(error.localizedDescription)")
-//            }
-//        }
     }
     
     //MARK: - title StackView + 좋아요 버튼
@@ -300,9 +283,7 @@ class CommunityDetailView: UIView {
             make.trailing.equalTo(imageScrollView.snp.trailing).offset(-10)
             make.bottom.equalTo(imageScrollView.snp.bottom).offset(-10)
         }
-        
-//        imagePageCount.text = "1/\(postDetailData?.imageURLs.count)"
-        
+ 
         imagePageCount.snp.makeConstraints { make in
             make.centerX.equalTo(pageCountView)
             make.centerY.equalTo(pageCountView)
@@ -313,8 +294,7 @@ class CommunityDetailView: UIView {
     private func setupTextView() {
         contentText.text = "게시글 본문 예시 내용입니다."
         contentText.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        //        contentText.backgroundColor = .lightGray
-        
+
         self.stackView.addArrangedSubview(contentText)
         
         contentText.snp.makeConstraints { make in
@@ -374,30 +354,31 @@ class CommunityDetailView: UIView {
         
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
         commentTableView.isScrollEnabled = false
-        commentTableView.estimatedRowHeight = 60
+        commentTableView.estimatedRowHeight = 100
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
+        commentTableView.backgroundColor = .green
         
         self.stackView.addArrangedSubview(commentTableView)
-        
-        commentTableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        var resultHeight: CGFloat = 0.0
-        
-        for comment in dummyData {
-            let height = getLabelHeight(tableView: commentTableView,text: comment)
-            resultHeight += height
-        }
-        
+
         commentTableView.snp.makeConstraints { make in
             make.top.equalTo(divisionThickLine.snp.bottom)
             make.leading.equalTo(self.stackView.snp.leading).offset(24)
             make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
             make.bottom.equalTo(self.stackView.snp.bottom)
-            make.height.equalTo(resultHeight)
+            make.height.greaterThanOrEqualTo(100)
         }
     }
     
+    func updateCommentTableViewHeight(height: CGFloat) {
+        commentTableView.snp.remakeConstraints { make in
+            make.top.equalTo(divisionThickLine.snp.bottom)
+            make.leading.equalTo(self.stackView.snp.leading).offset(24)
+            make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
+            make.bottom.equalTo(self.stackView.snp.bottom)
+            make.height.equalTo(height)
+        }
+    }
     
     
     //MARK: - 댓글 작성란 setup
@@ -461,44 +442,36 @@ class CommunityDetailView: UIView {
                 print("댓글 게시 중 오류 발생: \(error.localizedDescription)")
             } else {
                 print("댓글 게시 성공")
+                self.commentTextView.text = ""
+                self.commentTableView.reloadData()
             }
         }
     }
     
     //MARK: - UILabel의 높이를 측정하는 메서드
-    func getLabelHeight(tableView: UITableView, text: String) -> CGFloat {
-        let label = UILabel(
-            frame: .init(
-                x: .zero,
-                y: .zero,
-                width: tableView.frame.width - 75,
-                height: .greatestFiniteMagnitude
-            )
-        )
-        label.text = text
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13)
-        label.sizeToFit()
-        let labelHeight = label.frame.height
-        return labelHeight
-    }
+//    func getLabelHeight(tableView: UITableView, text: String) -> CGFloat {
+//        let label = UILabel(
+//            frame: .init(
+//                x: .zero,
+//                y: .zero,
+//                width: tableView.frame.width - 75,
+//                height: .greatestFiniteMagnitude
+//            )
+//        )
+//        label.text = text
+//        label.numberOfLines = 0
+//        label.font = .systemFont(ofSize: 13)
+//        label.sizeToFit()
+//        let labelHeight = label.frame.height
+//        return labelHeight
+//    }
     
-    func remakeTableView() {
-        // 뷰가 나타나고 셀의 크기를 취합하여 테이블 뷰의 레이아웃(높이)를 다시 잡음.
-        commentTableView.snp.remakeConstraints { make in
-            make.top.equalTo(divisionThickLine.snp.bottom)
-            make.leading.equalTo(self.stackView.snp.leading).offset(24)
-            make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
-            make.bottom.equalTo(self.stackView.snp.bottom)
-            make.height.equalTo(tableViewHeight + 40) // 40은 위ㅔㅇ서 지정한 테이블뷰-헤더뷰 크기임.
-        }
-    }
     
-    func initHeightValue() {
-        // 뷰가 나타날 때 해당 값들을 초기화함.
-        tableViewHeight = 0.0
-        rowHeights = [:]
-    }
+//    func initHeightValue() {
+//        // 뷰가 나타날 때 해당 값들을 초기화함.
+//        tableViewHeight = 0.0
+//        rowHeights = [:]
+//    }
     
     // UIScrollViewDelegate의 scrollViewDidScroll에 사용
     func imageScrollCount(scrollView: UIScrollView) {
@@ -510,18 +483,18 @@ class CommunityDetailView: UIView {
     }
     
     // UITableView의 heightForRowAt에 사용
-    func tableViewCellHeight(indexPath: IndexPath, tableView: UITableView) -> CGFloat {
-        if let cachedHeight = rowHeights[indexPath] {
-            return cachedHeight
-        }
-        
-        let labelHeight = getLabelHeight(tableView: tableView, text: dummyData[indexPath.row])
-        
-        // 50 = cell의 commentLabel의 버티컬 패딩 값 조절을 위한 값 / 증가(패딩 증가) / 감소(패딩 감소)
-        tableViewHeight += (labelHeight + 50)
-        rowHeights[indexPath] = labelHeight + 50
-        return labelHeight
-    }
+//    func tableViewCellHeight(indexPath: IndexPath, tableView: UITableView) -> CGFloat {
+//        if let cachedHeight = rowHeights[indexPath] {
+//            return cachedHeight
+//        }
+//        
+//        let labelHeight = getLabelHeight(tableView: tableView, text: dummyData[indexPath.row].content)
+//        
+//        // 50 = cell의 commentLabel의 버티컬 패딩 값 조절을 위한 값 / 증가(패딩 증가) / 감소(패딩 감소)
+//        tableViewHeight += (labelHeight + 50)
+//        rowHeights[indexPath] = labelHeight + 50
+//        return labelHeight
+//    }
     
     // UITextViewDelegate의 textViewDidChange에 사용
     func textViewChange(textView: UITextView) {
@@ -651,6 +624,8 @@ class CommunityDetailView: UIView {
         imageStackView.layoutIfNeeded() // 레이아웃 업데이트
     }
     
+    
+
 }
 
 

@@ -52,8 +52,8 @@ class CommunityTableViewCell: UITableViewCell {
         
         setupThumbnail()
         setupMenuButton()
-        setupSubInfoStackView()
         setupMainInfoStackView()
+        setupSubInfoStackView()
     }
     
     required init?(coder: NSCoder) {
@@ -74,8 +74,9 @@ class CommunityTableViewCell: UITableViewCell {
         
         thumbnailImageView.snp.makeConstraints { make in
             make.height.width.equalTo(85)
-            make.top.equalTo(self.contentView.snp.top).offset(10)
-            make.bottom.equalTo(self.contentView.snp.bottom).offset(-10)
+            make.centerY.equalToSuperview()
+//            make.top.equalTo(self.contentView.snp.top).offset(10)
+//            make.bottom.equalTo(self.contentView.snp.bottom).offset(-10)
             make.leading.equalTo(self.contentView.snp.leading).offset(12)
         }
     }
@@ -97,9 +98,9 @@ class CommunityTableViewCell: UITableViewCell {
         mainInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(thumbnailImageView.snp.top)
             make.leading.equalTo(thumbnailImageView.snp.trailing).offset(7)
-            make.bottom.equalTo(firstStackView.snp.top)
+//            make.bottom.equalTo(firstStackView.snp.top)
             make.trailing.equalTo(menuButton.snp.leading)
-            make.height.equalTo(55)
+            make.height.greaterThanOrEqualTo(55)
         }
         
         mainInfoStackView.addArrangedSubview(titleLabel)
@@ -156,6 +157,7 @@ class CommunityTableViewCell: UITableViewCell {
         
         firstStackView.snp.makeConstraints { make in
             make.leading.equalTo(thumbnailImageView.snp.trailing).offset(5)
+            make.top.equalTo(mainInfoStackView.snp.bottom)
             make.bottom.equalTo(thumbnailImageView.snp.bottom)
             make.height.equalTo(20)
         }
