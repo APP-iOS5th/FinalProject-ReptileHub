@@ -10,6 +10,8 @@ import SnapKit
 
 class DetailGrowthDiaryView: UIView {
     
+    //MARK: - 특이사항 전체보기 버튼 액션 클로저로 생성
+    var detailShowSpecialNoteButtonTapped: (() -> Void)?
     
     //MARK: - 반려 도마뱀 이미지 테두리
     private lazy var detailThumbnailUIView: UIView = {
@@ -267,12 +269,16 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailShowSepcialNote: UIButton = {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
-        config.title = "기록하기"
+        config.title = "전체보기"
         config.baseForegroundColor = UIColor.textFieldPlaceholder
         config.attributedTitle?.font = UIFont.systemFont(ofSize: 14)
         
         button.configuration = config
         button.contentHorizontalAlignment = .trailing
+        
+        button.addAction(UIAction{ [weak self] _ in
+            self?.detailShowSpecialNoteButtonTapped?()
+        }, for: .touchUpInside)
         
         return button
     }()
@@ -286,7 +292,7 @@ class DetailGrowthDiaryView: UIView {
     
     //MARK: - 특이사항 미리보기 테이블 뷰
     private lazy var detailPreviewsSpecialNoteTableView: UITableView = {
-        let tableView = UITableView(frame: .zero) 
+        let tableView = UITableView(frame: .zero)
         tableView.backgroundColor = .red
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SpecialCell")
         return tableView
@@ -377,7 +383,7 @@ class DetailGrowthDiaryView: UIView {
             make.height.equalTo(80)
         }
         
-        //바련 도마뱀 무기 추이 그래프 뷰
+        //반려 도마뱀 무기 추이 그래프 뷰
         detailWeightStackView.snp.makeConstraints { make in
             make.height.equalTo(200)
         }

@@ -81,7 +81,6 @@ extension GrowthDiaryViewController{
     
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // TODO: 실제 존재하는 Model의 개수
         if thumbnailData.count == 0{
             emptyView.configure("등록된 반려도마뱀이 없습니다.")
             collectionView.backgroundView = emptyView
@@ -98,9 +97,13 @@ extension GrowthDiaryViewController{
             return UICollectionViewCell()
         }
         
-        // TODO: 실제 모델을 넘기고 configure함수에서 .image, .tile. timestamp로 cell에 넣기
         cell.configure(imageName: thumbnailData[indexPath.item].thumbnail, title: thumbnailData[indexPath.item].name, date: thumbnailData[indexPath.item].diary_id)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailGrowthDiaryVicontroller = DetailGrowthDiaryViewController()
+        self.navigationController?.pushViewController(detailGrowthDiaryVicontroller, animated: true)
     }
 }
 
