@@ -11,6 +11,8 @@ import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
+    var userProfileData: UserProfile?
+    
     private var list = ["내가 작성한 댓글", "내가 찜한 게시물", "내가 차단한 사용자"]
     
     private let profileView = ProfileView()
@@ -36,6 +38,21 @@ class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         profileView.updateScrollState()
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(true)
+        
+        UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
+            switch result {
+            case .success(let userData):
+                self.userProfileData = userData
+                self.profileView.setProfileData(userData: userData)
+                print("불러오기 성공: \(self.userProfileData)")
+            case .failure(let error):
+                print("불러오기 실패: \(error.localizedDescription)")
+            }
+        }
     }
     
     @objc func editUserInfo() {

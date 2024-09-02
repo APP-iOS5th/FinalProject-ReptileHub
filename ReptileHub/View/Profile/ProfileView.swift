@@ -9,7 +9,6 @@ import UIKit
 import SnapKit
 
 class ProfileView: UIView {
-
     
     // 배경 수정 필요
     // UserProfile 더미 데이터
@@ -162,11 +161,7 @@ class ProfileView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        setProfileImage()
-        setProfileName()
-        setProfileLizardCount()
-        setProfilePostCount()
-        setProfileLoginType()
+       
     }
     
     required init?(coder: NSCoder) {
@@ -226,24 +221,12 @@ class ProfileView: UIView {
         }
     }
     
-    private func setProfileImage() {
-        profileImage.image = UIImage(named: users[0].profileImageURL)
-    }
-    
-    private func setProfileName() {
-        profileName.text = users[0].name
-    }
-    
-    private func setProfileLizardCount() {
-        firstButton.setTitle(String(users[0].lizardCount), for: .normal)
-    }
-    
-    private func setProfilePostCount() {
-        secondButton.setTitle(String(users[0].postCount), for: .normal)
-    }
-    
-    private func setProfileLoginType() {
-        thirdImage.image = UIImage(named: users[0].loginType)
+    func setProfileData(userData: UserProfile) {
+        profileImage.setImage(with: userData.profileImageURL) // 
+        profileName.text = userData.name
+        firstButton.setTitle(String(userData.lizardCount), for: .normal)
+        secondButton.setTitle(String(userData.postCount), for: .normal)
+        thirdImage.image = UIImage(named: userData.loginType)
     }
     
     func configureListTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
