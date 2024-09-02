@@ -23,7 +23,7 @@ class SpecialDetailViewController: UIViewController {
     //MARK: - Navigationbar & UIMenu
     private func setupNavigationBar() {
         navigationItem.title = "특이사항"
-        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         let ellipsis: UIButton = {
             let ellipsis = UIButton()
             ellipsis.setImage(UIImage(systemName: "ellipsis"), for: .normal)

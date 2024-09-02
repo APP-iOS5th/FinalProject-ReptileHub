@@ -21,8 +21,10 @@ class SpecialListViewController: UIViewController {
         // UIMenu 관련 셀 호출
         specialListView.registerCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
         view.backgroundColor = .white
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         title = "특이사항"
     }
+    
 
 }
 //MARK: - TableView 관련
