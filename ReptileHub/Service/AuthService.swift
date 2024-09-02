@@ -429,7 +429,7 @@ extension AuthService {
             "name": user.name ?? "",
             "loginType": user.loginType,
             "providerUID": user.providerUID,
-            "defaultImageURL": profileImageURL // 기본 프로필 이미지 URL 추가
+            "profileImageURL": profileImageURL // 기본 프로필 이미지 URL 추가
         ]
         
         db.collection("users").document(uid).setData(userData) { error in

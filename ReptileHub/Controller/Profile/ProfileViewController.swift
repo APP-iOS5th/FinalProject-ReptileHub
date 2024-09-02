@@ -22,6 +22,7 @@ class ProfileViewController: UIViewController {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         UserService.shared.fetchUserProfile(uid: uid) { results in
+           print("지금 프로필 검색 uid -\(uid)") 
             switch results {
                 
             case .success(let profile):
