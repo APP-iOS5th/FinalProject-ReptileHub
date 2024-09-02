@@ -8,32 +8,37 @@
 import UIKit
 
 class EmptyView: UIView {
+    let height: CGFloat?
     private lazy var emptyLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.textColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
+        label.textColor = UIColor.textFieldPlaceholder
         label.font = UIFont.systemFont(ofSize: 20)
         return label
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(height: CGFloat? = nil) {
+        self.height = height
+        super.init(frame: .zero)
         setUp()
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setUp(){
         self.addSubview(emptyLabel)
         
         emptyLabel.snp.makeConstraints { make in
+            if let height = self.height{
+                make.height.equalTo(height)
+            }
             make.edges.equalTo(self)
             make.center.equalTo(self)
         }
     }
-
+    
     func configure(_ message: String){
         self.emptyLabel.text = message
     }

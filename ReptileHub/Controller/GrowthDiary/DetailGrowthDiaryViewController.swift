@@ -9,7 +9,7 @@ import UIKit
 
 class DetailGrowthDiaryViewController: UIViewController {
     private lazy var detailGrowthDiaryView = DetailGrowthDiaryView()
-    let tempData = [Int]()
+    let tempData = [1,2,3,]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +74,7 @@ class DetailGrowthDiaryViewController: UIViewController {
             make.height.equalTo(100)
         }
         
-        return cell
+        return cell.contentView
     }
     
     //셀을 클릭했을 때 디테일 뷰로 이동시켜주는 함수

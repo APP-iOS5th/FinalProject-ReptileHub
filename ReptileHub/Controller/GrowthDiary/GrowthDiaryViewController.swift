@@ -73,13 +73,13 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
     
     private func navigateToSecondViewController(){
         let secondViewController = AddGrowthDiaryViewController()
+        secondViewController.previousViewController = self
         navigationController?.pushViewController(secondViewController, animated: true)
     }
 }
 
 //MARK: - Extension
 extension GrowthDiaryViewController{
-    
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if thumbnailData.count == 0{

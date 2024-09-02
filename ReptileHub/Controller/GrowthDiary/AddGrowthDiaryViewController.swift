@@ -45,9 +45,11 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         print(result.1)
         DiaryPostService.shared.registerGrowthDiary(userID: userId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
             if let error = error{
-                print(error.localizedDescription)
+                print("error", error.localizedDescription)
             }else{
+                print("Success")
                 if let previousVC = self?.previousViewController{
+                    print("privousVC", previousVC)
                     previousVC.updateImage()
                 }
                 self?.navigationController?.popViewController(animated: true)
