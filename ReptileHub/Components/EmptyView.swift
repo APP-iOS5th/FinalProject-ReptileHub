@@ -8,7 +8,6 @@
 import UIKit
 
 class EmptyView: UIView {
-    let height: CGFloat?
     private lazy var emptyLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -17,28 +16,24 @@ class EmptyView: UIView {
         return label
     }()
     
-    init(height: CGFloat? = nil) {
-        self.height = height
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setUp()
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
     }
     
     private func setUp(){
         self.addSubview(emptyLabel)
         
         emptyLabel.snp.makeConstraints { make in
-            if let height = self.height{
-                make.height.equalTo(height)
-            }
             make.edges.equalTo(self)
             make.center.equalTo(self)
         }
     }
-    
+
     func configure(_ message: String){
         self.emptyLabel.text = message
     }

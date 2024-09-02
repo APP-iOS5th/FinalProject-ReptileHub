@@ -78,7 +78,7 @@ class GrowthDiaryListView: UIView {
         GrowthDiaryTitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self).offset(-Spacing.mainSpacing)
-            make.top.equalTo(self.safeAreaLayoutGuide).offset(40)
+            make.top.equalTo(self.safeAreaLayoutGuide).offset(30)
         }
         
         GrowthDiaryListCollectionView.snp.makeConstraints { make in

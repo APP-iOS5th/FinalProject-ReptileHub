@@ -13,6 +13,8 @@ class DetailGrowthDiaryView: UIView {
     //MARK: - 특이사항 전체보기 버튼 액션 클로저로 생성
     var detailShowSpecialNoteButtonTapped: (() -> Void)?
     
+    var detailTableViewHeightContaint: Constraint?
+    
     //MARK: - 반려 도마뱀 이미지 테두리
     private lazy var detailThumbnailUIView: UIView = {
         let view = UIView()
@@ -192,6 +194,7 @@ class DetailGrowthDiaryView: UIView {
         config.imagePlacement = .trailing
         config.imagePadding = 5
         config.attributedTitle?.font = UIFont.systemFont(ofSize: 14)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         
         button.configuration = config
         button.contentHorizontalAlignment = .trailing
@@ -203,6 +206,7 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailWeightTitleAddStackview: UIStackView = {
         let view = UIStackView(arrangedSubviews: [detailWeightTitleLabel, detailWeightAddButton])
         view.axis = .horizontal
+        view.distribution = .fillEqually
         return view
     }()
     
@@ -252,7 +256,7 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailParentStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [detailParentLizardTitle, detailParentInfoStackView])
         view.axis = .vertical
-        view.spacing = 20
+        view.spacing = 10
         return view
     }()
     
@@ -272,6 +276,7 @@ class DetailGrowthDiaryView: UIView {
         config.title = "전체보기"
         config.baseForegroundColor = UIColor.textFieldPlaceholder
         config.attributedTitle?.font = UIFont.systemFont(ofSize: 14)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         
         button.configuration = config
         button.contentHorizontalAlignment = .trailing
@@ -287,12 +292,32 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailSpecialNoteHeaderStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [detailSpecialNoteTitle, detailShowSepcialNote])
         view.axis = .horizontal
+        view.distribution = .fillEqually
         return view
     }()
-
-//    //MARK: - 특이사항 미리보기 스택 뷰
+    
+    //MARK: - 특이사항 미리보기 테이블 뷰
+    private (set) lazy var detailPreviesSpecialNoteTableView: UITableView = {
+        let view = UITableView()
+        view.isScrollEnabled = false
+        view.backgroundColor = .red
+        view.separatorStyle = .none // 셀 선 제거
+        view.isHidden = true
+        return view
+    }()
+    
+    //MARK: - 특이사항 없을 때 보여주는 EmptyView
+    private (set) lazy var emptyview: EmptyView = {
+        let view = EmptyView()
+        view.configure("존재하는 특이사항이 없습니다.")
+        view.layer.cornerRadius = 5
+        view.backgroundColor = UIColor.groupProfileBG
+        return view
+    }()
+    
+    //MARK: - 특이사항 미리보기 스택 뷰
     private lazy var detailPreviewsSpecialNoteStackView: UIStackView = {
-       let view = UIStackView()
+        let view = UIStackView(arrangedSubviews: [detailSpecialNoteHeaderStackView, detailPreviesSpecialNoteTableView, emptyview])
         view.axis = .vertical
         view.spacing = 10
         return view
@@ -300,7 +325,7 @@ class DetailGrowthDiaryView: UIView {
     
     //MARK: - 디테일 스택 뷰
     private lazy var detailStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView/*, detailPreviewsSpecialNoteStackView*/])
+        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView, detailPreviewsSpecialNoteStackView/*, detailPreviewsSpecialNoteStackView*/])
         view.axis = .vertical
         view.spacing = 30
         return view
@@ -310,8 +335,8 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailContentView: UIView = {
         let view = UIView()
         view.addSubview(detailStackView)
-        view.addSubview(detailSpecialNoteHeaderStackView)
-        view.addSubview(detailPreviewsSpecialNoteStackView)
+        //        view.addSubview(detailSpecialNoteHeaderStackView)
+        //        view.addSubview(detailPreviewsSpecialNoteStackView)
         return view
     }()
     
@@ -335,7 +360,7 @@ class DetailGrowthDiaryView: UIView {
     private func setUI(){
         
         self.addSubview(detailScrollView)
-//        cellData()
+        //        cellData()
         //디테일 스크롤 뷰
         detailScrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -344,7 +369,6 @@ class DetailGrowthDiaryView: UIView {
         //디테일 content View
         detailContentView.snp.makeConstraints { make in
             make.width.equalTo(detailScrollView)
-//            make.height.greaterThanOrEqualToSuperview()
             make.top.equalTo(detailScrollView).offset(30)
             make.bottom.equalTo(detailScrollView).offset(-30)
             make.leading.trailing.equalTo(detailScrollView)
@@ -352,7 +376,7 @@ class DetailGrowthDiaryView: UIView {
         
         //디테일 스택 뷰
         detailStackView.snp.makeConstraints { make in
-            make.top.equalTo(detailContentView)
+            make.top.bottom.equalTo(detailContentView)
             make.leading.equalTo(detailContentView.snp.leading).offset(Spacing.mainSpacing)
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-Spacing.mainSpacing)
         }
@@ -386,15 +410,28 @@ class DetailGrowthDiaryView: UIView {
             make.height.equalTo(200)
         }
         
-        detailSpecialNoteHeaderStackView.snp.makeConstraints { make in
-            make.top.equalTo(detailStackView.snp.bottom).offset(30)
-            make.leading.trailing.equalTo(detailStackView)
-        }
+        //        detailSpecialNoteHeaderStackView.snp.makeConstraints { make in
+        //            make.top.equalTo(detailStackView.snp.bottom).offset(30)
+        //            make.leading.trailing.equalTo(detailStackView)
+        //        }
+        
+        //
+        
         
         detailPreviewsSpecialNoteStackView.snp.makeConstraints { make in
-            make.top.equalTo(detailSpecialNoteHeaderStackView.snp.bottom).offset(10)
             make.leading.trailing.equalTo(detailStackView)
-            make.bottom.equalTo(detailContentView.snp.bottom).offset(-30)
+            //            make.bottom.equalTo(detailStackView)
+        }
+        
+        detailPreviesSpecialNoteTableView.snp.makeConstraints { make in
+            //            make.edges.equalTo(detailPreviewsSpecialNoteStackView)
+            make.leading.trailing.equalTo(detailStackView)
+            //            make.bottom.equalTo(detailPreviewsSpecialNoteStackView)
+            detailTableViewHeightContaint = make.height.equalTo(0).constraint
+        }
+        
+        emptyview.snp.makeConstraints { make in
+            make.height.equalTo(50)
         }
     }
     
@@ -445,30 +482,52 @@ class DetailGrowthDiaryView: UIView {
         return detailParentView
     }
     
-    func detailAddSepcialNotesCellView(_ cellView: UIView){
-        detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
+    func configureDetailPreviewTableView(delegate: UITableViewDelegate, dataSource: UITableViewDataSource){
+        self.detailPreviesSpecialNoteTableView.delegate = delegate
+        self.detailPreviesSpecialNoteTableView.dataSource = dataSource
+        self.detailPreviesSpecialNoteTableView.reloadData()
     }
     
-//    func cellData(){
-//        for _ in 0..<3{
-//            let cellView = createCellView()
-//            detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
-//        }
-//    }
-//    
-//    func createCellView() -> UIView {
-//           // CustomTableViewCell 생성
-//           let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
-//           
-//           // 셀의 높이를 설정
-//           cell.contentView.snp.makeConstraints { make in
-//               make.height.equalTo(100)
-//           }
-//        
-//        
-//           
-//           return cell.contentView
-//       }
+    func registerDetailPreviewTableCell(_ cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
+        self.detailPreviesSpecialNoteTableView.register(cellClass, forCellReuseIdentifier: identifier)
+    }
+    
+    func updateTableViewHeight(){
+        detailPreviesSpecialNoteTableView.layoutIfNeeded()
+        //        let height = min(detailPreviesSpecialNoteTableView.contentSize.height, 300)
+        //        detailTableViewHeightContaint?.update(offset: height)
+        
+        let numberOfRows = detailPreviesSpecialNoteTableView.numberOfRows(inSection: 0)
+        let rowHeight = 100 // UITableView 델리겟의 row 높이와 맞춰줌
+        let newHeight = CGFloat(numberOfRows * rowHeight)
+        
+        detailTableViewHeightContaint?.update(offset: newHeight)
+    }
+    
+    //    func detailAddSepcialNotesCellView(_ cellView: UIView){
+    //        detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
+    //    }
+    
+    //    func cellData(){
+    //        for _ in 0..<3{
+    //            let cellView = createCellView()
+    //            detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
+    //        }
+    //    }
+    //
+    //    func createCellView() -> UIView {
+    //           // CustomTableViewCell 생성
+    //           let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
+    //
+    //           // 셀의 높이를 설정
+    //           cell.contentView.snp.makeConstraints { make in
+    //               make.height.equalTo(100)
+    //           }
+    //
+    //
+    //
+    //           return cell.contentView
+    //       }
 }
 
 #if DEBUG
