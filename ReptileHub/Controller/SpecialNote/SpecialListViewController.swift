@@ -11,12 +11,15 @@ import SnapKit
 class SpecialListViewController: UIViewController {
     private let specialListView = SpecialListView()
     
+    var sampleSpecialNoteData = SampleSpecialNoteData()
+    
     private var headerHeight = 100.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view = specialListView
+        sampleSpecialNoteData.createSampleSpecialEntryData()
         specialListView.configureTableView(delegate: self, datasource: self)
         // UIMenu 관련 셀 호출
         specialListView.registerCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
@@ -32,7 +35,8 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
 
     // 셀 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+//        return 10
+        sampleSpecialNoteData.specialEntries.count
     }
     // 셀 높이
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -50,14 +54,18 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
         // UIMenu title 설정
         let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: menuItems)
         // 셀에 메뉴 설정
+        let specialEntry = sampleSpecialNoteData.specialEntries[indexPath.row]
+        cell.configureCell(specialEntry: specialEntry)
         cell.configure(with: menu)
         cell.selectionStyle = .none
         return cell
     }
     // 셀 기능
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let specialEntry = sampleSpecialNoteData.specialEntries[indexPath.row]
         let specialDetailViewController = SpecialDetailViewController()
-        self.navigationController?.pushViewController(specialDetailViewController, animated: true)
+//        self.navigationController?.pushViewController(specialDetailViewController, animated: true)
+        show(specialDetailViewController, sender: self)
     }
     // 헤더 뷰 호출
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -70,6 +78,12 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
             self?.navigationController?.pushViewController(specialEditViewController, animated: true)
         }
         return specialPlusButtonView
+    }
+    @objc private func addSpecialNote() {
+        let specialEditViewController = SpecialEditViewController()
+//        let navController = UINavigationController(rootViewController: SpecialEditViewController)
+//        specialEditViewController.delegate = self
+//        present(navController, animated: true)
     }
     
     

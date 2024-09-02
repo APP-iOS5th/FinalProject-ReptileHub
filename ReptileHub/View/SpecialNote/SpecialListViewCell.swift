@@ -12,20 +12,17 @@ class SpecialListViewCell: UITableViewCell {
     
     static let identifier = "SpecialCell"
     
-//    private lazy var cellView: UIView = {
-//        let cellView = UIView()
-//        cellView.backgroundColor = UIColor(named: "textFieldSegmentBG")
-//        cellView.layer.cornerRadius = 5
-//        return cellView
-//    }()
     // 셀 이미지 뷰
     private lazy var specialImageView: UIImageView = {
         let specialImageView = UIImageView()
         specialImageView.image = UIImage(systemName: "camera")
+        specialImageView.tintColor = UIColor(named: "imagePickerColor")
+        specialImageView.backgroundColor = UIColor(named: "imagePickerPlaceholderColor")
         specialImageView.layer.cornerRadius = 5
         specialImageView.contentMode = .scaleAspectFit // scaleAspectFill?
         return specialImageView
     }()
+    
     // 셀 제목
     private lazy var specialTitle: UILabel = {
         let specialTitle = UILabel()
@@ -75,18 +72,13 @@ class SpecialListViewCell: UITableViewCell {
     }
     // 셀 레이아웃
     private func setupUI2() {
-//        contentView.addSubview(cellView)
+
         contentView.addSubview(specialImageView)
         contentView.addSubview(specialTitle)
         contentView.addSubview(specialText)
         contentView.addSubview(dateLabel)
         contentView.addSubview(deleteButton)
         
-//        cellView.snp.makeConstraints{(make) in
-//            make.centerX.equalTo(safeAreaLayoutGuide)
-//            make.width.equalTo(safeAreaLayoutGuide).offset(-30)
-//            make.height.equalTo(100)
-//        }
         specialImageView.snp.makeConstraints{(make) in
             make.width.height.equalTo(100)
             make.leading.equalTo(contentView)
@@ -94,7 +86,7 @@ class SpecialListViewCell: UITableViewCell {
         }
         specialTitle.snp.makeConstraints{(make) in
             make.leading.equalTo(specialImageView.snp.trailing).offset(10)
-            make.trailing.equalTo(deleteButton.snp.leading).offset(2)
+//            make.trailing.equalTo(deleteButton.snp.leading).offset(2)
             make.top.equalTo(contentView).offset(10)
         }
         specialText.snp.makeConstraints{(make) in
@@ -136,5 +128,60 @@ class SpecialListViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    func configureCell(specialEntry: SpecialEntry) {
+        specialImageView.image = specialEntry.image
+        dateLabel.text = specialEntry.date.formatted(.dateTime.year().month().day())
+        specialTitle.text = specialEntry.specialTitle
+        specialText.text = specialEntry.specialText
+    }
 
 }
+
+class SpecialEntry {
+    let date: Date
+    let image: UIImage?
+    let specialTitle: String
+    let specialText: String
+    
+    init?(date: Date, image: UIImage?, specialTitle: String, specialText: String) {
+        if specialTitle.isEmpty || specialText.isEmpty {
+            return nil
+        }
+        self.date = Date()
+        self.image = image
+        self.specialTitle = specialTitle
+        self.specialText = specialText
+    }
+}
+
+struct SampleSpecialNoteData {
+    var specialEntries: [SpecialEntry] = []
+    
+    mutating func createSampleSpecialEntryData() {
+        let photo1 = UIImage(systemName: "sun.max")
+        let photo2 = UIImage(systemName: "cloud")
+        let photo3 = UIImage(systemName: "cloud.sun")
+        guard let specialEntry1 = SpecialEntry(date: Date.now,
+                                               image: photo1 , specialTitle: "Today is good day", specialText: "Good" ) else {
+            fatalError("Unable to instantiate journalEntry1")
+        }
+        guard let specialEntry2 = SpecialEntry(date: Date.retrieveDateFromToday(by: 1),
+                                               image: photo2 , specialTitle: "Today is good day", specialText: "Bad" ) else {
+            fatalError("Unable to instantiate journalEntry1")
+        }
+        guard let specialEntry3 = SpecialEntry(date: Date.retrieveDateFromToday(by: 2),
+                                               image: photo3 , specialTitle: "Today is good day", specialText: "SoSo" ) else {
+            fatalError("Unable to instantiate journalEntry1")
+        }
+        
+        specialEntries += [specialEntry1, specialEntry2, specialEntry3]
+    }
+}
+extension Date {
+    static func retrieveDateFromToday(by day: Int) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(byAdding: .day, value: day, to: Date.now)!
+    }
+}
+
+

@@ -10,7 +10,7 @@ import SnapKit
 import PhotosUI
 
 protocol SpecialEditViewDelegate: AnyObject {
-    func didTapPostButton(imageData: [Data], title: String, content: String)
+    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String)
 }
 
 class SpecialEditView: UIView {
@@ -178,6 +178,7 @@ class SpecialEditView: UIView {
         
         //MARK: -- UI AutoLayout
         
+        
         dateLabel.snp.makeConstraints{ (make) in
             make.leading.equalTo(25)
             make.top.equalTo(imagePickerCollectionView.snp.bottomMargin).offset(30)
@@ -250,7 +251,7 @@ class SpecialEditView: UIView {
     //MARK: - saveButton 액션 함수
     @objc
     private func saveButtonAction() {
-        delegate?.didTapPostButton(imageData: imageData, title: specialTitle.text ?? "nil", content: descriptionTextView.text ?? "nil")
+        delegate?.didTapPostButton(imageData: imageData, date: Date(), title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil")
     }
     //MARK: - Delegate
     func configureSpecialEditView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, textViewDelegate: UITextViewDelegate) {

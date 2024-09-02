@@ -20,7 +20,6 @@ class SpecialEditViewController: UIViewController {
         navigationItem.title = "특이사항"
         // Do any additional setup after loading the view.
     }
-    
 
 }
 //MARK: - SpecialEditView Image CollectionViewDelegate 관련
