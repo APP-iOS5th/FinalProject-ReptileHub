@@ -121,7 +121,6 @@ class SpecialListViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -129,7 +128,7 @@ class SpecialListViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     func configureCell(specialEntry: SpecialEntry) {
-        specialImageView.image = specialEntry.image
+        specialImageView.image = specialEntry.image.first ?? UIImage(systemName: "camera")
         dateLabel.text = specialEntry.date.formatted(.dateTime.year().month().day())
         specialTitle.text = specialEntry.specialTitle
         specialText.text = specialEntry.specialText
@@ -139,11 +138,11 @@ class SpecialListViewCell: UITableViewCell {
 
 class SpecialEntry {
     let date: Date
-    let image: UIImage?
+    let image: [UIImage?]
     let specialTitle: String
     let specialText: String
     
-    init?(date: Date, image: UIImage?, specialTitle: String, specialText: String) {
+    init?(date: Date, image: [UIImage?], specialTitle: String, specialText: String) {
         if specialTitle.isEmpty || specialText.isEmpty {
             return nil
         }
@@ -158,9 +157,9 @@ struct SampleSpecialNoteData {
     var specialEntries: [SpecialEntry] = []
     
     mutating func createSampleSpecialEntryData() {
-        let photo1 = UIImage(named: "tempImage")
-        let photo2 = UIImage(systemName: "cloud")
-        let photo3 = UIImage(systemName: "cloud.sun")
+        let photo1 = [UIImage(named: "tempImage")]
+        let photo2 = [UIImage(named: "profile")]
+        let photo3 = [UIImage(systemName: "cloud.sun"), UIImage(named: "tempImage"), UIImage(named: "profile")]
         guard let specialEntry1 = SpecialEntry(date: Date.now,
                                                image: photo1 , specialTitle: "Today is good day", specialText: "Good" ) else {
             fatalError("Unable to instantiate journalEntry1")

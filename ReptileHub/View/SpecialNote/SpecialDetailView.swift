@@ -25,9 +25,9 @@ class SpecialDetailView: UIView {
     
     // 특이사항 상세 뷰 이미지
     private var specialImages: [UIImageView] = [
-//        UIImageView(image: UIImage(named: "Snowball")),
-//        UIImageView(image: UIImage(named: "Snowball")),
-//        UIImageView(image: UIImage(named: "Snowball")),
+//        UIImageView(image: UIImage(named: "tempImage")),
+//        UIImageView(image: UIImage(named: "tempImage")),
+//        UIImageView(image: UIImage(named: "tempImage")),
         ]
     // 특이사항 상세 뷰 이미지 뷰
     private var imageViews: [UIView] = []
@@ -135,7 +135,7 @@ class SpecialDetailView: UIView {
         imageScrollView.alwaysBounceHorizontal = true
 //        imageScrollView.addSubview(imageStackView)
         imageScrollView.isPagingEnabled = true
-//        imageScrollView.delegate = self
+        imageScrollView.delegate = self
         
         self.addSubview(imageScrollView)
         
@@ -203,13 +203,16 @@ class SpecialDetailView: UIView {
         }
     }
     func writeSpecialDetail(data: SpecialEntry) {
-        specialImages.append(UIImageView(image: data.image))
+        print("안되면 울거야",specialImages)
+        specialImages.append(contentsOf: data.image.map{ UIImageView(image: $0)})
+        print("제발 되게 해주세요.",specialImages)
         specialTitle.text = data.specialTitle
         dateLabel.text = data.date.toString()
         specialText.text = data.specialText
-        
+//        print(data.image ?? UIImage(systemName: "person")!)
+        setupImageScrollView()
+        setupImagePageCountLabel()
     }
-    
     
 }
 //MARK: - 이미지 스크롤 카운트
