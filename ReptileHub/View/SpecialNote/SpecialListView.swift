@@ -10,10 +10,11 @@ import SnapKit
 
 class SpecialListView: UIView {
 
+    // 테이블 뷰 정의
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SpecialCell")
-        
+        tableView.register(SpecialPlusButtonView.self, forHeaderFooterViewReuseIdentifier: SpecialPlusButtonView.identifier)
         return tableView
     }()
 
@@ -27,6 +28,7 @@ class SpecialListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // 테이블 뷰 레이아웃
     private func setupTableView() {
         self.addSubview(tableView)
         
@@ -48,10 +50,5 @@ class SpecialListView: UIView {
     // UIMenu tableView에 대한 셀 등록 기능을 제공하는 메서드 추가
     func registerCell(_ cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
         tableView.register(cellClass, forCellReuseIdentifier: identifier)
-    }
-    
-    func pizza() {
-        tableView.layoutIfNeeded()
-        tableView.setNeedsLayout()
     }
 }

@@ -10,6 +10,7 @@ import SnapKit
 
 class SpecialDetailView: UIView {
 
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
@@ -24,9 +25,9 @@ class SpecialDetailView: UIView {
     
     // 특이사항 상세 뷰 이미지
     private var specialImages: [UIImageView] = [
-        UIImageView(image: UIImage(named: "Snowball")),
-        UIImageView(image: UIImage(named: "Snowball")),
-        UIImageView(image: UIImage(named: "Snowball")),
+//        UIImageView(image: UIImage(named: "tempImage")),
+//        UIImageView(image: UIImage(named: "tempImage")),
+//        UIImageView(image: UIImage(named: "tempImage")),
         ]
     // 특이사항 상세 뷰 이미지 뷰
     private var imageViews: [UIView] = []
@@ -89,33 +90,16 @@ class SpecialDetailView: UIView {
     
     
     
-    // 뷰 레이아웃
+    //MARK: -  뷰 레이아웃
     private func detailsetupUI() {
         self.backgroundColor = .white
         
-//        view.addSubview(specialImages)
-//        view.addSubview(imageRectangle)
-//        view.addSubview(imageCountNumber)
         self.addSubview(specialTitle)
         self.addSubview(specialLizardName)
         self.addSubview(dateLabel)
         self.addSubview(specialLine)
         self.addSubview(specialText)
         
-//        specialImages.snp.makeConstraints{(make) in
-//            make.width.equalTo(100)
-//            make.height.equalTo(100)
-//            make.centerX.equalTo(self.view)
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin)
-//
-//        }
-        
-//        pageCountView.snp.makeConstraints{(make) in
-//
-//        }
-//        imagePageCount.snp.makeConstraints{(make) in
-//
-//        }
         specialTitle.snp.makeConstraints{(make) in
             make.leading.equalTo(self).offset(20)
             make.top.equalTo(imageScrollView.snp.bottom).offset(20)
@@ -136,12 +120,12 @@ class SpecialDetailView: UIView {
         }
         specialText.snp.makeConstraints{(make) in
             make.centerX.equalTo(self)
-            make.width.equalToSuperview().offset(-50)
+            make.width.equalToSuperview().offset(-40)
             make.top.equalTo(specialLine.snp.bottom).offset(20)
         }
     }
     
-    // 이미지 스크롤 뷰 레이아웃
+    //MARK: -  이미지 스크롤 뷰 레이아웃
     private func setupImageScrollView() {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fill
@@ -151,7 +135,7 @@ class SpecialDetailView: UIView {
         imageScrollView.alwaysBounceHorizontal = true
 //        imageScrollView.addSubview(imageStackView)
         imageScrollView.isPagingEnabled = true
-//        imageScrollView.delegate = self
+        imageScrollView.delegate = self
         
         self.addSubview(imageScrollView)
         
@@ -193,7 +177,7 @@ class SpecialDetailView: UIView {
             }
         }
     }
-    // 이미지 카운트 레이아웃
+    //MARK: - 이미지 카운트 레이아웃
     private func setupImagePageCountLabel() {
         pageCountView.backgroundColor = .lightGray
         pageCountView.layer.cornerRadius = 12
@@ -218,10 +202,20 @@ class SpecialDetailView: UIView {
             make.centerY.equalTo(pageCountView)
         }
     }
-    
+    func writeSpecialDetail(data: SpecialEntry) {
+        print("안되면 울거야",specialImages)
+        specialImages.append(contentsOf: data.image.map{ UIImageView(image: $0)})
+        print("제발 되게 해주세요.",specialImages)
+        specialTitle.text = data.specialTitle
+        dateLabel.text = data.date.toString()
+        specialText.text = data.specialText
+//        print(data.image ?? UIImage(systemName: "person")!)
+        setupImageScrollView()
+        setupImagePageCountLabel()
+    }
     
 }
-// 이미지 스크롤 카운트
+//MARK: - 이미지 스크롤 카운트
 extension SpecialDetailView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard scrollView.frame.width > 0 else {

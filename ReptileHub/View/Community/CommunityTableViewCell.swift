@@ -7,18 +7,28 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
+
+let imageCache = NSCache<NSString, UIImage>()
 
 class CommunityTableViewCell: UITableViewCell {
     
-    private let thumbnailImageView: UIImageView = UIImageView()
+    var testUserProfile: UserProfile? {
+        didSet {
+            guard let testUserProfile = testUserProfile else { return }
+            self.nicknameLabel.text = testUserProfile.name
+        }
+    }
     
-    private let titleLabel: UILabel = UILabel()
+    lazy var thumbnailImageView: UIImageView = UIImageView()
+    
+    lazy var titleLabel: UILabel = UILabel()
     private let contentLabel: UILabel = UILabel()
     private let mainInfoStackView: UIStackView = UIStackView()
     
-    private let commentIcon: UIImageView = UIImageView(image: UIImage(systemName: "message"))
+    private let commentIcon: UIImageView = UIImageView()
     private let commentCountLabel: UILabel = UILabel()
-    private let bookmarkIcon: UIImageView = UIImageView(image: UIImage(systemName: "heart"))
+    private let bookmarkIcon: UIImageView = UIImageView()
     private let bookmarkCountLabel: UILabel = UILabel()
     private let firstStackView: UIStackView = UIStackView()
     
@@ -29,40 +39,44 @@ class CommunityTableViewCell: UITableViewCell {
     private let menuButton: UIButton = UIButton()
     
     
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//    }
-//    
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//    }
+    //    override func awakeFromNib() {
+    //        super.awakeFromNib()
+    //    }
+    //
+    //    override func setSelected(_ selected: Bool, animated: Bool) {
+    //        super.setSelected(selected, animated: animated)
+    //    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupThumbnail()
         setupMenuButton()
-        setupSubInfoStackView()
         setupMainInfoStackView()
+        setupSubInfoStackView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     //MARK: - Thumnail Image
     private func setupThumbnail() {
         thumbnailImageView.image = UIImage(systemName: "camera")
-        thumbnailImageView.contentMode = .scaleAspectFit
+        thumbnailImageView.contentMode = .scaleAspectFill
+        thumbnailImageView.clipsToBounds = true
         thumbnailImageView.layer.cornerRadius = 5
         thumbnailImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        thumbnailImageView.backgroundColor = .green
+        thumbnailImageView.backgroundColor = .lightGray
         
         self.contentView.addSubview(thumbnailImageView)
         
         thumbnailImageView.snp.makeConstraints { make in
-            make.height.width.equalTo(71)
-            make.centerY.equalTo(self.contentView)
+            make.height.width.equalTo(85)
+            make.centerY.equalToSuperview()
+//            make.top.equalTo(self.contentView.snp.top).offset(10)
+//            make.bottom.equalTo(self.contentView.snp.bottom).offset(-10)
             make.leading.equalTo(self.contentView.snp.leading).offset(12)
         }
     }
@@ -70,27 +84,31 @@ class CommunityTableViewCell: UITableViewCell {
     //MARK: - 제목, 내용 StackView
     private func setupMainInfoStackView() {
         mainInfoStackView.axis = .vertical
-        mainInfoStackView.distribution = .equalSpacing
+        mainInfoStackView.distribution = .fill
         mainInfoStackView.alignment = .leading
-        mainInfoStackView.backgroundColor = .blue
         
-        titleLabel.text = "공부는 말이야.."
-        titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        contentLabel.text = "미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~"
+        titleLabel.text = "Title"
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        contentLabel.text = "Content"
         contentLabel.numberOfLines = 0
-        contentLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        
-        mainInfoStackView.addArrangedSubview(titleLabel)
-        mainInfoStackView.addArrangedSubview(contentLabel)
+        contentLabel.font = UIFont.systemFont(ofSize: 15, weight: .light)
         
         self.contentView.addSubview(mainInfoStackView)
         
         mainInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(thumbnailImageView.snp.top)
-            make.leading.equalTo(thumbnailImageView.snp.trailing).offset(5)
-            make.bottom.equalTo(firstStackView.snp.top)
+            make.leading.equalTo(thumbnailImageView.snp.trailing).offset(7)
+//            make.bottom.equalTo(firstStackView.snp.top)
             make.trailing.equalTo(menuButton.snp.leading)
-            make.height.equalTo(55)
+            make.height.greaterThanOrEqualTo(55)
+        }
+        
+        mainInfoStackView.addArrangedSubview(titleLabel)
+        mainInfoStackView.addArrangedSubview(contentLabel)
+        
+        contentLabel.snp.makeConstraints { make in
+            make.height.greaterThanOrEqualTo(30)
+            make.top.equalTo(titleLabel.snp.bottom)
         }
     }
     
@@ -101,16 +119,19 @@ class CommunityTableViewCell: UITableViewCell {
         firstStackView.distribution = .equalSpacing
         firstStackView.alignment = .center
         firstStackView.spacing = 5
-        firstStackView.backgroundColor = .yellow
         
-        commentCountLabel.text = "1234"
-        commentCountLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
-        bookmarkCountLabel.text = "1234"
-        bookmarkCountLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
+        commentCountLabel.text = "9999"
+        commentCountLabel.font = UIFont.systemFont(ofSize: 13, weight: .light)
+        bookmarkCountLabel.text = "9999"
+        bookmarkCountLabel.font = UIFont.systemFont(ofSize: 13, weight: .light)
         
-        commentIcon.snp.makeConstraints {
-            $0.width.equalTo(15)
-        }
+        
+        let commentImageConfig = UIImage.SymbolConfiguration(pointSize: 13, weight: .light)
+        let heartImageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .light)
+        commentIcon.image = UIImage(systemName: "message", withConfiguration: commentImageConfig)
+        bookmarkIcon.image = UIImage(systemName: "heart", withConfiguration: heartImageConfig)
+        
+
         firstStackView.addArrangedSubview(commentIcon)
         firstStackView.addArrangedSubview(commentCountLabel)
         firstStackView.addArrangedSubview(bookmarkIcon)
@@ -121,12 +142,11 @@ class CommunityTableViewCell: UITableViewCell {
         secondStackView.distribution = .equalSpacing
         secondStackView.alignment = .center
         secondStackView.spacing = 10
-        secondStackView.backgroundColor = .red
         
-        nicknameLabel.text = "구현현서"
-        nicknameLabel.font = UIFont.systemFont(ofSize: 12, weight: .ultraLight)
+        nicknameLabel.text = testUserProfile?.name ?? "구현현서"
+        nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
         timestampLabel.text = "24.08.05 17:00"
-        timestampLabel.font = UIFont.systemFont(ofSize: 12, weight: .ultraLight)
+        timestampLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
         
         secondStackView.addArrangedSubview(nicknameLabel)
         secondStackView.addArrangedSubview(timestampLabel)
@@ -137,12 +157,14 @@ class CommunityTableViewCell: UITableViewCell {
         
         firstStackView.snp.makeConstraints { make in
             make.leading.equalTo(thumbnailImageView.snp.trailing).offset(5)
+            make.top.equalTo(mainInfoStackView.snp.bottom)
             make.bottom.equalTo(thumbnailImageView.snp.bottom)
+            make.height.equalTo(20)
         }
         
         secondStackView.snp.makeConstraints { make in
             make.trailing.equalTo(menuButton.snp.centerX)
-            make.bottom.equalTo(firstStackView.snp.bottom)
+            make.bottom.equalTo(firstStackView)
         }
     }
     
@@ -156,9 +178,21 @@ class CommunityTableViewCell: UITableViewCell {
         
         menuButton.snp.makeConstraints { make in
             make.top.equalTo(self.contentView).offset(5)
-            make.trailing.equalTo(self.contentView.snp.trailing).offset(-12)
-
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-5)
+            
         }
     }
+    
+    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int) {
 
+        thumbnailImageView.setImage(with: imageName)
+        
+        titleLabel.text = title
+        contentLabel.text = content
+        timestampLabel.text = createAt
+        commentCountLabel.text = "\(commentCount)"
+        bookmarkCountLabel.text = "\(likeCount)"
+    }
+    
 }
+

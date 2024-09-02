@@ -10,6 +10,15 @@ import SnapKit
 
 class WritePostListTableViewCell: UITableViewCell {
     
+    let users: [UserProfile] = [
+        UserProfile(uid: "1001", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
+    ]
+    
+    let posts: [ThumbnailPostResponse] = [
+        ThumbnailPostResponse(
+            postID: "123", title: "잠 온다 !", userID: "1001", thumbnailURL: "profile", previewContent: "들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ 들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ ", likeCount: 150, commentCount: 25, createdAt: Date()
+        )]
+    
     private let thumbnailImageView: UIImageView = UIImageView()
     
     private let titleLabel: UILabel = UILabel()
@@ -44,6 +53,14 @@ class WritePostListTableViewCell: UITableViewCell {
         setupMenuButton()
         setupSubInfoStackView()
         setupMainInfoStackView()
+        
+        setWritePostThumbnail()
+        setWritePostTitle()
+        setWritePostContent()
+        setWritePostLikeCount()
+        setWritePostCommentCount()
+        setWritePostNickName()
+        setWritePostDate()
     }
     
     required init?(coder: NSCoder) {
@@ -52,11 +69,11 @@ class WritePostListTableViewCell: UITableViewCell {
     
     //MARK: - Thumnail Image
     func setupThumbnail() {
-        thumbnailImageView.image = UIImage(systemName: "camera")
+//        thumbnailImageView.image = UIImage(systemName: "camera")
         thumbnailImageView.contentMode = .scaleAspectFit
         thumbnailImageView.layer.cornerRadius = 5
         thumbnailImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        thumbnailImageView.backgroundColor = .green
+        thumbnailImageView.backgroundColor = .lightGray
         
         self.contentView.addSubview(thumbnailImageView)
         
@@ -72,11 +89,10 @@ class WritePostListTableViewCell: UITableViewCell {
         mainInfoStackView.axis = .vertical
         mainInfoStackView.distribution = .equalSpacing
         mainInfoStackView.alignment = .leading
-        mainInfoStackView.backgroundColor = .blue
         
-        titleLabel.text = "공부는 말이야.."
+//        titleLabel.text = "공부는 말이야.."
         titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        contentLabel.text = "미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~"
+//        contentLabel.text = "미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~미룰때까지 미루는거야.. 공부는 내일부터~~"
         contentLabel.numberOfLines = 0
         contentLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         
@@ -101,11 +117,10 @@ class WritePostListTableViewCell: UITableViewCell {
         firstStackView.distribution = .equalSpacing
         firstStackView.alignment = .center
         firstStackView.spacing = 5
-        firstStackView.backgroundColor = .yellow
         
-        commentCountLabel.text = "1234"
+//        commentCountLabel.text = "1234"
         commentCountLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
-        bookmarkCountLabel.text = "1234"
+//        bookmarkCountLabel.text = "1234"
         bookmarkCountLabel.font = UIFont.systemFont(ofSize: 12, weight: .light)
         
         commentIcon.snp.makeConstraints {
@@ -121,12 +136,13 @@ class WritePostListTableViewCell: UITableViewCell {
         secondStackView.distribution = .equalSpacing
         secondStackView.alignment = .center
         secondStackView.spacing = 10
-        secondStackView.backgroundColor = .red
         
-        nicknameLabel.text = "구현현서"
+//        nicknameLabel.text = "은우성빈"
         nicknameLabel.font = UIFont.systemFont(ofSize: 12, weight: .ultraLight)
-        timestampLabel.text = "24.08.05 17:00"
+        nicknameLabel.tintColor = .imagePickerPlaceholder
+//        timestampLabel.text = "24.08.05 17:00"
         timestampLabel.font = UIFont.systemFont(ofSize: 12, weight: .ultraLight)
+        timestampLabel.tintColor = .imagePicker
         
         secondStackView.addArrangedSubview(nicknameLabel)
         secondStackView.addArrangedSubview(timestampLabel)
@@ -151,6 +167,7 @@ class WritePostListTableViewCell: UITableViewCell {
         menuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         menuButton.contentMode = .scaleAspectFit
         menuButton.transform = CGAffineTransform(rotationAngle: .pi * 0.5)
+        menuButton.tintColor = .imagePickerPlaceholder
         
         self.contentView.addSubview(menuButton)
         
@@ -161,4 +178,39 @@ class WritePostListTableViewCell: UITableViewCell {
         }
     }
     
+    func configure(with menu: UIMenu) {
+        menuButton.menu = menu
+        menuButton.showsMenuAsPrimaryAction = true
+    }
+    
+    private func setWritePostThumbnail() {
+        thumbnailImageView.image = UIImage(named: posts[0].thumbnailURL)
+    }
+    
+    private func setWritePostTitle() {
+        titleLabel.text = posts[0].title
+    }
+    
+    private func setWritePostContent() {
+        contentLabel.text = posts[0].previewContent
+    }
+    
+    private func setWritePostCommentCount() {
+        commentCountLabel.text = String(posts[0].commentCount)
+    }
+    
+    private func setWritePostLikeCount() {
+        bookmarkCountLabel.text = String(posts[0].likeCount)
+    }
+    
+    private func setWritePostNickName() {
+        nicknameLabel.text = users[0].name
+    }
+    
+    // TODO: - 몇시간 전 ~ 으로 나와야함
+    private func setWritePostDate() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm" // 원하는 포맷으로 설정
+        timestampLabel.text = dateFormatter.string(for: posts[0].createdAt)
+    }
 }

@@ -165,12 +165,12 @@ class CommunityService {
                 }
                 
             }
-           // completion으로 전송
+            // completion으로 전송
             completion(.success(thumbnails))
             
         }
     }
-
+    
     
     func fetchPostDetail(userID: String, postID: String, completion: @escaping (Result<PostDetailResponse, Error>) -> Void) {
         let postRef = db.collection("posts").document(postID)
@@ -505,6 +505,7 @@ class CommunityService {
 
 
     // MARK: - 댓글 수정 함수
+    
     func updateComment(postID: String, commentID: String, newContent: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let commentRef = db.collection("posts").document(postID).collection("comments").document(commentID)
@@ -525,44 +526,44 @@ class CommunityService {
 
 extension CommunityService {
     private func uploadImage(imageData: Data, completion: @escaping (String?, Error?) -> Void) {
-           let filePath = "community_images/\(UUID().uuidString).jpg"
-           let metaData = StorageMetadata()
-           metaData.contentType = "image/jpeg"
-           
-           storageRef.child(filePath).putData(imageData) { metaData, error in
-               if let error = error {
-                   completion(nil, error)
-                   return
-               }
-               self.storageRef.child(filePath).downloadURL { url, error in
-                   completion(url?.absoluteString, error)
-               }
-           }
-       }
-       
-       // 여러 이미지를 업로드하는 함수 -> 성공 시 각각의 url 배열 리턴, 실패 시 errors 배열 리턴
-       private func uploadImages(images: [Data], completion: @escaping ([String]?, [Error]?) -> Void) {
-           let group = DispatchGroup()
-           var urls = [String]()
-           var errors = [Error]()
-           
-           for imageData in images {
-               group.enter()
-               uploadImage(imageData: imageData) { url, error in
-                   if let error = error {
-                       errors.append(error)
-                   }
-                   if let url = url {
-                       urls.append(url)
-                   }
-                   group.leave()
-               }
-           }
-           
-           group.notify(queue: .main) {
-               completion(urls.isEmpty ? nil : urls, errors.isEmpty ? nil : errors)
-           }
-       }
+        let filePath = "community_images/\(UUID().uuidString).jpg"
+        let metaData = StorageMetadata()
+        metaData.contentType = "image/jpeg"
+        
+        storageRef.child(filePath).putData(imageData) { metaData, error in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            self.storageRef.child(filePath).downloadURL { url, error in
+                completion(url?.absoluteString, error)
+            }
+        }
+    }
+    
+    // 여러 이미지를 업로드하는 함수 -> 성공 시 각각의 url 배열 리턴, 실패 시 errors 배열 리턴
+    private func uploadImages(images: [Data], completion: @escaping ([String]?, [Error]?) -> Void) {
+        let group = DispatchGroup()
+        var urls = [String]()
+        var errors = [Error]()
+        
+        for imageData in images {
+            group.enter()
+            uploadImage(imageData: imageData) { url, error in
+                if let error = error {
+                    errors.append(error)
+                }
+                if let url = url {
+                    urls.append(url)
+                }
+                group.leave()
+            }
+        }
+        
+        group.notify(queue: .main) {
+            completion(urls.isEmpty ? nil : urls, errors.isEmpty ? nil : errors)
+        }
+    }
 }
 
 extension CommunityService {
@@ -572,7 +573,7 @@ extension CommunityService {
         let postRef = db.collection("posts").document(postID)
         let detailRef = postRef.collection("post_details").document(postID)
         let storageRef = Storage.storage().reference()
-
+        
         var newImageURLs: [String] = existingImageURLs ?? []
         var errors: [Error] = []
         let group = DispatchGroup()
@@ -661,7 +662,7 @@ extension CommunityService {
               let path = urlComponents.path.removingPercentEncoding else {
             return nil
         }
-
+        
         let pathComponents = path.split(separator: "/")
         return pathComponents.last?.components(separatedBy: "%2F").last
     }

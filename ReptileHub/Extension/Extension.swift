@@ -10,9 +10,15 @@ import Kingfisher
 
 //MARK: - 0000.00.00 형식으로 날짜추출
 extension Date{
-    var formatted: String{
+    var formatted: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy. MM. dd"
+        return formatter.string(from: self)
+    }
+    
+    var timefomatted: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yy.MM.dd hh:mm"
         return formatter.string(from: self)
     }
 }

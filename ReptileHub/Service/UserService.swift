@@ -8,10 +8,17 @@
 import Firebase
 import FirebaseFirestore
 import FirebaseStorage
+import FirebaseAuth
 
 class UserService {
     static let shared = UserService()
-    private init() {}
+
+    var currentUserId: String
+    
+    private init() {
+        currentUserId = Auth.auth().currentUser?.uid ?? "nil"
+    }
+    
     //MARK: - 유저 차단 기능
     func blockUser(currentUserID: String,blockUserID: String, completion:@escaping (Error?)-> Void) {
         let db = Firestore.firestore()
@@ -124,7 +131,7 @@ class UserService {
                 completion(.success(thumbnails))
             }
     }
-    //MARK: - 유저(본인) 프로필 불러오기
+    //MARK: - 유저 프로필 불러오기
     func fetchUserProfile(uid: String, completion: @escaping (Result<UserProfile, Error>) -> Void) {
         let db = Firestore.firestore()
         db.collection("users").document(uid).getDocument { documentSnapshot, error in
@@ -137,7 +144,10 @@ class UserService {
                   let uid = data["uid"] as? String,
                   let name = data["name"] as? String,
                   let profileImageURL = data["profileImageURL"] as? String,
-                  let loginType = data["loginType"] as? String else {
+
+                  let loginType = data["loginType"] as? String
+            else {
+
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid user data"])))
                 return
             }
