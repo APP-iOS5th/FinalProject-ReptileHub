@@ -8,19 +8,22 @@
 import UIKit
 import SnapKit
 
-class GrowthDiaryListView: UIView {    
+class GrowthDiaryListView: UIView {
+    
+    //버튼 클릭 시 실행될 클로저
+    var buttonTapped: (() -> Void)?
+    
     //MARK: - 상단 텍스트 Label
-    private lazy var GrowthDiaryTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "사랑하는 반려도마뱀의 하루하루를 기록해보세요!"
-        label.font = UIFont.systemFont(ofSize: 28)
+    private lazy var GrowthDiaryTitleLabel: FontWeightLabel = {
+        let label = FontWeightLabel()
         label.numberOfLines = 0
-        label.asFont(rangeText: "하루하루를 기록해보세요!", font: UIFont.systemFont(ofSize: 28, weight: .bold))
+        label.setFontWeightText(fullText: "사랑하는 반려도마뱀의 하루하루를 기록해보세요!", boldText: "하루하루를 기록해보세요!", fontSize: 28, weight: .bold)
+        label.textColor = UIColor.textFieldTitle
         return label
     }()
     
     //MARK: - 성장일지 목록 CollectionView
-    private lazy var GrowthDiaryListCollectionView: UICollectionView = {
+    private (set) lazy var GrowthDiaryListCollectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         view.showsVerticalScrollIndicator = false //수직 스크롤표시 없애기
         return view
@@ -46,10 +49,14 @@ class GrowthDiaryListView: UIView {
         
         config.attributedTitle = buttonText
         // TODO: ColorSet으로 설정해서 사용하기
-        config.baseBackgroundColor = UIColor(red: 11.0/255.0, green: 71.0/255.0, blue: 59.0/255.0, alpha: 1.0)
+        config.baseBackgroundColor = UIColor.addBtnGraphTabbar
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
         button.configuration = config
+        
+        button.addAction(UIAction{ [weak self] _ in
+            self?.buttonTapped?() //클로저가 실행된다.
+        }, for: .touchUpInside)
         return button
     }()
     
@@ -88,7 +95,7 @@ class GrowthDiaryListView: UIView {
         }
     }
     
-    //MARK: - Methods
+    //MARK: - Methods    
     func cofigureCollectionView(delegate: UICollectionViewDelegate, dataSource: UICollectionViewDataSource){
         GrowthDiaryListCollectionView.delegate = delegate
         GrowthDiaryListCollectionView.dataSource = dataSource
@@ -137,18 +144,6 @@ class GrowthDiaryListView: UIView {
         }else{
             GrowthDiaryListCollectionView.isScrollEnabled = false
         }
-    }
-}
-
-//MARK: - extension
-extension UILabel{
-    func asFont(rangeText: String, font: UIFont){
-        guard let text = self.text else { return }
-        
-        let attributeString = NSMutableAttributedString(string: text)
-        let range = (text as NSString).range(of: rangeText)
-        attributeString.addAttribute(.font, value: font, range: range)
-        self.attributedText = attributeString
     }
 }
 

@@ -10,12 +10,12 @@ import FirebaseStorage
 import FirebaseFirestore
 
 class CommunityService {
-    
+   
     static let shared = CommunityService()
     private init() {}
     private let db = Firestore.firestore()
     private let storageRef = Storage.storage().reference()
-    
+
     //MARK: - 커뮤니티 게시글 작성 후 등록 함수
     func createPost(userID: String, title: String, content: String, images: [Data], completion: @escaping (Error?) -> Void) {
         uploadImages(images: images) { urls, errors in
@@ -32,47 +32,62 @@ class CommunityService {
             let postID = UUID().uuidString
             let previewContent = String(content.prefix(40))
             
+            let db = Firestore.firestore()
+            let userRef = db.collection("users").document(userID)
             
-            
-            // 1. 썸네일 정보
-            let thumbnailData: [String: Any] = [
-                "postID": postID,
-                "userID": userID,
-                "thumbnail": urls.first ?? "", // 첫 번째 이미지를 썸네일로 사용
-                "title": title,
-                "previewContent": previewContent,
-                "createdAt": FieldValue.serverTimestamp(),
-                "likeCount": 0,
-                "commentCount": 0
-                
-            ]
-            // 2. 썸네일 정보 저장
-            self.db.collection("posts").document(postID).setData(thumbnailData) { error in
+            db.runTransaction({ (transaction, errorPointer) -> Any? in
+                do {
+                    // 유저의 문서를 가져옴
+                    let userDocument = try transaction.getDocument(userRef)
+                    
+                    // 현재 게시글 개수를 가져와서 1을 추가
+                    let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
+                    transaction.updateData(["postCount": currentPostCount + 1], forDocument: userRef)
+                    
+                    // 썸네일 정보 저장
+                    let thumbnailData: [String: Any] = [
+                        "postID": postID,
+                        "userID": userID,
+                        "thumbnail": urls.first ?? "", // 첫 번째 이미지를 썸네일로 사용
+                        "title": title,
+                        "previewContent": previewContent,
+                        "createdAt": FieldValue.serverTimestamp(),
+                        "likeCount": 0,
+                        "commentCount": 0
+                    ]
+                    
+                    let postRef = db.collection("posts").document(postID)
+                    transaction.setData(thumbnailData, forDocument: postRef)
+                    
+                    // 상세 정보 저장
+                    let postData: [String: Any] = [
+                        "postID": postID,
+                        "userID": userID,
+                        "title": title,
+                        "content": content,
+                        "imageURLs": urls,
+                        "createdAt": FieldValue.serverTimestamp(),
+                        "likeCount": 0,
+                        "commentCount": 0
+                    ]
+                    
+                    let detailRef = postRef.collection("post_details").document(postID)
+                    transaction.setData(postData, forDocument: detailRef)
+                    
+                    return nil
+                } catch {
+                    errorPointer?.pointee = error as NSError
+                    return nil
+                }
+            }) { (result, error) in
                 if let error = error {
                     completion(error)
-                    return
+                } else {
+                    completion(nil)
                 }
-            }
-            
-            // 3. 상세 정보
-            let postData: [String: Any] = [
-                "postID": postID,
-                "userID": userID,
-                "title": title,
-                "content": content,
-                "imageURLs": urls,
-                "createdAt": FieldValue.serverTimestamp(),
-                "likeCount": 0,
-                "commentCount": 0
-            ]
-            
-            // 4. 상세 정보 저장
-            self.db.collection("posts").document(postID).collection("post_details").document(postID).setData(postData) { error in
-                completion(error)
             }
         }
     }
-    
     //MARK: - 차단된 유저 확인 후, 해당 유저 게시물 제외한 나머지 게시물 불러오기
     func fetchAllPostThumbnails(forCurrentUser currentUserID: String, completion:@escaping (Result<[ThumbnailPostResponse], Error>) -> Void) {
         let db = Firestore.firestore()
@@ -147,12 +162,14 @@ class CommunityService {
     func fetchPostDetail(userID: String, postID: String, completion: @escaping (Result<PostDetailResponse, Error>) -> Void) {
         let postRef = db.collection("posts").document(postID)
         let userLikesRef = db.collection("users").document(userID).collection("likedPosts").document(postID)
-        
+        let userBookmarksRef = db.collection("users").document(userID).collection("bookmarkedPosts").document(postID)
+     
         // Firestore에서 여러 문서를 병렬로 가져오는 DispatchGroup 사용
         let group = DispatchGroup()
         
         var postDetailResponse: PostDetailResponse?
         var isLiked: Bool = false
+        var isBookmarked: Bool = false
         var fetchError: Error?
         
         group.enter()
@@ -193,7 +210,8 @@ class CommunityService {
                     likeCount: likeCount,
                     commentCount: commentCount,
                     createdAt: createdAt,
-                    isLiked: isLiked
+                    isLiked: isLiked,
+                    isBookmarked: isBookmarked
                 )
             } else {
                 fetchError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode data for postID \(postID)"])
@@ -213,12 +231,26 @@ class CommunityService {
             isLiked = document?.exists ?? false
         }
         
+        group.enter()
+          userBookmarksRef.getDocument { (document, error) in
+              defer { group.leave() }
+              
+              if let error = error {
+                  fetchError = error
+                  return
+              }
+              
+              // 북마크 여부 확인
+              isBookmarked = document?.exists ?? false
+          }
+        
         // 모든 비동기 작업이 끝난 후에 실행
         group.notify(queue: .main) {
             if let fetchError = fetchError {
                 completion(.failure(fetchError))
             } else if var postDetailResponse = postDetailResponse {
                 postDetailResponse.isLiked = isLiked
+                postDetailResponse.isBookmarked = isBookmarked
                 completion(.success(postDetailResponse))
             } else {
                 let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No post detail found for postID \(postID)"])
@@ -229,34 +261,69 @@ class CommunityService {
     
     //MARK: - 좋아요, 좋아요 취소 토글 버튼
     func toggleLikePost(userID: String, postID: String, completion: @escaping (Result<Bool, Error>) -> Void) {
-        let postRef = db.collection("posts").document(postID)
-        let userLikesRef = db.collection("users").document(userID).collection("likedPosts").document(postID)
+          let postRef = db.collection("posts").document(postID)
+          let userLikesRef = db.collection("users").document(userID).collection("likedPosts").document(postID)
+          
+          // Firestore 트랜잭션을 사용하여 좋아요 토글 처리
+          db.runTransaction({ (transaction, errorPointer) -> Any? in
+              do {
+                  let postDocument = try transaction.getDocument(postRef)
+                  let userLikesDocument = try transaction.getDocument(userLikesRef)
+                  
+                  // 좋아요가 이미 눌린 상태인지 확인
+                  let hasLiked = userLikesDocument.exists
+                  
+                  // 좋아요 상태에 따라 likeCount 업데이트
+                  let likeCount = postDocument.data()?["likeCount"] as? Int ?? 0
+                  let newLikeCount = hasLiked ? likeCount - 1 : likeCount + 1
+                  
+                  // 좋아요 상태 업데이트
+                  transaction.updateData(["likeCount": newLikeCount], forDocument: postRef)
+                  
+                  if hasLiked {
+                      // 좋아요를 취소한 경우
+                      transaction.deleteDocument(userLikesRef)
+                  } else {
+                      // 좋아요를 추가한 경우
+                      transaction.setData(["likedAt": FieldValue.serverTimestamp(), "postID": postID], forDocument: userLikesRef)
+                  }
+                  
+                  return !hasLiked
+              } catch {
+                  errorPointer?.pointee = error as NSError
+                  return nil
+              }
+          }) { (result, error) in
+              if let error = error {
+                  completion(.failure(error))
+              } else if let success = result as? Bool {
+                  completion(.success(success))
+              }
+          }
+      }
+    
+    // MARK: - 북마크 토글 함수
+    func toggleBookmarkPost(userID: String, postID: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+      
+        let userBookmarksRef = db.collection("users").document(userID).collection("bookmarkedPosts").document(postID)
         
-        // Firestore 트랜잭션을 사용하여 좋아요 토글 처리
+        // Firestore 트랜잭션을 사용하여 북마크 토글 처리
         db.runTransaction({ (transaction, errorPointer) -> Any? in
             do {
-                let postDocument = try transaction.getDocument(postRef)
-                let userLikesDocument = try transaction.getDocument(userLikesRef)
+                let bookmarkDocument = try transaction.getDocument(userBookmarksRef)
                 
-                // 좋아요가 이미 눌린 상태인지 확인
-                let hasLiked = userLikesDocument.exists
+                // 북마크가 이미 눌린 상태인지 확인
+                let hasBookmarked = bookmarkDocument.exists
                 
-                // 좋아요 상태에 따라 likeCount 업데이트
-                let likeCount = postDocument.data()?["likeCount"] as? Int ?? 0
-                let newLikeCount = hasLiked ? likeCount - 1 : likeCount + 1
-                
-                // 좋아요 상태 업데이트
-                transaction.updateData(["likeCount": newLikeCount], forDocument: postRef)
-                
-                if hasLiked {
-                    // 좋아요를 취소한 경우
-                    transaction.deleteDocument(userLikesRef)
+                if hasBookmarked {
+                    // 북마크를 취소한 경우
+                    transaction.deleteDocument(userBookmarksRef)
                 } else {
-                    // 좋아요를 추가한 경우
-                    transaction.setData(["likedAt": FieldValue.serverTimestamp()], forDocument: userLikesRef)
+                    // 북마크를 추가한 경우
+                    transaction.setData(["createdAt": FieldValue.serverTimestamp(), "postID": postID], forDocument: userBookmarksRef)
                 }
                 
-                return !hasLiked
+                return !hasBookmarked
             } catch {
                 errorPointer?.pointee = error as NSError
                 return nil
@@ -270,25 +337,67 @@ class CommunityService {
         }
     }
     
+    // MARK: - 특정 게시물이 북마크 상태인지 확인하는 함수
+    func isPostBookmarked(userID: String, postID: String, completion: @escaping (Bool) -> Void) {
+        let bookmarkRef = db.collection("users").document(userID).collection("bookmarkedPosts").document(postID)
+        
+        bookmarkRef.getDocument { document, error in
+            if let error = error {
+                print("Failed to check bookmark status: \(error.localizedDescription)")
+                completion(false)  // 오류 발생 시 기본적으로 북마크 상태가 아님으로 설정
+                return
+            }
+            
+            // 문서가 존재하면 북마크된 상태임
+            completion(document?.exists ?? false)
+        }
+    }
+
     //MARK: - 댓글 작성 함수
-    func addComment(postID:String,userID:String,content:String,completion:@escaping(Error?)->Void) {
+    func addComment(postID: String, userID: String, content: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let commentID = UUID().uuidString
         let createdAt = FieldValue.serverTimestamp()
+        let postRef = db.collection("posts").document(postID)
         
-        let commentData : [String:Any] = [
-            "commentID" : commentID,
-            "postID" : postID,
-            "userID" : userID,
-            "content" : content,
-            "createdAt" : createdAt,
-            "likeCount" : 0
+        let commentData: [String: Any] = [
+            "commentID": commentID,
+            "postID": postID,
+            "userID": userID,
+            "content": content,
+            "createdAt": createdAt,
+            "likeCount": 0
         ]
-        db.collection("posts").document(postID).collection("comments").document(commentID).setData(commentData) { error in
-            completion(error)
+        
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            // 현재 게시글을 가져옴
+            let postDocument: DocumentSnapshot
+            do {
+                postDocument = try transaction.getDocument(postRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            // 댓글 수를 가져와 1을 추가
+            let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": currentCommentCount + 1], forDocument: postRef)
+            
+            // 댓글 추가
+            let commentRef = postRef.collection("comments").document(commentID)
+            transaction.setData(commentData, forDocument: commentRef)
+            
+            return nil
+        }) { (result, error) in
+            if let error = error {
+                print("Failed to add comment: \(error.localizedDescription)")
+                completion(error)
+            } else {
+                print("댓글 추가 완료!!")
+                completion(nil)
+            }
         }
     }
-    
     //MARK: - 댓글 불러오기 함수
     func fetchComments(forPost postID:String, completion: @escaping(Result<[CommentResponse],Error>) -> Void) {
         let db = Firestore.firestore()
@@ -333,11 +442,28 @@ class CommunityService {
     // MARK: - 댓글 삭제 함수
     func deleteComment(postID: String, commentID: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
+        let postRef = db.collection("posts").document(postID)
+        let commentRef = postRef.collection("comments").document(commentID)
         
-        let commentRef = db.collection("posts").document(postID).collection("comments").document(commentID)
-        
-        // 댓글 삭제
-        commentRef.delete { error in
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            // 현재 게시글을 가져옴
+            let postDocument: DocumentSnapshot
+            do {
+                postDocument = try transaction.getDocument(postRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            // 댓글 수를 가져와 1을 감소
+            let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": max(currentCommentCount - 1, 0)], forDocument: postRef)
+            
+            // 댓글 삭제
+            transaction.deleteDocument(commentRef)
+            
+            return nil
+        }) { (result, error) in
             if let error = error {
                 print("Failed to delete comment: \(error.localizedDescription)")
                 completion(error)
@@ -347,6 +473,8 @@ class CommunityService {
             }
         }
     }
+
+
     // MARK: - 댓글 수정 함수
     
     func updateComment(postID: String, commentID: String, newContent: String, completion: @escaping (Error?) -> Void) {
@@ -510,4 +638,133 @@ extension CommunityService {
         return pathComponents.last?.components(separatedBy: "%2F").last
     }
     
+}
+
+extension CommunityService {
+    // MARK: - 게시글 삭제 함수
+    
+    func deletePost(postID: String, userID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let postRef = db.collection("posts").document(postID)
+        let detailRef = postRef.collection("post_details").document(postID)  // 여기서 imageURLs 접근
+        let userRef = db.collection("users").document(userID)
+        let commentsCollection = postRef.collection("comments")
+        let likesCollection = db.collectionGroup("likedPosts").whereField("postID", isEqualTo: postID)
+        let bookmarksCollection = db.collectionGroup("bookmarkedPosts").whereField("postID", isEqualTo: postID)
+        let storageRef = Storage.storage().reference()
+        
+        // 트랜잭션 외부에서 먼저 댓글, 좋아요, 북마크를 가져옴
+        commentsCollection.getDocuments { (commentSnapshot, error) in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            likesCollection.getDocuments { (likesSnapshot, error) in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                
+                bookmarksCollection.getDocuments { (bookmarksSnapshot, error) in
+                    if let error = error {
+                        completion(error)
+                        return
+                    }
+                    
+                    // 필요한 데이터를 읽어온 후, 트랜잭션을 시작
+                    db.runTransaction({ (transaction, errorPointer) -> Any? in
+                        do {
+                            // 게시글 상세 정보 문서 가져오기
+                            let detailDocument = try transaction.getDocument(detailRef)
+                            guard let detailData = detailDocument.data() else {
+                                throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No detail data found for postID \(postID)"])
+                            }
+                            
+                            // `imageURLs` 값 디버깅
+                            print("Detail Data:", detailData)  // detailData 내용 전체 출력
+                            let imageURLs = detailData["imageURLs"] as? [String] ?? []
+                            print("imageURLs from detailData:", imageURLs)  // `imageURLs` 값 출력
+                            
+                            // 작성자 정보 업데이트: postCount 감소
+                            let userDocument = try transaction.getDocument(userRef)
+                            let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
+                            transaction.updateData(["postCount": max(currentPostCount - 1, 0)], forDocument: userRef)
+                            
+                            // 3. 썸네일 및 상세 정보 문서 삭제
+                            transaction.deleteDocument(detailRef)
+                            transaction.deleteDocument(postRef)
+                            
+                            // 4. 삭제할 이미지 URL 반환
+                            return imageURLs
+                            
+                        } catch let error {
+                            errorPointer?.pointee = error as NSError
+                            return nil
+                        }
+                    }) { (result, error) in
+                        if let error = error {
+                            print("Failed to delete post: \(error.localizedDescription)")
+                            completion(error)
+                        } else {
+                            print("게시글 삭제 완료!")
+                            
+                            // 트랜잭션 외부에서 각 문서 및 이미지 삭제 작업 수행
+                            
+                            // 댓글 삭제
+                            for commentDocument in commentSnapshot?.documents ?? [] {
+                                commentDocument.reference.delete { error in
+                                    if let error = error {
+                                        print("Error deleting comment: \(error.localizedDescription)")
+                                    }
+                                }
+                            }
+                            
+                            // 좋아요 정보 삭제
+                            for likeDocument in likesSnapshot?.documents ?? [] {
+                                likeDocument.reference.delete { error in
+                                    if let error = error {
+                                        print("Error deleting like: \(error.localizedDescription)")
+                                    }
+                                }
+                            }
+                            
+                            // 북마크 정보 삭제
+                            for bookmarkDocument in bookmarksSnapshot?.documents ?? [] {
+                                bookmarkDocument.reference.delete { error in
+                                    if let error = error {
+                                        print("Error deleting bookmark: \(error.localizedDescription)")
+                                    }
+                                }
+                            }
+                            
+                            // 이미지 삭제
+                            if let imageURLs = result as? [String] {
+                                for imageURL in imageURLs {
+                                    print("Attempting to delete image from URL: \(imageURL)")  // 디버깅: 이미지 URL 출력
+                                    
+                                    if let fileName = self.extractFileName(from: imageURL) {
+                                        let fileRef = storageRef.child("community_images/\(fileName)")
+                                        print("Extracted file name: \(fileName) - Full path: \(fileRef.fullPath)")  // 디버깅: 경로 출력
+                                        
+                                        fileRef.delete { error in
+                                            if let error = error {
+                                                print("Error deleting image: \(error.localizedDescription)")
+                                            } else {
+                                                print("Successfully deleted image: \(imageURL)")
+                                            }
+                                        }
+                                    } else {
+                                        print("Failed to extract file name from URL: \(imageURL)")
+                                    }
+                                }
+                            }
+                            
+                            completion(nil)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

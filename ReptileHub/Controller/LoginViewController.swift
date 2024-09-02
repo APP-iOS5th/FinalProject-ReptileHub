@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
     
@@ -15,6 +16,14 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         setupActions()
+        
+        if let user = Auth.auth().currentUser {
+            // 로그인 화면에서 이 문구가 디버깅 되면 로그아웃이 제대로 되지 않았음을 의미
+            print("currentUser \(user.uid)")
+        }
+        print("LogiinViewController viewDidLoad init()")
+        
+   
     }
     
     override func viewWillDisappear(_ animated: Bool) {

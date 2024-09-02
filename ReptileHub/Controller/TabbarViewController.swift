@@ -16,6 +16,14 @@ class TabbarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let user = Auth.auth().currentUser {
+            print("currentUser -----  \(user.uid)")
+        }
+
+        if let user = Auth.auth().currentUser {
+            print("currentUser -----  \(user.uid)")
+        }
 
         let firstNavigationController = UINavigationController(rootViewController: communityVC)
         let secondNavigationController = UINavigationController(rootViewController: diaryVC)
@@ -28,6 +36,12 @@ class TabbarViewController: UITabBarController {
         self.viewControllers = [firstNavigationController, secondNavigationController, thirdNavigationController]
         self.tabBar.tintColor = .addBtnGraphTabbar
     }
+    
+    deinit {
+           print("TabbarViewController deinit")
+       }
+
+    
 
 }
 
