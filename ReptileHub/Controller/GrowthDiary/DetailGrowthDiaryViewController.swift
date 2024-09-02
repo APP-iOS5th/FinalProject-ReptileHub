@@ -9,7 +9,6 @@ import UIKit
 
 class DetailGrowthDiaryViewController: UIViewController {
     private lazy var detailGrowthDiaryView = DetailGrowthDiaryView()
-    private let tempData = [1,2,3]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +19,7 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.title = "반려 도마뱀 프로필"
         self.view = detailGrowthDiaryView
         self.view.backgroundColor = .white
-//        detailGrowthDiaryView.detailConfiguteTablewDelegate(delegate: self, dataSource: self)
+        loadData()
         detailGrowthDiaryView.detailShowSpecialNoteButtonTapped = { [weak self] in
             self?.showNavigaionSpecialNotes()
         }
@@ -30,26 +29,41 @@ class DetailGrowthDiaryViewController: UIViewController {
         let showGrowthDiaryToSpeicialNotes = SpecialListViewController()
         self.navigationController?.pushViewController(showGrowthDiaryToSpeicialNotes, animated: true)
     }
-}
-
-extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(tempData.count)
-        return tempData.count
+    
+    private func loadData(){
+        for index in 0..<3{
+            let cellView = createCellView(tag: index)
+            detailGrowthDiaryView.detailAddSepcialNotesCellView(cellView)
+        }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SpecialListViewCell.identifier, for: indexPath) as? SpecialListViewCell else {
-            return UITableViewCell()
+    private func createCellView(tag: Int) -> UIView {
+        // CustomTableViewCell 생성
+        let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped(_:)))
+        cell.contentView.addGestureRecognizer(tapGesture)
+        cell.contentView.isUserInteractionEnabled = true
+        cell.contentView.tag = tag
+        
+        // 셀의 높이를 설정
+        cell.contentView.snp.makeConstraints { make in
+            make.height.equalTo(100)
         }
         
-        // TODO: menu는 성장일지에서 필요가 없으므로 옵셔널로 처리 요청
-        // TODO: 테이블 cell의 데이터를 넣는 함수 요청
-        cell.selectionStyle = .none
-        return cell
+        return cell.contentView
     }
+    
+    @objc
+    private func cellTapped(_ sender: UITapGestureRecognizer){
+        if let tag = sender.view?.tag{
+            print("\(tag)번 셀의 디테일 뷰로 이동합니다.")
+        }
+        
+        let showGrowthDiaryToSepcialDetail = SpecialDetailViewController()
+        self.navigationController?.pushViewController(showGrowthDiaryToSepcialDetail, animated: true)
+    }
+    
+    // TODO: menu는 성장일지에서 필요가 없으므로 옵셔널로 처리 요청
+    // TODO: 테이블 cell의 데이터를 넣는 함수 요청
 }

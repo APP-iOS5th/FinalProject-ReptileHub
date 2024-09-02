@@ -335,7 +335,7 @@ class DetailGrowthDiaryView: UIView {
     private func setUI(){
         
         self.addSubview(detailScrollView)
-        cellData()
+//        cellData()
         //디테일 스크롤 뷰
         detailScrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -445,24 +445,30 @@ class DetailGrowthDiaryView: UIView {
         return detailParentView
     }
     
-    func cellData(){
-        for _ in 0..<3{
-            let cellView = createCellView()
-            detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
-        }
+    func detailAddSepcialNotesCellView(_ cellView: UIView){
+        detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
     }
     
-    func createCellView() -> UIView {
-           // CustomTableViewCell 생성
-           let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
-           
-           // 셀의 높이를 설정
-           cell.contentView.snp.makeConstraints { make in
-               make.height.equalTo(100)
-           }
-           
-           return cell.contentView
-       }
+//    func cellData(){
+//        for _ in 0..<3{
+//            let cellView = createCellView()
+//            detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
+//        }
+//    }
+//    
+//    func createCellView() -> UIView {
+//           // CustomTableViewCell 생성
+//           let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
+//           
+//           // 셀의 높이를 설정
+//           cell.contentView.snp.makeConstraints { make in
+//               make.height.equalTo(100)
+//           }
+//        
+//        
+//           
+//           return cell.contentView
+//       }
 }
 
 #if DEBUG
