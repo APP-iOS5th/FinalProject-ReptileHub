@@ -243,11 +243,10 @@ class CommunityDetailView: UIView {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fillEqually
         imageStackView.alignment = .center
-        imageStackView.backgroundColor = .yellow
+        imageStackView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.15)
         
         imageScrollView.alwaysBounceHorizontal = true
         imageScrollView.isPagingEnabled = true
-        imageScrollView.backgroundColor = .green
         
         self.stackView.addArrangedSubview(imageScrollView)
         
@@ -357,7 +356,6 @@ class CommunityDetailView: UIView {
         commentTableView.estimatedRowHeight = 100
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
-        commentTableView.backgroundColor = .green
         
         self.stackView.addArrangedSubview(commentTableView)
 

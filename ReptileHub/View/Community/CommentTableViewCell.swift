@@ -56,16 +56,13 @@ class CommentTableViewCell: UITableViewCell {
         nameLabel.text = "부천 정구현"
         nameLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
         nameLabel.sizeToFit()
-        nameLabel.backgroundColor = .green
 
         commentLabel.text = "테스트 내용"
-        commentLabel.backgroundColor = .red
         commentLabel.numberOfLines = 0
         commentLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         timestampLabel.text = "24.08.09 17:31"
         timestampLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
         timestampLabel.textColor = UIColor.lightGray
-        timestampLabel.backgroundColor = .green
 
         elementStackView.axis = .vertical
         elementStackView.distribution = .fill

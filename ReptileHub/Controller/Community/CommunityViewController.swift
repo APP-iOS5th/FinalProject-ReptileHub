@@ -86,6 +86,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
         
         let fetchData = self.fetchTestData[indexPath.row]
         
+        print(fetchData)
         
         cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: "\(fetchData.createdAt!)", commentCount: fetchData.commentCount, likeCount: fetchData.likeCount)
         
@@ -93,7 +94,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
             
             switch result {
             case .success(let userData):
-                print("현재 유저 정보 가져오기 성공 : \(userData)")
+                print("Community VC현재 유저 정보 가져오기 성공")
                 cell.testUserProfile = userData
             case .failure(let error):
                 print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
