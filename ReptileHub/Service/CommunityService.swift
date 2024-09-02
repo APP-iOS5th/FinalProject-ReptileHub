@@ -372,7 +372,8 @@ class CommunityService {
         let commentID = UUID().uuidString
         let createdAt = FieldValue.serverTimestamp()
         let postRef = db.collection("posts").document(postID)
-        
+        let detailRef = postRef.collection("post_details").document(postID) // post_details 문서 참조
+
         let commentData: [String: Any] = [
             "commentID": commentID,
             "postID": postID,
@@ -381,25 +382,32 @@ class CommunityService {
             "createdAt": createdAt,
             "likeCount": 0
         ]
-        
+
         db.runTransaction({ (transaction, errorPointer) -> Any? in
-            // 현재 게시글을 가져옴
+            // 모든 읽기 작업을 먼저 수행
             let postDocument: DocumentSnapshot
+            let detailDocument: DocumentSnapshot
+
             do {
                 postDocument = try transaction.getDocument(postRef)
+                detailDocument = try transaction.getDocument(detailRef)
             } catch let fetchError as NSError {
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            
+
             // 댓글 수를 가져와 1을 추가
             let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
             transaction.updateData(["commentCount": currentCommentCount + 1], forDocument: postRef)
-            
+
+            // post_details의 댓글 수를 가져와 1을 추가
+            let currentDetailCommentCount = detailDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": currentDetailCommentCount + 1], forDocument: detailRef)
+
             // 댓글 추가
             let commentRef = postRef.collection("comments").document(commentID)
             transaction.setData(commentData, forDocument: commentRef)
-            
+
             return nil
         }) { (result, error) in
             if let error = error {
@@ -416,7 +424,7 @@ class CommunityService {
         let db = Firestore.firestore()
         
         db.collection("posts").document(postID).collection("comments")
-            .order(by: "createdAt",descending: true)
+            .order(by: "createdAt",descending: false)
             .getDocuments { querySnapshot, error in
                 if let error = error {
                     completion(.failure(error))
@@ -456,25 +464,33 @@ class CommunityService {
     func deleteComment(postID: String, commentID: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let postRef = db.collection("posts").document(postID)
+        let detailRef = postRef.collection("post_details").document(postID) // post_details 문서 참조
         let commentRef = postRef.collection("comments").document(commentID)
-        
+
         db.runTransaction({ (transaction, errorPointer) -> Any? in
-            // 현재 게시글을 가져옴
+            // 모든 읽기 작업을 먼저 수행
             let postDocument: DocumentSnapshot
+            let detailDocument: DocumentSnapshot
+            
             do {
                 postDocument = try transaction.getDocument(postRef)
+                detailDocument = try transaction.getDocument(detailRef)
             } catch let fetchError as NSError {
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            
+
             // 댓글 수를 가져와 1을 감소
             let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
             transaction.updateData(["commentCount": max(currentCommentCount - 1, 0)], forDocument: postRef)
-            
+
+            // post_details의 댓글 수를 가져와 1을 감소
+            let currentDetailCommentCount = detailDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": max(currentDetailCommentCount - 1, 0)], forDocument: detailRef)
+
             // 댓글 삭제
             transaction.deleteDocument(commentRef)
-            
+
             return nil
         }) { (result, error) in
             if let error = error {
