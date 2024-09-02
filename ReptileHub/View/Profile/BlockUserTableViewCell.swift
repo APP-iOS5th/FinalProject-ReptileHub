@@ -10,10 +10,14 @@ import SnapKit
 
 class BlockUserTableViewCell: UITableViewCell {
     
+    // BlockUserProfile 더미 데이터
+    let blockedUsers: [BlockUserProfile] = [
+        BlockUserProfile(uid: "001", name: "놀고싶다", profileImageURL: "blockUserProfile")
+    ]
+    
     private let BlockUserImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(named: "blockUserProfile")
         imageView.layer.cornerRadius = 25
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
@@ -42,7 +46,6 @@ class BlockUserTableViewCell: UITableViewCell {
     private let BlockUserName: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
-        label.text = "하치와레"
         label.textColor = .black
         return label
     }()
@@ -52,7 +55,7 @@ class BlockUserTableViewCell: UITableViewCell {
         button.setTitle("차단해제", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 13)
         button.backgroundColor = .addBtnGraphTabbar
-        button.layer.cornerRadius = 3
+        button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(selectBlockCancel), for: .touchUpInside)
         return button
     }()
@@ -68,6 +71,8 @@ class BlockUserTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        setBlockUserImage()
+        setBlockUserName()
         
         contentView.addSubview(stackView)
         BlockUserImage.addSubview(blurEffectView)
@@ -83,8 +88,8 @@ class BlockUserTableViewCell: UITableViewCell {
         }
         
         BlockCancelButton.snp.makeConstraints { make in
-            make.width.equalTo(50)
-            make.height.equalTo(20)
+            make.width.equalTo(60)
+            make.height.equalTo(25)
         }
         
         blurEffectView.snp.makeConstraints { make in
@@ -99,6 +104,15 @@ class BlockUserTableViewCell: UITableViewCell {
         // 이미지 뷰에 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleBlurEffect))
         BlockUserImage.addGestureRecognizer(tapGesture)
+    }
+    
+    
+    private func setBlockUserImage() {
+        BlockUserImage.image = UIImage(named: blockedUsers[0].profileImageURL)
+    }
+    
+    private func setBlockUserName() {
+        BlockUserName.text = blockedUsers[0].name
     }
     
     @objc private func toggleBlurEffect() {

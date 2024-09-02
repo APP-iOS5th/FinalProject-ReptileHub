@@ -10,10 +10,16 @@ import SnapKit
 
 class ProfileView: UIView {
 
+    
+    // 배경 수정 필요
+    // UserProfile 더미 데이터
+    let users: [UserProfile] = [
+        UserProfile(uid: "1001", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
+    ]
+
     // MARK: - Properties (프로필 이미지, 이름, 스택뷰, 테이블뷰 등)
     private let profileImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "profile")
         imageView.layer.cornerRadius = 95
         imageView.layer.borderColor = UIColor(red: 226/255.0, green: 226/255.0, blue: 226/255.0, alpha: 1).cgColor
         imageView.layer.borderWidth = 7
@@ -21,9 +27,8 @@ class ProfileView: UIView {
         return imageView
     }()
     
-    private let profileName: UILabel = {
+    private var profileName: UILabel = {
         let label = UILabel()
-        label.text = "해적단"
         label.font = .systemFont(ofSize: 23)
         return label
     }()
@@ -38,7 +43,6 @@ class ProfileView: UIView {
     
     let firstButton: UIButton = {
         let button = UIButton()
-        button.setTitle("3", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         return button
     }()
@@ -61,7 +65,6 @@ class ProfileView: UIView {
     
     let secondButton: UIButton = {
         let button = UIButton()
-        button.setTitle("3", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         return button
     }()
@@ -84,7 +87,6 @@ class ProfileView: UIView {
     
     private let thirdImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "profile2")
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true
         return imageView
@@ -151,9 +153,20 @@ class ProfileView: UIView {
         return stackView
     }()
     
+    private lazy var profileScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        
+        return scrollView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        setProfileImage()
+        setProfileName()
+        setProfileLizardCount()
+        setProfilePostCount()
+        setProfileLoginType()
     }
     
     required init?(coder: NSCoder) {
@@ -164,17 +177,23 @@ class ProfileView: UIView {
     private func setupView() {
         self.backgroundColor = .white
         
-        self.addSubview(profileImage)
-        self.addSubview(profileName)
-        self.addSubview(thirdImage)
-        self.addSubview(lastStackView)
-        self.addSubview(postList)
-        self.addSubview(buttonsStackView)
+        self.addSubview(profileScrollView)
+        
+        profileScrollView.addSubview(profileImage)
+        profileScrollView.addSubview(profileName)
+        profileScrollView.addSubview(thirdImage)
+        profileScrollView.addSubview(lastStackView)
+        profileScrollView.addSubview(postList)
+        profileScrollView.addSubview(buttonsStackView)
+        
+        profileScrollView.snp.makeConstraints { make in
+            make.edges.equalTo(self.safeAreaLayoutGuide)
+        }
         
         profileImage.snp.makeConstraints { make in
             make.width.height.equalTo(190)
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(100)
+            make.top.equalToSuperview().offset(20)
         }
         
         profileName.snp.makeConstraints { make in
@@ -202,12 +221,44 @@ class ProfileView: UIView {
         
         buttonsStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(postList.snp.bottom).offset(50)
+            make.top.equalTo(postList.snp.bottom).offset(30)
+            make.bottom.equalTo(profileScrollView.snp.bottom).offset(-40)
         }
+    }
+    
+    private func setProfileImage() {
+        profileImage.image = UIImage(named: users[0].profileImageURL)
+    }
+    
+    private func setProfileName() {
+        profileName.text = users[0].name
+    }
+    
+    private func setProfileLizardCount() {
+        firstButton.setTitle(String(users[0].lizardCount), for: .normal)
+    }
+    
+    private func setProfilePostCount() {
+        secondButton.setTitle(String(users[0].postCount), for: .normal)
+    }
+    
+    private func setProfileLoginType() {
+        thirdImage.image = UIImage(named: users[0].loginType)
     }
     
     func configureListTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
         postList.delegate = delegate
         postList.dataSource = datasource
+    }
+    
+    func updateScrollState(){
+        profileScrollView.setNeedsLayout()
+        profileScrollView.layoutIfNeeded()
+        
+        if profileScrollView.contentSize.height > profileScrollView.bounds.height{
+            profileScrollView.isScrollEnabled = true
+        }else{
+            profileScrollView.isScrollEnabled = false
+        }
     }
 }
