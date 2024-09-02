@@ -13,13 +13,7 @@ let imageCache = NSCache<NSString, UIImage>()
 
 class CommunityTableViewCell: UITableViewCell {
     
-    var testUserProfile: UserProfile? {
-        didSet {
-            guard let testUserProfile = testUserProfile else { return }
-            self.nicknameLabel.text = testUserProfile.name
-        }
-    }
-    
+
     lazy var thumbnailImageView: UIImageView = UIImageView()
     
     lazy var titleLabel: UILabel = UILabel()
@@ -38,15 +32,7 @@ class CommunityTableViewCell: UITableViewCell {
     
     private let menuButton: UIButton = UIButton()
     
-    
-    //    override func awakeFromNib() {
-    //        super.awakeFromNib()
-    //    }
-    //
-    //    override func setSelected(_ selected: Bool, animated: Bool) {
-    //        super.setSelected(selected, animated: animated)
-    //    }
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -60,10 +46,21 @@ class CommunityTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        let config = UIImage.SymbolConfiguration(pointSize: 25, weight: .light)
+        thumbnailImageView.image = nil
+        titleLabel.text = ""
+        contentLabel.text = ""
+        commentCountLabel.text = ""
+        bookmarkCountLabel.text = ""
+        nicknameLabel.text = ""
+        timestampLabel.text = ""
+    }
+    
     
     //MARK: - Thumnail Image
     private func setupThumbnail() {
-        thumbnailImageView.image = UIImage(systemName: "camera")
+//        thumbnailImageView.image = nil
         thumbnailImageView.contentMode = .scaleAspectFill
         thumbnailImageView.clipsToBounds = true
         thumbnailImageView.layer.cornerRadius = 5
@@ -75,8 +72,7 @@ class CommunityTableViewCell: UITableViewCell {
         thumbnailImageView.snp.makeConstraints { make in
             make.height.width.equalTo(85)
             make.centerY.equalToSuperview()
-//            make.top.equalTo(self.contentView.snp.top).offset(10)
-//            make.bottom.equalTo(self.contentView.snp.bottom).offset(-10)
+
             make.leading.equalTo(self.contentView.snp.leading).offset(12)
         }
     }
@@ -98,7 +94,6 @@ class CommunityTableViewCell: UITableViewCell {
         mainInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(thumbnailImageView.snp.top)
             make.leading.equalTo(thumbnailImageView.snp.trailing).offset(7)
-//            make.bottom.equalTo(firstStackView.snp.top)
             make.trailing.equalTo(menuButton.snp.leading)
             make.height.greaterThanOrEqualTo(55)
         }
@@ -143,7 +138,7 @@ class CommunityTableViewCell: UITableViewCell {
         secondStackView.alignment = .center
         secondStackView.spacing = 10
         
-        nicknameLabel.text = testUserProfile?.name ?? "구현현서"
+        nicknameLabel.text = "구현현서"
         nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
         timestampLabel.text = "24.08.05 17:00"
         timestampLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
@@ -183,7 +178,7 @@ class CommunityTableViewCell: UITableViewCell {
         }
     }
     
-    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int) {
+    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int, name: String) {
 
         thumbnailImageView.setImage(with: imageName)
         
@@ -192,6 +187,7 @@ class CommunityTableViewCell: UITableViewCell {
         timestampLabel.text = createAt
         commentCountLabel.text = "\(commentCount)"
         bookmarkCountLabel.text = "\(likeCount)"
+        nicknameLabel.text = name
     }
     
 }

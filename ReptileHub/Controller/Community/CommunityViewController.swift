@@ -16,6 +16,16 @@ class CommunityViewController: UIViewController {
     
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
     
+    private var filteredPosts: [ThumbnailPostResponse] = []
+    
+    var isFiltering: Bool {
+        let searchController = self.navigationItem.searchController
+        let isActive = searchController?.isActive ?? false
+        let isSearchBarHasText = searchController?.searchBar.text?.isEmpty == false
+        
+        return isActive && isSearchBarHasText
+    }
+    
     private let communityListView = CommunityListView()
     
     override func viewDidLoad() {
@@ -26,7 +36,7 @@ class CommunityViewController: UIViewController {
         communityListView.delegate = self
         communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
-        title = "홈"
+//        title = "홈"
         
         setupSearchButton()
     }
@@ -34,7 +44,7 @@ class CommunityViewController: UIViewController {
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
         
-        CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: "R8FK52H2UebtfjNeODkNTEpsOgG3") { result in
+        CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let thumnails):
                 print("차단유저 제외 모든 post 불러오기 성공")
@@ -48,9 +58,11 @@ class CommunityViewController: UIViewController {
     
     //MARK: - rightBarButtonItem 적용
     private func setupSearchButton() {
-        searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(actionSearchButton))
-        
-        self.navigationItem.rightBarButtonItem = searchButton
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchBar.placeholder = "검색어를 입력하세요"
+        self.navigationItem.searchController = searchController
+        self.navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.searchResultsUpdater = self
     }
     
     @objc
@@ -74,7 +86,7 @@ extension CommunityViewController: CommunityListViewDelegate {
 
 extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.fetchTestData.count
+        return self.isFiltering ? self.filteredPosts.count : self.fetchTestData.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -86,16 +98,19 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
         
         let fetchData = self.fetchTestData[indexPath.row]
         
-        print(fetchData)
-        
-        cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount)
-        
         UserService.shared.fetchUserProfile(uid: fetchData.userID) { result in
             
             switch result {
             case .success(let userData):
                 print("Community VC현재 유저 정보 가져오기 성공")
-                cell.testUserProfile = userData
+                
+                if self.isFiltering {
+                    let filteredData = self.filteredPosts[indexPath.row]
+                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name)
+                } else {
+                    cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount, name: userData.name)
+                }
+                
             case .failure(let error):
                 print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
             }
@@ -130,11 +145,17 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                 print("상세 게시글 가져오기 실패 : \(error.localizedDescription)")
             }
         }
-        
-        
-        
-        
+
     }
 }
 
-
+extension CommunityViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text?.lowercased() else { return }
+        self.filteredPosts = self.fetchTestData.filter { $0.title.lowercased().contains(text)}
+        
+        self.communityListView.communityTableView.reloadData()
+    }
+    
+    
+}
