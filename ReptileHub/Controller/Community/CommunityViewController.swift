@@ -106,7 +106,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = CommunityDetailViewController()
         
-        var postDetailResponse: PostDetailResponse = PostDetailResponse(postID: "", userID: "", title: "", content: "", imageURLs: [], likeCount: 0, commentCount: 0, createdAt: Date(), isLiked: false)
+        var postDetailResponse: PostDetailResponse = PostDetailResponse(postID: "", userID: "", title: "", content: "", imageURLs: [], likeCount: 0, commentCount: 0, createdAt: Date(), isLiked: false, isBookmarked: false)
         
         CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: self.fetchTestData[indexPath.row].postID) { result in
             switch result {
@@ -118,7 +118,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                     switch result {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
-                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt: "\(String(describing: postDetailResponse.createdAt))", imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID)
+                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt: "\(String(describing: postDetailResponse.createdAt))", imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID, isLiked: postDetail.isLiked, isBookmarked: postDetail.isBookmarked)
                         detailViewController.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(detailViewController, animated: true)
                     case .failure(let error):

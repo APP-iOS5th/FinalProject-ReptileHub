@@ -31,8 +31,8 @@ class CommunityDetailView: UIView {
     private let timestampLabel: UILabel = UILabel()
     private let elementStackView: UIStackView = UIStackView()
     
-    private let likeButton: UIButton = UIButton()
-    private var likeButtonToggle: Bool?
+    private let bookMarkButton: UIButton = UIButton()
+    private var bookMarkButtonToggle: Bool?
     
     private var menuButton: UIBarButtonItem = UIBarButtonItem()
     
@@ -157,6 +157,8 @@ class CommunityDetailView: UIView {
         profileImage.clipsToBounds = true
     }
     
+    
+    
     //MARK: - 제목, 닉네임, 시간 StackView(elementStackView)
     private func setupElementStackView() {
         titleLabel.text = "공부는 최대한 미뤄라."
@@ -180,17 +182,31 @@ class CommunityDetailView: UIView {
     @objc
     private func toggleButton() {
         print("좋아요 버튼 토글.")
+        
+        CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
+            switch result {
+            case  .success(let boolValue):
+                print("북마크 토글 현상황: \(boolValue)")
+                self.bookMarkButtonToggle = boolValue
+                
+                let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+                let bookmarkImage = UIImage(systemName: self.bookMarkButtonToggle! ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+                self.bookMarkButton.setImage(bookmarkImage, for: .normal)
+            case .failure(let error):
+                print("북마크 토글 에러 : \(error.localizedDescription)")
+            }
+        }
     }
     
     //MARK: - title StackView + 좋아요 버튼
     private func setupTitleStackView() {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
-        let heartImage = UIImage(systemName: "heart", withConfiguration: imageConfig)
+        let bookmarkImage = UIImage(systemName: "bookmark", withConfiguration: imageConfig)
         
-        likeButton.setImage(heartImage, for: .normal)
-        likeButton.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
+        bookMarkButton.setImage(bookmarkImage, for: .normal)
+        bookMarkButton.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
         
-        likeButton.snp.makeConstraints { make in
+        bookMarkButton.snp.makeConstraints { make in
             make.width.equalTo(40)
         }
         
@@ -201,7 +217,7 @@ class CommunityDetailView: UIView {
         
         titleStackView.addArrangedSubview(profileImage)
         titleStackView.addArrangedSubview(elementStackView)
-        titleStackView.addArrangedSubview(likeButton)
+        titleStackView.addArrangedSubview(bookMarkButton)
         
         self.stackView.addArrangedSubview(titleStackView)
         
@@ -446,30 +462,6 @@ class CommunityDetailView: UIView {
         }
     }
     
-    //MARK: - UILabel의 높이를 측정하는 메서드
-//    func getLabelHeight(tableView: UITableView, text: String) -> CGFloat {
-//        let label = UILabel(
-//            frame: .init(
-//                x: .zero,
-//                y: .zero,
-//                width: tableView.frame.width - 75,
-//                height: .greatestFiniteMagnitude
-//            )
-//        )
-//        label.text = text
-//        label.numberOfLines = 0
-//        label.font = .systemFont(ofSize: 13)
-//        label.sizeToFit()
-//        let labelHeight = label.frame.height
-//        return labelHeight
-//    }
-    
-    
-//    func initHeightValue() {
-//        // 뷰가 나타날 때 해당 값들을 초기화함.
-//        tableViewHeight = 0.0
-//        rowHeights = [:]
-//    }
     
     // UIScrollViewDelegate의 scrollViewDidScroll에 사용
     func imageScrollCount(scrollView: UIScrollView) {
@@ -479,20 +471,7 @@ class CommunityDetailView: UIView {
         let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
         self.imagePageCount.text = "\(Int(pageIndex) + 1)/\(self.contentImages.count)"
     }
-    
-    // UITableView의 heightForRowAt에 사용
-//    func tableViewCellHeight(indexPath: IndexPath, tableView: UITableView) -> CGFloat {
-//        if let cachedHeight = rowHeights[indexPath] {
-//            return cachedHeight
-//        }
-//        
-//        let labelHeight = getLabelHeight(tableView: tableView, text: dummyData[indexPath.row].content)
-//        
-//        // 50 = cell의 commentLabel의 버티컬 패딩 값 조절을 위한 값 / 증가(패딩 증가) / 감소(패딩 감소)
-//        tableViewHeight += (labelHeight + 50)
-//        rowHeights[indexPath] = labelHeight + 50
-//        return labelHeight
-//    }
+
     
     // UITextViewDelegate의 textViewDidChange에 사용
     func textViewChange(textView: UITextView) {
@@ -538,7 +517,7 @@ class CommunityDetailView: UIView {
         commentTextView.delegate = textViewDelegate
     }
     
-    func configureFetchData(profileImageName: String, title: String, name: String, creatAt: String, imagesName: [String], content: String, likeCount: Int, commentCount: Int, postID: String) {
+    func configureFetchData(profileImageName: String, title: String, name: String, creatAt: String, imagesName: [String], content: String, likeCount: Int, commentCount: Int, postID: String, isLiked: Bool, isBookmarked: Bool) {
         self.postID = postID
         
         profileImage.setImage(with: profileImageName)
@@ -548,6 +527,11 @@ class CommunityDetailView: UIView {
         contentText.text = content
         self.likeCount.text = "\(likeCount)"
         self.commentCount.text = "\(commentCount)"
+        
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+        let bookmarkImage = UIImage(systemName: isBookmarked ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+        bookMarkButton.setImage(bookmarkImage, for: .normal)
+        
         
         if imagesName.count > 0 {
             for imageName in imagesName {
