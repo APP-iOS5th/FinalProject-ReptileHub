@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
@@ -30,6 +31,11 @@ class ProfileViewController: UIViewController {
         profileView.secondButton.addTarget(self, action: #selector(writePostButtonTouch), for: .touchUpInside)
         profileView.withdrawalButton.addTarget(self, action: #selector(withdrawalButtonTouch), for: .touchUpInside)
         profileView.logoutButton.addTarget(self, action: #selector(logoutButtonTouch), for: .touchUpInside)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        profileView.updateScrollState()
     }
     
     @objc func editUserInfo() {
@@ -59,6 +65,23 @@ class ProfileViewController: UIViewController {
 
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")
+        
+        do {
+            // Firebase에서 로그아웃 시도
+            try Auth.auth().signOut()
+            
+            // 성공적으로 로그아웃되었으면 루트 뷰 컨트롤러를 로그인 화면으로 변경
+            let loginVC = LoginViewController()
+            loginVC.modalPresentationStyle = .fullScreen
+            
+            // 윈도우의 rootViewController를 변경하여 로그인 화면을 표시
+            if let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate {
+                sceneDelegate.window?.rootViewController = loginVC
+            }
+            
+        } catch let error {
+            print("로그아웃 실패: \(error.localizedDescription)")
+        }
     }
 }
 

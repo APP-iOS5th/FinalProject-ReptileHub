@@ -37,6 +37,15 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "likeCell", for: indexPath) as! LikePostTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
+        
+        let menuItems = [
+            UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
+        ]
+        // UIMenu title 설정
+        let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: menuItems)
+        // 셀에 메뉴 설정
+        cell.configure(with: menu)
+        
         return cell
     }
 }

@@ -194,6 +194,107 @@ class UserService {
 }
 
 extension UserService {
+    //MARK: - 북마크된 게시글 썸네일 불러오기 (차단된 유저의 게시글 제외)
+       func fetchBookmarkedPostThumbnails(forCurrentUser currentUserID: String, completion: @escaping (Result<[ThumbnailPostResponse], Error>) -> Void) {
+           let db = Firestore.firestore()
+           // 현재 사용자가 차단한 유저 목록을 먼저 가져옵니다.
+           db.collection("users").document(currentUserID).getDocument { [weak self] (document, error) in
+               if let error = error {
+                   completion(.failure(error))
+                   return
+               }
+               
+               guard let self = self else { return }
+               
+               let blockedUsers = document?.data()?["blockedUsers"] as? [String] ?? []
+               
+               // 사용자의 북마크 목록을 가져옵니다.
+               self.fetchBookmarksExcludingBlockedUsers(userID: currentUserID, blockedUsers: blockedUsers, completion: completion)
+           }
+       }
+
+       private func fetchBookmarksExcludingBlockedUsers(userID: String, blockedUsers: [String], completion: @escaping (Result<[ThumbnailPostResponse], Error>) -> Void) {
+           let db = Firestore.firestore()
+           // 북마크된 게시글 목록을 가져옴
+           db.collection("users").document(userID).collection("bookmarkedPosts").getDocuments { (querySnapshot, error) in
+               if let error = error {
+                   completion(.failure(error))
+                   return
+               }
+               
+               guard let documents = querySnapshot?.documents else {
+                   completion(.success([]))  // 북마크된 게시글이 없을 경우 빈 배열 반환
+                   return
+               }
+               
+               var thumbnails: [ThumbnailPostResponse] = []
+               let group = DispatchGroup()
+               
+               for document in documents {
+                   let postID = document.documentID
+                   
+                   group.enter()
+                   self.fetchPostThumbnailIfNotBlocked(postID: postID, blockedUsers: blockedUsers) { result in
+                       switch result {
+                       case .success(let thumbnail):
+                           if let thumbnail = thumbnail {
+                               thumbnails.append(thumbnail)
+                           }
+                       case .failure(let error):
+                           print("Error fetching post thumbnail for \(postID): \(error.localizedDescription)")
+                       }
+                       group.leave()
+                   }
+               }
+               
+               group.notify(queue: .main) {
+                   completion(.success(thumbnails))
+               }
+           }
+       }
+
+       private func fetchPostThumbnailIfNotBlocked(postID: String, blockedUsers: [String], completion: @escaping (Result<ThumbnailPostResponse?, Error>) -> Void) {
+           let db = Firestore.firestore()
+           // 특정 게시글의 썸네일 정보를 가져옴
+           db.collection("posts").document(postID).getDocument { (document, error) in
+               if let error = error {
+                   completion(.failure(error))
+                   return
+               }
+               
+               guard let data = document?.data(),
+                     let userID = data["userID"] as? String, // 작성자 ID 확인
+                     !blockedUsers.contains(userID),  // 차단된 유저의 글인지 확인
+                     let postID = data["postID"] as? String,
+                     let title = data["title"] as? String,
+                     let thumbnailURL = data["thumbnail"] as? String,
+                     let previewContent = data["previewContent"] as? String,
+                     let likeCount = data["likeCount"] as? Int,
+                     let commentCount = data["commentCount"] as? Int,
+                     let createdAt = data["createdAt"] as? Timestamp else {
+                   
+                   // 차단된 유저의 글이거나 필요한 정보가 없으면 nil 반환
+                   completion(.success(nil))
+                   return
+               }
+               
+               let thumbnail = ThumbnailPostResponse(
+                   postID: postID,
+                   title: title,
+                   userID: userID,
+                   thumbnailURL: thumbnailURL,
+                   previewContent: previewContent,
+                   likeCount: likeCount,
+                   commentCount: commentCount,
+                   createdAt: createdAt.dateValue()
+               )
+               
+               completion(.success(thumbnail))
+           }
+       }
+}
+
+extension UserService {
     func updateUserProfile(uid: String, newName: String?, newProfileImage: UIImage?, completion: @escaping (Error?) -> Void) {
         // Firestore의 users 컬렉션에서 해당 유저 문서 참조
         let userRef = Firestore.firestore().collection("users").document(uid)
