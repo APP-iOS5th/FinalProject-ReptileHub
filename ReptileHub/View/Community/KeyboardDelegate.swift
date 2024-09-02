@@ -8,12 +8,11 @@
 import Foundation
 import UIKit
 
-
 protocol KeyboardNotificationDelegate: AnyObject {
     //================================================//
     func keyboardWillShow(keyboardSize: CGRect)
     func keyboardWillHide(keyboardSize: CGRect)
-    // keyboardAction() 내부에서 키보드가 올라올 때, 내려갈 때의 레이아웃 들을 정의해주시면 됩니다! (extension으로)
+    // 45번줄의 keyboardAction() 내부에서 키보드가 올라올 때, 내려갈 때의 레이아웃 들을 정의해주시면 됩니다! (extension으로)
     // 애니메이션을 적용해야해서 위 두가지의 메서드를 정의하고 마지막에 self.layoutIfNeeded() 를 넣어주세요!
     // (self.layoutIfNeeded()는 UIView에서만 사용할 수 있어서 따로 불러오셔야합니다..)
     //================================================//
@@ -24,7 +23,6 @@ class KeyboardManager {
     //================================================//
     // 델리게이트 변수
     weak var delegate: KeyboardNotificationDelegate?
-    
     
     // 키보드 나옴/숨김 NotificationCenter
     func showNoti() {
@@ -58,23 +56,22 @@ class KeyboardManager {
             print("키보드 열림")
             
             UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
-                        
+                
                 // 델리게이트를 통해 메서드 호출
                 self.delegate?.keyboardWillShow(keyboardSize: keyboardSize)
-    
-                    }, completion: nil)
+                
+            }, completion: nil)
             
-
             
         case UIResponder.keyboardWillHideNotification:
             print("키보드 닫힘")
             
             UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve, animations: {
-                        
+                
                 // 델리게이트를 통해 메서드 호출
                 self.delegate?.keyboardWillHide(keyboardSize: keyboardSize)
                 
-                    }, completion: nil)
+            }, completion: nil)
             
         default:
             return

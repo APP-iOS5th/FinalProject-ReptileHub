@@ -12,6 +12,10 @@ class CommunityDetailViewController: UIViewController {
 
     let detailView = CommunityDetailView()
     
+    var fetchComments: [CommentResponse] = []
+    
+    var tableViewHeight: CGFloat = 0
+    
     private var menuButton: UIBarButtonItem = UIBarButtonItem()
   
     
@@ -26,15 +30,32 @@ class CommunityDetailViewController: UIViewController {
         setupDetailView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        detailView.initHeightValue()
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(true)
+        
+        tableViewHeight = 0
+        
+        CommunityService.shared.fetchComments(forPost: detailView.postID) { result in
+            switch result {
+            case .success(let comments):
+                print("해당 게시글의 모든 댓글 가져오기 성공")
+                self.fetchComments = comments
+                
+                var height: CGFloat = 50
+                
+                for comment in comments {
+                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+                }
+                self.detailView.updateCommentTableViewHeight(height: height)
+                
+                self.detailView.commentTableView.reloadData()
+                print("가져온 댓글 개수(\(self.fetchComments.count)개) : \(self.fetchComments)")
+            case .failure(let error):
+                print("해당 게시글의 모든 댓글 가져오기 실패 : \(error.localizedDescription)")
+            }
+        }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        detailView.remakeTableView()
-    }
-    
-
 
     
     //MARK: - menu 버튼
@@ -66,7 +87,22 @@ class CommunityDetailViewController: UIViewController {
         print("메뉴 버튼 클릭.")
     }
     
-
+    func getLabelHeight(tableView: UITableView, text: String) -> CGFloat {
+            let label = UILabel(
+                frame: .init(
+                    x: .zero,
+                    y: .zero,
+                    width: tableView.frame.width - 75,
+                    height: .greatestFiniteMagnitude
+                )
+            )
+            label.text = text
+            label.numberOfLines = 0
+            label.font = .systemFont(ofSize: 13)
+            label.sizeToFit()
+            let labelHeight = label.frame.height
+            return labelHeight
+        }
 
     
 }
@@ -80,22 +116,38 @@ extension CommunityDetailViewController: UIScrollViewDelegate {
 
 extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        detailView.dummyData.count
+        print("출력 전 개수 : \(self.fetchComments.count)")
+        return self.fetchComments.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
-        cell.commentText = detailView.dummyData[indexPath.row]
-        cell.configureCell()
+        
+        let commentData = self.fetchComments[indexPath.row]
+        
+        UserService.shared.fetchUserProfile(uid: self.fetchComments[indexPath.row].userID) { result in
+            switch result {
+            case .success(let userData):
+                print("CommunityDetailVC 유저 정보 가져오기 성공")
+                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: commentData.createdAt!.timefomatted)
+            case .failure(let error):
+                print("CommunityDetailVC 유저 정보 가져오기 실패 : \(error.localizedDescription)")
+            }
+        }
+        
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        detailView.tableViewCellHeight(indexPath: indexPath, tableView: tableView)
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("댓글 셀 클릭")
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        let labelHeight = getLabelHeight(tableView: tableView, text: self.fetchComments[indexPath.row].content)
+
+        return labelHeight + 50
     }
     
     
