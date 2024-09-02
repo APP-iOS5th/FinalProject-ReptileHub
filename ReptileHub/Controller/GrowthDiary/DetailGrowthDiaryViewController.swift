@@ -20,6 +20,7 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.title = "반려 도마뱀 프로필"
         self.view = detailGrowthDiaryView
         self.view.backgroundColor = .white
+//        detailGrowthDiaryView.detailConfiguteTablewDelegate(delegate: self, dataSource: self)
         detailGrowthDiaryView.detailShowSpecialNoteButtonTapped = { [weak self] in
             self?.showNavigaionSpecialNotes()
         }
@@ -33,6 +34,7 @@ class DetailGrowthDiaryViewController: UIViewController {
 
 extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print(tempData.count)
         return tempData.count
     }
     
@@ -50,16 +52,4 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
         cell.selectionStyle = .none
         return cell
     }
-    
 }
-//extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource {
-//
-//
-//
-//
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let specialDetailViewController = SpecialDetailViewController()
-//        self.navigationController?.pushViewController(specialDetailViewController, animated: true)
-//    }
-//
-//}

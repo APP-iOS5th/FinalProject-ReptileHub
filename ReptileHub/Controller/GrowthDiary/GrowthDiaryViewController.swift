@@ -29,6 +29,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
             self.loadData()
             shouldReloadImage = false
         }
+        // TODO: 편집모드일때 만약에 변경을 했을 경우에는 똑같이 shouldReloadImage변경하게 코드 작성
     }
     
     override func viewDidLoad() {

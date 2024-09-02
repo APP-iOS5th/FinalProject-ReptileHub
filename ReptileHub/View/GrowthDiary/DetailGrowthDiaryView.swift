@@ -289,25 +289,18 @@ class DetailGrowthDiaryView: UIView {
         view.axis = .horizontal
         return view
     }()
-    
-    //MARK: - 특이사항 미리보기 테이블 뷰
-    private lazy var detailPreviewsSpecialNoteTableView: UITableView = {
-        let tableView = UITableView(frame: .zero)
-        tableView.backgroundColor = .red
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SpecialCell")
-        return tableView
-    }()
-    
-    //MARK: - 특이사항 미리보기 스택 뷰
+
+//    //MARK: - 특이사항 미리보기 스택 뷰
     private lazy var detailPreviewsSpecialNoteStackView: UIStackView = {
-       let view = UIStackView(arrangedSubviews: [detailSpecialNoteHeaderStackView, detailPreviewsSpecialNoteTableView])
+       let view = UIStackView()
         view.axis = .vertical
+        view.spacing = 10
         return view
     }()
     
     //MARK: - 디테일 스택 뷰
     private lazy var detailStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView, detailPreviewsSpecialNoteStackView])
+        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView/*, detailPreviewsSpecialNoteStackView*/])
         view.axis = .vertical
         view.spacing = 30
         return view
@@ -317,12 +310,15 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailContentView: UIView = {
         let view = UIView()
         view.addSubview(detailStackView)
+        view.addSubview(detailSpecialNoteHeaderStackView)
+        view.addSubview(detailPreviewsSpecialNoteStackView)
         return view
     }()
     
     //MARK: - 디테일 스크롤 뷰
     private lazy var detailScrollView: UIScrollView = {
         let view = UIScrollView()
+        view.showsVerticalScrollIndicator = false
         view.addSubview(detailContentView)
         return view
     }()
@@ -339,7 +335,7 @@ class DetailGrowthDiaryView: UIView {
     private func setUI(){
         
         self.addSubview(detailScrollView)
-        
+        cellData()
         //디테일 스크롤 뷰
         detailScrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -348,25 +344,27 @@ class DetailGrowthDiaryView: UIView {
         //디테일 content View
         detailContentView.snp.makeConstraints { make in
             make.width.equalTo(detailScrollView)
-            make.top.bottom.equalTo(detailScrollView)
+//            make.height.greaterThanOrEqualToSuperview()
+            make.top.equalTo(detailScrollView).offset(30)
+            make.bottom.equalTo(detailScrollView).offset(-30)
             make.leading.trailing.equalTo(detailScrollView)
         }
         
         //디테일 스택 뷰
         detailStackView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(detailContentView)
+            make.top.equalTo(detailContentView)
             make.leading.equalTo(detailContentView.snp.leading).offset(Spacing.mainSpacing)
             make.trailing.equalTo(detailContentView.snp.trailing).offset(-Spacing.mainSpacing)
         }
         
         //반려 도마뱀의 자식 정보 스택 뷰
         detailLizardFirstInfoStackView.snp.makeConstraints { make in
+            make.top.equalTo(detailStackView.snp.top)
             make.leading.trailing.equalTo(detailStackView)
         }
         
         //반려 도마뱀의 썸네일 테두리를 나타내는 뷰
         detailThumbnailUIView.snp.makeConstraints { make in
-            make.top.equalTo(30)
             make.centerX.equalTo(detailLizardFirstInfoStackView)
             make.width.height.equalTo(187)
         }
@@ -383,9 +381,20 @@ class DetailGrowthDiaryView: UIView {
             make.height.equalTo(80)
         }
         
-        //반려 도마뱀 무기 추이 그래프 뷰
+        //반려 도마뱀 무게 추이 그래프 뷰
         detailWeightStackView.snp.makeConstraints { make in
             make.height.equalTo(200)
+        }
+        
+        detailSpecialNoteHeaderStackView.snp.makeConstraints { make in
+            make.top.equalTo(detailStackView.snp.bottom).offset(30)
+            make.leading.trailing.equalTo(detailStackView)
+        }
+        
+        detailPreviewsSpecialNoteStackView.snp.makeConstraints { make in
+            make.top.equalTo(detailSpecialNoteHeaderStackView.snp.bottom).offset(10)
+            make.leading.trailing.equalTo(detailStackView)
+            make.bottom.equalTo(detailContentView.snp.bottom).offset(-30)
         }
     }
     
@@ -435,6 +444,25 @@ class DetailGrowthDiaryView: UIView {
         
         return detailParentView
     }
+    
+    func cellData(){
+        for _ in 0..<3{
+            let cellView = createCellView()
+            detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
+        }
+    }
+    
+    func createCellView() -> UIView {
+           // CustomTableViewCell 생성
+           let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
+           
+           // 셀의 높이를 설정
+           cell.contentView.snp.makeConstraints { make in
+               make.height.equalTo(100)
+           }
+           
+           return cell.contentView
+       }
 }
 
 #if DEBUG
