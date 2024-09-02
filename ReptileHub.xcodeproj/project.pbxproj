@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */; };
+		460671352C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */; };
 		4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */; };
 		4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2E22C64D71700BCD451 /* AuthUser.swift */; };
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
@@ -27,6 +29,7 @@
 		46E23B252C6606620059BB62 /* KakaoSDKCert in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B242C6606620059BB62 /* KakaoSDKCert */; };
 		46E23B272C6606620059BB62 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B262C6606620059BB62 /* KakaoSDKCommon */; };
 		46E23B292C6606620059BB62 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 46E23B282C6606620059BB62 /* KakaoSDKUser */; };
+		46E37FCE2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E37FCD2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift */; };
 		46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7ED2C6AE46400444C98 /* LoginView.swift */; };
 		46F0F7F52C6B286300444C98 /* CommunityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7F42C6B286300444C98 /* CommunityService.swift */; };
 		46F0F7F92C6D997800444C98 /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7F82C6D997800444C98 /* PostModel.swift */; };
@@ -54,11 +57,25 @@
 		58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F63F2C772E6B00FDABD1 /* CommunityDetailView.swift */; };
 		58F3F6422C781DF500FDABD1 /* AddPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F6412C781DF500FDABD1 /* AddPostViewController.swift */; };
 		58F3F6442C781F1400FDABD1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F6432C781F1400FDABD1 /* AddPostView.swift */; };
+		793E9CE12C7CDF8F00DB4B30 /* DropDownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */; };
+		793E9CE52C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793E9CE42C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift */; };
 		7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449B2C6AEC7100765A80 /* Spacing.swift */; };
 		7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */; };
 		798476412C70E05200895D2D /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798476402C70E05200895D2D /* EmptyView.swift */; };
+		7994BDA42C7E415B00ADE7A7 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7994BDA32C7E415A00ADE7A7 /* Extension.swift */; };
 		79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1AE492C6A088D00D5711B /* TabbarViewController.swift */; };
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
+		79BCE2722C72DB01002F630C /* AddGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */; };
+		79BCE2742C72F775002F630C /* FontWeightLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2732C72F775002F630C /* FontWeightLabel.swift */; };
+		79FB0EA02C8340A6009ACD94 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 79FB0E9F2C8340A6009ACD94 /* Kingfisher */; };
+		9F2BD4342C75C4B5006FDD69 /* SpecialPlusButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */; };
+		9F2BD4362C75C4EC006FDD69 /* SpecialListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */; };
+		9F2BD43A2C75C555006FDD69 /* SpecialDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4392C75C555006FDD69 /* SpecialDetailViewController.swift */; };
+		9F2BD43C2C75C577006FDD69 /* SpecialEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD43B2C75C577006FDD69 /* SpecialEditViewController.swift */; };
+		9F2BD43F2C7BCD68006FDD69 /* SpecialListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD43E2C7BCD68006FDD69 /* SpecialListViewController.swift */; };
+		9F2BD4412C7BCD8B006FDD69 /* SpecialListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */; };
+		9F2BD4432C7BE977006FDD69 /* SpecialEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */; };
+		9F2BD4452C7BF803006FDD69 /* SpecialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */; };
 		C12FC0ED2C790CA3000BB52E /* BlockUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */; };
 		C12FC0EF2C790D19000BB52E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12FC0EE2C790D19000BB52E /* ProfileView.swift */; };
 		C14FF35E2C75DB1000089C6D /* EditUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */; };
@@ -91,6 +108,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "testVC-DiaryDetail,EditVC.swift"; sourceTree = "<group>"; };
+		460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestVC -BookmarkPostsViewController.swift"; sourceTree = "<group>"; };
 		4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementViewController.swift; sourceTree = "<group>"; };
 		4674B2E22C64D71700BCD451 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
@@ -104,6 +123,7 @@
 		46B0D99B2C78C18C00697E7E /* PostDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
 		46DA262E2C6ED2DB005C7609 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		46DA26322C6EE198005C7609 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		46E37FCD2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "testVC - GrowthDiaryEditViewController.swift"; sourceTree = "<group>"; };
 		46F0F7ED2C6AE46400444C98 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		46F0F7F42C6B286300444C98 /* CommunityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityService.swift; sourceTree = "<group>"; };
 		46F0F7F82C6D997800444C98 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
@@ -126,11 +146,24 @@
 		58F3F63F2C772E6B00FDABD1 /* CommunityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailView.swift; sourceTree = "<group>"; };
 		58F3F6412C781DF500FDABD1 /* AddPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostViewController.swift; sourceTree = "<group>"; };
 		58F3F6432C781F1400FDABD1 /* AddPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPostView.swift; sourceTree = "<group>"; };
+		793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownView.swift; sourceTree = "<group>"; };
+		793E9CE42C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrowthDiaryViewController.swift; sourceTree = "<group>"; };
 		7968449B2C6AEC7100765A80 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListCollectionViewCell.swift; sourceTree = "<group>"; };
 		798476402C70E05200895D2D /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
+		7994BDA32C7E415A00ADE7A7 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		79A1AE492C6A088D00D5711B /* TabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
+		79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrowthDiaryView.swift; sourceTree = "<group>"; };
+		79BCE2732C72F775002F630C /* FontWeightLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightLabel.swift; sourceTree = "<group>"; };
+		9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialPlusButtonView.swift; sourceTree = "<group>"; };
+		9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListViewCell.swift; sourceTree = "<group>"; };
+		9F2BD4392C75C555006FDD69 /* SpecialDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialDetailViewController.swift; sourceTree = "<group>"; };
+		9F2BD43B2C75C577006FDD69 /* SpecialEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialEditViewController.swift; sourceTree = "<group>"; };
+		9F2BD43E2C7BCD68006FDD69 /* SpecialListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListViewController.swift; sourceTree = "<group>"; };
+		9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListView.swift; sourceTree = "<group>"; };
+		9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialEditView.swift; sourceTree = "<group>"; };
+		9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialDetailView.swift; sourceTree = "<group>"; };
 		C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockUserView.swift; sourceTree = "<group>"; };
 		C12FC0EE2C790D19000BB52E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoViewController.swift; sourceTree = "<group>"; };
@@ -158,6 +191,7 @@
 				46E23B212C6606620059BB62 /* KakaoSDK in Frameworks */,
 				4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */,
 				58833C222C5FDE05005C2160 /* FirebaseAnalytics in Frameworks */,
+				79FB0EA02C8340A6009ACD94 /* Kingfisher in Frameworks */,
 				46E23B252C6606620059BB62 /* KakaoSDKCert in Frameworks */,
 				58833C242C5FDE05005C2160 /* FirebaseAuth in Frameworks */,
 				58833C262C5FDE05005C2160 /* FirebaseFirestore in Frameworks */,
@@ -182,6 +216,9 @@
 				469B443B2C6305E300B1C49B /* AuthService.swift */,
 				46F0F7F42C6B286300444C98 /* CommunityService.swift */,
 				46DA262E2C6ED2DB005C7609 /* UserService.swift */,
+				46E37FCD2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift */,
+				460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */,
+				460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -206,6 +243,7 @@
 				58833C332C5FDEF3005C2160 /* Profile */,
 				58833C322C5FDEEC005C2160 /* Community */,
 				58833C312C5FDEE4005C2160 /* GrowthDiary */,
+				9F2BD4322C75C431006FDD69 /* SpecialNote */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -227,6 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */,
+				793E9CE42C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift */,
 			);
 			path = GrowthDiary;
 			sourceTree = "<group>";
@@ -287,6 +326,7 @@
 		588CE3D42C524EA900338878 /* ReptileHub */ = {
 			isa = PBXGroup;
 			children = (
+				7994BDA22C7E413C00ADE7A7 /* Extension */,
 				798476422C70EFA400895D2D /* Components */,
 				469B443D2C6308B300B1C49B /* ReptileHub.entitlements */,
 				795776BB2C69B22F006D27A1 /* View */,
@@ -306,6 +346,7 @@
 		795776BB2C69B22F006D27A1 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				9F2BD43D2C7BCCF7006FDD69 /* SpecialNote */,
 				C1EBDFC72C782A2500B6CCBD /* Profile */,
 				5881F01E2C73120D00FBB13E /* Community */,
 				46F0F7F12C6AE94E00444C98 /* LoginView */,
@@ -319,8 +360,17 @@
 			children = (
 				7968449B2C6AEC7100765A80 /* Spacing.swift */,
 				798476402C70E05200895D2D /* EmptyView.swift */,
+				79BCE2732C72F775002F630C /* FontWeightLabel.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		7994BDA22C7E413C00ADE7A7 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				7994BDA32C7E415A00ADE7A7 /* Extension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		79AA14952C69C29D009F8209 /* GrowthDiary */ = {
@@ -328,8 +378,32 @@
 			children = (
 				79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */,
 				7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */,
+				79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */,
+				793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */,
 			);
 			path = GrowthDiary;
+			sourceTree = "<group>";
+		};
+		9F2BD4322C75C431006FDD69 /* SpecialNote */ = {
+			isa = PBXGroup;
+			children = (
+				9F2BD4392C75C555006FDD69 /* SpecialDetailViewController.swift */,
+				9F2BD43B2C75C577006FDD69 /* SpecialEditViewController.swift */,
+				9F2BD43E2C7BCD68006FDD69 /* SpecialListViewController.swift */,
+			);
+			path = SpecialNote;
+			sourceTree = "<group>";
+		};
+		9F2BD43D2C7BCCF7006FDD69 /* SpecialNote */ = {
+			isa = PBXGroup;
+			children = (
+				9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */,
+				9F2BD4352C75C4EC006FDD69 /* SpecialListViewCell.swift */,
+				9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */,
+				9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */,
+				9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */,
+			);
+			path = SpecialNote;
 			sourceTree = "<group>";
 		};
 		C1EBDFC72C782A2500B6CCBD /* Profile */ = {
@@ -382,6 +456,7 @@
 				46E23B242C6606620059BB62 /* KakaoSDKCert */,
 				46E23B262C6606620059BB62 /* KakaoSDKCommon */,
 				46E23B282C6606620059BB62 /* KakaoSDKUser */,
+				79FB0E9F2C8340A6009ACD94 /* Kingfisher */,
 			);
 			productName = ReptileHub;
 			productReference = 588CE3D22C524EA900338878 /* ReptileHub.app */;
@@ -416,6 +491,7 @@
 				4693FAC92C60A3F200BB70D6 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				469B44452C6315AF00B1C49B /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				46E23B1F2C6606620059BB62 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+				79FB0E9E2C8340A6009ACD94 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 588CE3D32C524EA900338878 /* Products */;
 			projectDirPath = "";
@@ -444,6 +520,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7994BDA42C7E415B00ADE7A7 /* Extension.swift in Sources */,
 				C14FF35E2C75DB1000089C6D /* EditUserInfoViewController.swift in Sources */,
 				4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */,
 				C154FA1E2C7C15D600624AA3 /* WritePostListView.swift in Sources */,
@@ -452,25 +529,34 @@
 				588CE3D62C524EA900338878 /* AppDelegate.swift in Sources */,
 				58C61A042C7A530F00E1FD3A /* KeyboardDelegate.swift in Sources */,
 				7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */,
+				9F2BD4362C75C4EC006FDD69 /* SpecialListViewCell.swift in Sources */,
+				9F2BD43A2C75C555006FDD69 /* SpecialDetailViewController.swift in Sources */,
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
 				C154FA1C2C7C11B500624AA3 /* WriteReplyListView.swift in Sources */,
 				C12FC0EF2C790D19000BB52E /* ProfileView.swift in Sources */,
 				469B443C2C6305E300B1C49B /* AuthService.swift in Sources */,
+				79BCE2722C72DB01002F630C /* AddGrowthDiaryView.swift in Sources */,
 				46B0D99C2C78C18C00697E7E /* PostDetailViewController.swift in Sources */,
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
+				9F2BD4412C7BCD8B006FDD69 /* SpecialListView.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
 				C14FF3742C75DB4100089C6D /* ReptileViewController.swift in Sources */,
 				46DA26332C6EE198005C7609 /* UserModel.swift in Sources */,
 				5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */,
+				9F2BD4452C7BF803006FDD69 /* SpecialDetailView.swift in Sources */,
 				58F3F6442C781F1400FDABD1 /* AddPostView.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
+				9F2BD4342C75C4B5006FDD69 /* SpecialPlusButtonView.swift in Sources */,
+				46E37FCE2C7EAF9B006F6E2A /* testVC - GrowthDiaryEditViewController.swift in Sources */,
 				798476412C70E05200895D2D /* EmptyView.swift in Sources */,
 				C14FF36F2C75DB2800089C6D /* LikePostTableViewCell.swift in Sources */,
 				C12FC0ED2C790CA3000BB52E /* BlockUserView.swift in Sources */,
 				46B0D99A2C78C17200697E7E /* PostEditViewController.swift in Sources */,
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
+				460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */,
+				9F2BD43F2C7BCD68006FDD69 /* SpecialListViewController.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				C14FF36E2C75DB2800089C6D /* WritePostListViewController.swift in Sources */,
 				583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */,
@@ -479,13 +565,18 @@
 				46F0F7EE2C6AE46400444C98 /* LoginView.swift in Sources */,
 				46DA262F2C6ED2DB005C7609 /* UserService.swift in Sources */,
 				589CCFFB2C608FDE00812D17 /* TestModel.swift in Sources */,
+				793E9CE12C7CDF8F00DB4B30 /* DropDownView.swift in Sources */,
+				793E9CE52C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift in Sources */,
 				58F3F6422C781DF500FDABD1 /* AddPostViewController.swift in Sources */,
+				460671352C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift in Sources */,
+				9F2BD4432C7BE977006FDD69 /* SpecialEditView.swift in Sources */,
 				4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */,
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
 				C14FF36D2C75DB2800089C6D /* WritePostListTableViewCell.swift in Sources */,
 				C154FA1A2C7C0F2C00624AA3 /* LikePostView.swift in Sources */,
 				58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */,
 				C154FA222C7C4D9F00624AA3 /* EditUserInfoView.swift in Sources */,
+				9F2BD43C2C75C577006FDD69 /* SpecialEditViewController.swift in Sources */,
 				589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */,
 				C14FF36C2C75DB2800089C6D /* BlockUserTableViewCell.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
@@ -494,6 +585,7 @@
 				C14FF36B2C75DB2800089C6D /* BlockUserViewController.swift in Sources */,
 				5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */,
 				46F0F7F52C6B286300444C98 /* CommunityService.swift in Sources */,
+				79BCE2742C72F775002F630C /* FontWeightLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,9 +730,11 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P95R3MRRWK;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = NSPhotoLibraryUsageDescription;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"해당앱이 사진 업로드를 위해 사진에 접근을 허용하시겠습니까?\"";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -666,9 +760,11 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P95R3MRRWK;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = NSPhotoLibraryUsageDescription;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"해당앱이 사진 업로드를 위해 사진에 접근을 허용하시겠습니까?\"";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -740,6 +836,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 11.0.0;
+			};
+		};
+		79FB0E9E2C8340A6009ACD94 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.12.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -819,6 +923,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 58833C202C5FDE05005C2160 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		79FB0E9F2C8340A6009ACD94 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 79FB0E9E2C8340A6009ACD94 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

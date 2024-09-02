@@ -29,6 +29,7 @@ struct PostDetailResponse: Codable {
     let commentCount: Int
     var createdAt: Date?
     var isLiked: Bool
+    var isBookmarked: Bool
 }
 
 struct CommentResponse: Codable {
