@@ -6,17 +6,29 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    let mydata: [Int] = [1, 2, 3, 9, 9 ,9 ,9 ,9] //개수를 파악하기 위한 임시 데이터
     private let GrowthDiaryView = GrowthDiaryListView()
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
+    private var shouldReloadImage = false
+    
+    private var thumbnailData = [ThumbnailResponse]()
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         GrowthDiaryView.updateScrollState()
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        
+        if shouldReloadImage {
+            self.loadData()
+            shouldReloadImage = false
+        }
     }
     
     override func viewDidLoad() {
@@ -29,6 +41,38 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         GrowthDiaryView.backgroundColor = .white
         GrowthDiaryView.cofigureCollectionView(delegate: self, dataSource: self)
         GrowthDiaryView.reigsterCollectionViewCell(GrowthDiaryListCollectionViewCell.self, forCellWithReuseIdentifier: GrowthDiaryListCollectionViewCell.identifier)
+        GrowthDiaryView.buttonTapped = { [weak self] in
+            self?.navigateToSecondViewController()
+        }
+        loadData()
+    }
+    
+    func loadData(){
+        guard let userId = Auth.auth().getUserID() else {
+            return
+        }
+        
+        DiaryPostService.shared.fetchGrowthThumbnails(for: userId) {[weak self] response in
+            switch response{
+                
+            case .success(let data):
+                self?.thumbnailData = data
+                self?.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
+                self?.GrowthDiaryView.updateScrollState()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func updateImage() {
+        // 다른 뷰 컨트롤러에서 돌아왔을 때 이미지를 다시 로드해야 하는 경우
+        shouldReloadImage = true
+    }
+    
+    private func navigateToSecondViewController(){
+        let secondViewController = AddGrowthDiaryViewController()
+        navigationController?.pushViewController(secondViewController, animated: true)
     }
 }
 
@@ -38,13 +82,13 @@ extension GrowthDiaryViewController{
     //섹션에 넣을 아이템 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // TODO: 실제 존재하는 Model의 개수
-        if mydata.count == 0{
+        if thumbnailData.count == 0{
             emptyView.configure("등록된 반려도마뱀이 없습니다.")
             collectionView.backgroundView = emptyView
         }else{
             collectionView.backgroundView = nil
         }
-        return mydata.count
+        return thumbnailData.count
     }
     
     //데이터 소스 개체에 컬레션 보기에서 지정된 항목에 해당하는 셀을 요청합니다.
@@ -55,7 +99,7 @@ extension GrowthDiaryViewController{
         }
         
         // TODO: 실제 모델을 넘기고 configure함수에서 .image, .tile. timestamp로 cell에 넣기
-        cell.configure(imageName: "tempImage", title: "엘리자베스 몰리 2세의 성장일지", date: Date())
+        cell.configure(imageName: thumbnailData[indexPath.item].thumbnail, title: thumbnailData[indexPath.item].name, date: thumbnailData[indexPath.item].diary_id)
         return cell
     }
 }
