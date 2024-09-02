@@ -76,6 +76,7 @@
 		9F2BD4412C7BCD8B006FDD69 /* SpecialListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */; };
 		9F2BD4432C7BE977006FDD69 /* SpecialEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */; };
 		9F2BD4452C7BF803006FDD69 /* SpecialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */; };
+		9F2BD4472C80EF40006FDD69 /* SpecialPHPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2BD4462C80EF40006FDD69 /* SpecialPHPickerCollectionViewCell.swift */; };
 		C12FC0ED2C790CA3000BB52E /* BlockUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */; };
 		C12FC0EF2C790D19000BB52E /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12FC0EE2C790D19000BB52E /* ProfileView.swift */; };
 		C14FF35E2C75DB1000089C6D /* EditUserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */; };
@@ -164,6 +165,7 @@
 		9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialListView.swift; sourceTree = "<group>"; };
 		9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialEditView.swift; sourceTree = "<group>"; };
 		9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialDetailView.swift; sourceTree = "<group>"; };
+		9F2BD4462C80EF40006FDD69 /* SpecialPHPickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialPHPickerCollectionViewCell.swift; sourceTree = "<group>"; };
 		C12FC0EC2C790CA3000BB52E /* BlockUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockUserView.swift; sourceTree = "<group>"; };
 		C12FC0EE2C790D19000BB52E /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C14FF35D2C75DB1000089C6D /* EditUserInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserInfoViewController.swift; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 				9F2BD4402C7BCD8B006FDD69 /* SpecialListView.swift */,
 				9F2BD4422C7BE977006FDD69 /* SpecialEditView.swift */,
 				9F2BD4442C7BF803006FDD69 /* SpecialDetailView.swift */,
+				9F2BD4462C80EF40006FDD69 /* SpecialPHPickerCollectionViewCell.swift */,
 			);
 			path = SpecialNote;
 			sourceTree = "<group>";
@@ -556,6 +559,7 @@
 				79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */,
 				7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */,
 				460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */,
+				9F2BD4472C80EF40006FDD69 /* SpecialPHPickerCollectionViewCell.swift in Sources */,
 				9F2BD43F2C7BCD68006FDD69 /* SpecialListViewController.swift in Sources */,
 				4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */,
 				C14FF36E2C75DB2800089C6D /* WritePostListViewController.swift in Sources */,
