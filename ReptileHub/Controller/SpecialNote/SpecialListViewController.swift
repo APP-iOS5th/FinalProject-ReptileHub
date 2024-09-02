@@ -63,7 +63,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
     // 셀 기능
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let specialEntry = sampleSpecialNoteData.specialEntries[indexPath.row]
-        let specialDetailViewController = SpecialDetailViewController()
+        let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry)
 //        self.navigationController?.pushViewController(specialDetailViewController, animated: true)
         show(specialDetailViewController, sender: self)
     }

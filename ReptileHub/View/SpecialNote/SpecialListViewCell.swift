@@ -158,7 +158,7 @@ struct SampleSpecialNoteData {
     var specialEntries: [SpecialEntry] = []
     
     mutating func createSampleSpecialEntryData() {
-        let photo1 = UIImage(systemName: "sun.max")
+        let photo1 = UIImage(named: "tempImage")
         let photo2 = UIImage(systemName: "cloud")
         let photo3 = UIImage(systemName: "cloud.sun")
         guard let specialEntry1 = SpecialEntry(date: Date.now,

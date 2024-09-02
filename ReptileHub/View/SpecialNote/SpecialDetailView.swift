@@ -25,9 +25,9 @@ class SpecialDetailView: UIView {
     
     // 특이사항 상세 뷰 이미지
     private var specialImages: [UIImageView] = [
-        UIImageView(image: UIImage(named: "Snowball")),
-        UIImageView(image: UIImage(named: "Snowball")),
-        UIImageView(image: UIImage(named: "Snowball")),
+//        UIImageView(image: UIImage(named: "Snowball")),
+//        UIImageView(image: UIImage(named: "Snowball")),
+//        UIImageView(image: UIImage(named: "Snowball")),
         ]
     // 특이사항 상세 뷰 이미지 뷰
     private var imageViews: [UIView] = []
@@ -201,6 +201,13 @@ class SpecialDetailView: UIView {
             make.centerX.equalTo(pageCountView)
             make.centerY.equalTo(pageCountView)
         }
+    }
+    func writeSpecialDetail(data: SpecialEntry) {
+        specialImages.append(UIImageView(image: data.image))
+        specialTitle.text = data.specialTitle
+        dateLabel.text = data.date.toString()
+        specialText.text = data.specialText
+        
     }
     
     
