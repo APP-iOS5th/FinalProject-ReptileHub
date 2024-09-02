@@ -9,6 +9,7 @@ import UIKit
 
 class DetailGrowthDiaryViewController: UIViewController {
     private lazy var detailGrowthDiaryView = DetailGrowthDiaryView()
+    let tempData = [Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +31,35 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.navigationController?.pushViewController(showGrowthDiaryToSpeicialNotes, animated: true)
     }
     
+    //데이터를 가져오는 함수
     private func loadData(){
-        for index in 0..<3{
-            let cellView = createCellView(tag: index)
-            detailGrowthDiaryView.detailAddSepcialNotesCellView(cellView)
+        if tempData.isEmpty{
+            let emptyCellView = createEmptyCellView()
+            detailGrowthDiaryView.detailAddSepcialNotesCellView(emptyCellView)
+        }else{
+            for index in 0..<tempData.count{
+                let cellView = createCellView(tag: index)
+                detailGrowthDiaryView.detailAddSepcialNotesCellView(cellView)
+            }
         }
     }
     
+    //데이터가 없다는 셀을 만들어 주는 함수
+    private func createEmptyCellView() -> UIView{
+        let label = UILabel()
+        label.text = "데이터가 존재하지 않습니다."
+        label.textAlignment = .center
+        label.textColor = UIColor.textFieldPlaceholder
+        label.backgroundColor = UIColor.groupProfileBG
+        label.layer.cornerRadius = 5
+        label.layer.masksToBounds = true
+        label.snp.makeConstraints { make in
+            make.height.equalTo(100)
+        }
+        return label
+    }
+    
+    //특이사항 셀을 만들어 주는 함수
     private func createCellView(tag: Int) -> UIView {
         // CustomTableViewCell 생성
         let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
@@ -51,9 +74,10 @@ class DetailGrowthDiaryViewController: UIViewController {
             make.height.equalTo(100)
         }
         
-        return cell.contentView
+        return cell
     }
     
+    //셀을 클릭했을 때 디테일 뷰로 이동시켜주는 함수
     @objc
     private func cellTapped(_ sender: UITapGestureRecognizer){
         if let tag = sender.view?.tag{
