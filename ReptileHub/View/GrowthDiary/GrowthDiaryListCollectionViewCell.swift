@@ -23,13 +23,14 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
     private lazy var GrowthDiaryItemTitle: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = UIColor.textFieldTitle
         return label
     }()
     
     private lazy var GrowthDiaryItemDate: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = .gray
+        label.textColor = UIColor.textFieldPlaceholder
         return label
     }()
     
@@ -65,13 +66,9 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(imageName: String, title: String, date: Date){
-        let formatter = DateFormatter()
-        formatter.dateFormat = "YY. MM. dd 생성"
-        formatter.locale = Locale(identifier: "ko_KR")
-        
-        GrowthDiaryItemImage.image = UIImage(named: imageName)
+    func configure(imageName: String, title: String, date: String){
+        GrowthDiaryItemImage.setImage(with: imageName)
         GrowthDiaryItemTitle.text = title
-        GrowthDiaryItemDate.text = "\(formatter.string(from: date))"
+        GrowthDiaryItemDate.text = "\(date) 생성"
     }
 }
