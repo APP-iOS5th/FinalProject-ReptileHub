@@ -88,7 +88,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
         
         print(fetchData)
         
-        cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: "\(fetchData.createdAt!)", commentCount: fetchData.commentCount, likeCount: fetchData.likeCount)
+        cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount)
         
         UserService.shared.fetchUserProfile(uid: fetchData.userID) { result in
             
@@ -118,7 +118,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                     switch result {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
-                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt: "\(String(describing: postDetailResponse.createdAt))", imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID, isLiked: postDetail.isLiked, isBookmarked: postDetail.isBookmarked)
+                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt:  postDetailResponse.createdAt!.timefomatted, imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID, isLiked: postDetail.isLiked, isBookmarked: postDetail.isBookmarked)
                         detailViewController.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(detailViewController, animated: true)
                     case .failure(let error):

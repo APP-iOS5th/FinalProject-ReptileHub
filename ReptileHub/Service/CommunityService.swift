@@ -403,7 +403,7 @@ class CommunityService {
         let db = Firestore.firestore()
         
         db.collection("posts").document(postID).collection("comments")
-            .order(by: "createdAt",descending: true)
+            .order(by: "createdAt",descending: false)
             .getDocuments { querySnapshot, error in
                 if let error = error {
                     completion(.failure(error))

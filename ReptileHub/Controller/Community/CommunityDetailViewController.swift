@@ -129,7 +129,7 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
             switch result {
             case .success(let userData):
                 print("CommunityDetailVC 유저 정보 가져오기 성공")
-                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: "\(commentData.createdAt!)")
+                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: commentData.createdAt!.timefomatted)
             case .failure(let error):
                 print("CommunityDetailVC 유저 정보 가져오기 실패 : \(error.localizedDescription)")
             }
