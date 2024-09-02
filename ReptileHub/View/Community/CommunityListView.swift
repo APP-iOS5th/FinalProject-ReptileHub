@@ -7,14 +7,25 @@
 
 import UIKit
 
-class CommunityListView: UIView {
+// addpostviewcontroller 뷰 이동 버튼액션
+protocol CommunityListViewDelegate: AnyObject {
+    func didTapAddPostButton()
+}
 
-    private let communityTableView: UITableView = UITableView(frame: .zero)
+class CommunityListView: UIView {
+    // 테스트 중~
+    var testData: [ThumbnailPostResponse] = []
+
+    weak var delegate: CommunityListViewDelegate?
+
+    let communityTableView: UITableView = UITableView(frame: .zero)
     
-    private let addButton: UIButton = UIButton(type: .custom)
+    let addButton: UIButton = UIButton(type: .custom)
     
+
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         setupTableView()
         setupAddButton()
     }
@@ -24,11 +35,8 @@ class CommunityListView: UIView {
     }
     
 
-    
     //MARK: - communityTableView set up
     private func setupTableView() {
-        communityTableView.backgroundColor = .yellow
-        
         communityTableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "listCell")
         
         self.addSubview(communityTableView)
@@ -41,13 +49,16 @@ class CommunityListView: UIView {
         }
 
     }
-    
+
     //MARK: - Add Button set up
     private func setupAddButton() {
         addButton.frame = CGRect(x: 0, y: 0, width: 60, height: 60)
         addButton.layer.cornerRadius = addButton.frame.width * 0.5
         addButton.setImage(UIImage(systemName: "pencil"), for: .normal)
-        addButton.backgroundColor = .systemCyan
+        addButton.backgroundColor = .addBtnGraphTabbar
+        addButton.tintColor = .white
+
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         
         self.addSubview(addButton)
         
@@ -57,6 +68,12 @@ class CommunityListView: UIView {
             make.width.height.equalTo(60)
         }
     }
+    
+
+    @objc private func addButtonTapped() {
+            delegate?.didTapAddPostButton()
+        }
+    
     
     func configureTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
         communityTableView.delegate = delegate
