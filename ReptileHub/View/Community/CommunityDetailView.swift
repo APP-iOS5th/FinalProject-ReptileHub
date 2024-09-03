@@ -151,7 +151,7 @@ class CommunityDetailView: UIView {
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
-        profileImage.image = UIImage(systemName: "person")
+//        profileImage.image = UIImage(systemName: "person")
         profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 30
         profileImage.clipsToBounds = true
@@ -309,6 +309,7 @@ class CommunityDetailView: UIView {
     private func setupTextView() {
         contentText.text = "게시글 본문 예시 내용입니다."
         contentText.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        contentText.numberOfLines = 0
 
         self.stackView.addArrangedSubview(contentText)
         

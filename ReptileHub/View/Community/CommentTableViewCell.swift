@@ -37,7 +37,7 @@ class CommentTableViewCell: UITableViewCell {
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
-        profileImage.image = UIImage(systemName: "person")
+//        profileImage.image = UIImage(systemName: "person")
         profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 20
         profileImage.clipsToBounds = true

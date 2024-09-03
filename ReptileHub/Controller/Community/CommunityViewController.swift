@@ -36,7 +36,7 @@ class CommunityViewController: UIViewController {
         communityListView.delegate = self
         communityListView.configureTableView(delegate: self, datasource: self)
         view.backgroundColor = .white
-//        title = "홈"
+        title = "커뮤니티"
         
         setupSearchButton()
     }
@@ -96,19 +96,21 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! CommunityTableViewCell
         
+        cell.delegate = self
+        
         let fetchData = self.fetchTestData[indexPath.row]
         
         UserService.shared.fetchUserProfile(uid: fetchData.userID) { result in
             
             switch result {
             case .success(let userData):
-                print("Community VC현재 유저 정보 가져오기 성공")
+//                print("Community VC현재 유저 정보 가져오기 성공")
                 
                 if self.isFiltering {
                     let filteredData = self.filteredPosts[indexPath.row]
-                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name)
+                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name, postUserId:  filteredData.userID)
                 } else {
-                    cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount, name: userData.name)
+                    cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount, name: userData.name, postUserId: fetchData.userID)
                 }
                 
             case .failure(let error):
@@ -156,6 +158,31 @@ extension CommunityViewController: UISearchResultsUpdating {
         
         self.communityListView.communityTableView.reloadData()
     }
-    
-    
+}
+
+
+extension CommunityViewController: CommunityTableViewCellDelegate {
+    func deleteAlert(cell: CommunityTableViewCell) {
+        let alert = UIAlertController(title: "알림", message: "게시글을 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
+            // 선택한 셀의 indexPath
+            guard let indexPath = self.communityListView.communityTableView.indexPath(for: cell) else { return }
+            
+            CommunityService.shared.deletePost(postID: self.fetchTestData[indexPath.row].postID, userID: self.fetchTestData[indexPath.row].userID) { error in
+                if let error = error {
+                    print("게시글 삭제 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    print("게시글 삭제 성공")
+                }
+            }
+            
+            self.fetchTestData.remove(at: indexPath.row)
+            
+            // 선택한 셀을 테이블 뷰에서 삭제
+            self.communityListView.communityTableView.deleteRows(at: [indexPath], with: .automatic)
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+
 }

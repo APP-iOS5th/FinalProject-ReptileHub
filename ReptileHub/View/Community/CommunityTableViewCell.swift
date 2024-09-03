@@ -11,7 +11,13 @@ import Kingfisher
 
 let imageCache = NSCache<NSString, UIImage>()
 
+protocol CommunityTableViewCellDelegate: AnyObject {
+    func deleteAlert(cell: CommunityTableViewCell)
+}
+
 class CommunityTableViewCell: UITableViewCell {
+    
+    weak var delegate: CommunityTableViewCellDelegate?
     
 
     lazy var thumbnailImageView: UIImageView = UIImageView()
@@ -31,7 +37,10 @@ class CommunityTableViewCell: UITableViewCell {
     private let secondStackView: UIStackView = UIStackView()
     
     private let menuButton: UIButton = UIButton()
+    private var myMenu: [UIAction] = []
+    private var otherMenu: [UIAction] = []
     
+
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -47,7 +56,6 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        let config = UIImage.SymbolConfiguration(pointSize: 25, weight: .light)
         thumbnailImageView.image = nil
         titleLabel.text = ""
         contentLabel.text = ""
@@ -60,7 +68,6 @@ class CommunityTableViewCell: UITableViewCell {
     
     //MARK: - Thumnail Image
     private func setupThumbnail() {
-//        thumbnailImageView.image = nil
         thumbnailImageView.contentMode = .scaleAspectFill
         thumbnailImageView.clipsToBounds = true
         thumbnailImageView.layer.cornerRadius = 5
@@ -165,20 +172,42 @@ class CommunityTableViewCell: UITableViewCell {
     
     //MARK: - menu 버튼
     private func setupMenuButton() {
+        myMenu = [UIAction(title: "수정하기", image: UIImage(systemName: "trash"), handler: { _ in self.editButtonAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteButtonAction() })]
+        otherMenu = [ UIAction(title: "차단하기", image: UIImage(systemName: "trash"), handler: { _ in self.blockButtonAction() }), UIAction(title: "신고하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.reportButtonAction() })]
+        
         menuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         menuButton.contentMode = .scaleAspectFit
         menuButton.transform = CGAffineTransform(rotationAngle: .pi * 0.5)
+        menuButton.showsMenuAsPrimaryAction = true
         
         self.contentView.addSubview(menuButton)
         
         menuButton.snp.makeConstraints { make in
             make.top.equalTo(self.contentView).offset(5)
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-5)
-            
         }
     }
     
-    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int, name: String) {
+    private func editButtonAction() {
+        print("edit")
+    }
+    
+    private func deleteButtonAction() {
+        print("delete")
+        delegate?.deleteAlert(cell: self)
+    }
+
+    private func blockButtonAction() {
+        print("block")
+    }
+    
+    private func reportButtonAction() {
+        print("report")
+    }
+    
+    
+    
+    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int, name: String, postUserId: String) {
 
         thumbnailImageView.setImage(with: imageName)
         
@@ -188,6 +217,12 @@ class CommunityTableViewCell: UITableViewCell {
         commentCountLabel.text = "\(commentCount)"
         bookmarkCountLabel.text = "\(likeCount)"
         nicknameLabel.text = name
+        
+        let isMine: Bool = postUserId == UserService.shared.currentUserId
+        
+        
+        
+        menuButton.menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: isMine ? myMenu : otherMenu)
     }
     
 }
