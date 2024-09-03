@@ -123,19 +123,17 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = CommunityDetailViewController()
         
-        var postDetailResponse: PostDetailResponse = PostDetailResponse(postID: "", userID: "", title: "", content: "", imageURLs: [], likeCount: 0, commentCount: 0, createdAt: Date(), isLiked: false, isBookmarked: false)
-        
         CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: self.fetchTestData[indexPath.row].postID) { result in
             switch result {
             case .success(let postDetail):
                 print("상세 게시글 가져오기 성공")
-                postDetailResponse = postDetail
-                
+            
                 UserService.shared.fetchUserProfile(uid: self.fetchTestData[indexPath.row].userID) { result in
                     switch result {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
-                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt:  postDetailResponse.createdAt!.timefomatted, imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID, isLiked: postDetail.isLiked, isBookmarked: postDetail.isBookmarked)
+                        
+                        detailViewController.detailView.configureFetchData(postDetailData: postDetail, profileImageName: userData.profileImageURL, name: userData.name)
                         detailViewController.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(detailViewController, animated: true)
                     case .failure(let error):

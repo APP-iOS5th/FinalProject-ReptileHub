@@ -11,6 +11,7 @@ import SnapKit
 class CommunityDetailView: UIView {
     
     var postID: String = "nil"
+    var postUserId: String = "nil"
     
     // 키보드 탭 제스쳐
     lazy var tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
@@ -518,24 +519,25 @@ class CommunityDetailView: UIView {
         commentTextView.delegate = textViewDelegate
     }
     
-    func configureFetchData(profileImageName: String, title: String, name: String, creatAt: String, imagesName: [String], content: String, likeCount: Int, commentCount: Int, postID: String, isLiked: Bool, isBookmarked: Bool) {
-        self.postID = postID
+    func configureFetchData(postDetailData: PostDetailResponse, profileImageName: String, name: String) {
+        self.postID = postDetailData.postID
+        self.postUserId = postDetailData.userID
         
         profileImage.setImage(with: profileImageName)
-        titleLabel.text = title
+        titleLabel.text = postDetailData.title
         nicknameLabel.text = name
-        timestampLabel.text = creatAt
-        contentText.text = content
-        self.likeCount.text = "\(likeCount)"
-        self.commentCount.text = "\(commentCount)"
+        timestampLabel.text = postDetailData.createdAt?.timefomatted
+        contentText.text = postDetailData.content
+        self.likeCount.text = "\(postDetailData.likeCount)"
+        self.commentCount.text = "\(postDetailData.commentCount)"
         
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
-        let bookmarkImage = UIImage(systemName: isBookmarked ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+        let bookmarkImage = UIImage(systemName: postDetailData.isBookmarked ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
         bookMarkButton.setImage(bookmarkImage, for: .normal)
         
         
-        if imagesName.count > 0 {
-            for imageName in imagesName {
+        if postDetailData.imageURLs.count > 0 {
+            for imageName in postDetailData.imageURLs {
                 let imageView: UIImageView = UIImageView()
                 imageView.setImage(with: imageName)
                 
