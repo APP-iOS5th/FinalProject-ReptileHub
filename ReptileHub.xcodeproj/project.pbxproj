@@ -68,6 +68,8 @@
 		79BCE2722C72DB01002F630C /* AddGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */; };
 		79BCE2742C72F775002F630C /* FontWeightLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2732C72F775002F630C /* FontWeightLabel.swift */; };
 		79CDB5F62C8648BF001A3926 /* weightLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F52C8648BF001A3926 /* weightLineChartView.swift */; };
+		79CDB5F82C86D2B0001A3926 /* weightAddEditListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F72C86D2B0001A3926 /* weightAddEditListView.swift */; };
+		79CDB5FA2C86E08A001A3926 /* weightAddEditViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F92C86E08A001A3926 /* weightAddEditViewCell.swift */; };
 		79D4F1322C84AC2A00EFC064 /* DetailGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */; };
 		79D4F1342C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */; };
 		79FB0EA02C8340A6009ACD94 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 79FB0E9F2C8340A6009ACD94 /* Kingfisher */; };
@@ -159,6 +161,8 @@
 		79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrowthDiaryView.swift; sourceTree = "<group>"; };
 		79BCE2732C72F775002F630C /* FontWeightLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightLabel.swift; sourceTree = "<group>"; };
 		79CDB5F52C8648BF001A3926 /* weightLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weightLineChartView.swift; sourceTree = "<group>"; };
+		79CDB5F72C86D2B0001A3926 /* weightAddEditListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weightAddEditListView.swift; sourceTree = "<group>"; };
+		79CDB5F92C86E08A001A3926 /* weightAddEditViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weightAddEditViewCell.swift; sourceTree = "<group>"; };
 		79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailGrowthDiaryView.swift; sourceTree = "<group>"; };
 		79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailGrowthDiaryViewController.swift; sourceTree = "<group>"; };
 		9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialPlusButtonView.swift; sourceTree = "<group>"; };
@@ -387,6 +391,8 @@
 				793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */,
 				79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */,
 				79CDB5F52C8648BF001A3926 /* weightLineChartView.swift */,
+				79CDB5F72C86D2B0001A3926 /* weightAddEditListView.swift */,
+				79CDB5F92C86E08A001A3926 /* weightAddEditViewCell.swift */,
 			);
 			path = GrowthDiary;
 			sourceTree = "<group>";
@@ -534,6 +540,7 @@
 				588CE3DA2C524EA900338878 /* ViewController.swift in Sources */,
 				588CE3D62C524EA900338878 /* AppDelegate.swift in Sources */,
 				58C61A042C7A530F00E1FD3A /* KeyboardDelegate.swift in Sources */,
+				79CDB5FA2C86E08A001A3926 /* weightAddEditViewCell.swift in Sources */,
 				7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */,
 				9F2BD4362C75C4EC006FDD69 /* SpecialListViewCell.swift in Sources */,
 				9F2BD43A2C75C555006FDD69 /* SpecialDetailViewController.swift in Sources */,
@@ -546,6 +553,7 @@
 				46B0D99C2C78C18C00697E7E /* PostDetailViewController.swift in Sources */,
 				58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */,
 				9F2BD4412C7BCD8B006FDD69 /* SpecialListView.swift in Sources */,
+				79CDB5F82C86D2B0001A3926 /* weightAddEditListView.swift in Sources */,
 				589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */,
 				589CCFFD2C608FF100812D17 /* ProfileViewController.swift in Sources */,
 				C14FF3742C75DB4100089C6D /* ReptileViewController.swift in Sources */,
