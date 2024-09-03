@@ -108,7 +108,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                 
                 if self.isFiltering {
                     let filteredData = self.filteredPosts[indexPath.row]
-                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name, postUserId:  filteredData.userID
+                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name, postUserId:  filteredData.userID)
                 } else {
                     cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount, name: userData.name, postUserId: fetchData.userID)
                 }
