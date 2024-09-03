@@ -163,8 +163,17 @@ class CommunityService {
                     )
                     thumbnails.append(thumbnailResponse)
                 }
-                
             }
+            
+            // createdAt 기준으로 내림차순 정렬
+           
+            thumbnails.sort {
+                guard let date1 = $0.createdAt, let date2 = $1.createdAt else {
+                    return false
+                }
+                return date1 > date2
+            }
+            
             // completion으로 전송
             completion(.success(thumbnails))
             
