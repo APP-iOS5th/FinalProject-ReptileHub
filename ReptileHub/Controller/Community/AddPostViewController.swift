@@ -92,7 +92,9 @@ extension AddPostViewController: PHPickerViewControllerDelegate {
 }
 
 extension AddPostViewController: UITextViewDelegate {
+    // 텍스트 뷰의 텍스트가 변경될 때 호출되는 델리게이트 메서드
     func textViewDidChange(_ textView: UITextView) {
+
         if textView.text == "" {
             self.addPostView.textViewPlaceholder.isHidden = false
         } else {
@@ -131,6 +133,7 @@ extension AddPostViewController: AddPostViewDelegate {
                         print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
                     } else {
                         print("게시글 게시 성공")
+                        self.navigationController?.popViewController(animated: true)
                     }
         }
     }
