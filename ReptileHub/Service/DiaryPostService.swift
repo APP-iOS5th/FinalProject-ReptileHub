@@ -398,28 +398,29 @@ class DiaryPostService {
 extension DiaryPostService {
    
     //MARK: - 성장 일지 속 일기 작성 함수
-    func createDiary(userID: String, diaryID: String, images: [Data], title: String, content: String, completion: @escaping (Error?) -> Void) {
+    func createDiary(userID: String, diaryID: String, images: [Data], title: String, content: String, selectedDate: Date, completion: @escaping (Error?) -> Void) {
         uploadImages(images: images) { urls, errors in
             if let errors = errors, !errors.isEmpty {
                 completion(errors.first)
                 return
             }
-            
+
             guard let urls = urls else {
                 completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to upload images"]))
                 return
             }
-            
+
             let diaryRequest = DiaryRequest(title: title, content: content, imageURLs: urls)
-            let entryID = UUID().uuidString //고유 ID 생성
+            let entryID = UUID().uuidString // 고유 ID 생성
             let diaryData: [String: Any] = [
                 "entryID": entryID,
                 "title": diaryRequest.title,
                 "content": diaryRequest.content,
                 "imageURLs": diaryRequest.imageURLs,
-                "createdAt": FieldValue.serverTimestamp()
+                "selectedDate": Timestamp(date: selectedDate),
+                "createdAt": FieldValue.serverTimestamp()// 사용자가 선택한 날짜를 Timestamp로 저장
             ]
-            
+
             let db = Firestore.firestore()
             db.collection("users").document(userID)
                 .collection("growth_diaries_details").document(diaryID)
@@ -433,10 +434,13 @@ extension DiaryPostService {
     func fetchDiaryEntries(userID: String, diaryID: String, limit: Int? = nil, completion: @escaping (Result<[DiaryResponse], Error>) -> Void) {
         let db = Firestore.firestore()
         
+        // selectedDate 필드를 기준으로 정렬
         var query: Query = db.collection("users").document(userID)
             .collection("growth_diaries_details").document(diaryID)
             .collection("diary_entries")
-            .order(by: "createdAt", descending: true)
+            .order(by: "selectedDate", descending: false) // selectedDate 필드를 기준으로 오름차순 정렬
+            .order(by: "createdAt", descending: false) // 같은 날짜의 경우 작성 시간 기준 오름차순 정렬
+           
         
         // limit 파라미터가 제공된 경우 쿼리에 제한 추가
         if let limit = limit {
@@ -463,19 +467,19 @@ extension DiaryPostService {
                    let title = data["title"] as? String,
                    let content = data["content"] as? String,
                    let imageURLs = data["imageURLs"] as? [String],
-                   let createdAt = data["createdAt"] as? Timestamp {
+                   let selectedDate = data["selectedDate"] as? Timestamp { // selectedDate 필드를 가져옴
                     let diaryEntry = DiaryResponse(
                         entryID: entryID,
                         title: title,
                         content: content,
                         imageURLs: imageURLs,
-                        createdAt: createdAt.dateValue()
-                       )
+                        createdAt: selectedDate.dateValue(), 
+                        selectedDate: selectedDate.dateValue() // 선택된 날짜를 사용
+                    )
                     diaryEntries.append(diaryEntry)
                 } else {
                     print("Failed to parse document data: \(document.data())")
                 }
-                
             }
             
             completion(.success(diaryEntries))
