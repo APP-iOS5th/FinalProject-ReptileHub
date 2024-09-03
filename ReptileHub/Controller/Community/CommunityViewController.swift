@@ -108,7 +108,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                 
                 if self.isFiltering {
                     let filteredData = self.filteredPosts[indexPath.row]
-                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name, postUserId:  filteredData.userID)
+                    cell.configure(imageName: filteredData.thumbnailURL, title: filteredData.title, content: filteredData.previewContent, createAt: filteredData.createdAt!.timefomatted, commentCount: filteredData.commentCount, likeCount: filteredData.likeCount, name: userData.name, postUserId:  filteredData.userID
                 } else {
                     cell.configure(imageName: fetchData.thumbnailURL, title: fetchData.title, content: fetchData.previewContent, createAt: fetchData.createdAt!.timefomatted, commentCount: fetchData.commentCount, likeCount: fetchData.likeCount, name: userData.name, postUserId: fetchData.userID)
                 }
@@ -133,7 +133,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
                         
-                        detailViewController.detailView.configureFetchData(postDetailData: postDetail, profileImageName: userData.profileImageURL, name: userData.name)
+                        detailViewController.detailView.configureFetchData(postDetailData: postDetail, likeCount: self.fetchTestData[indexPath.row].likeCount, commentCount: self.fetchTestData[indexPath.row].commentCount, profileImageName: userData.profileImageURL, name: userData.name)
                         detailViewController.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(detailViewController, animated: true)
                     case .failure(let error):
