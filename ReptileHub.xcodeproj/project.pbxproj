@@ -67,6 +67,7 @@
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
 		79BCE2722C72DB01002F630C /* AddGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */; };
 		79BCE2742C72F775002F630C /* FontWeightLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2732C72F775002F630C /* FontWeightLabel.swift */; };
+		79CDB5F62C8648BF001A3926 /* weightLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F52C8648BF001A3926 /* weightLineChartView.swift */; };
 		79D4F1322C84AC2A00EFC064 /* DetailGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */; };
 		79D4F1342C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */; };
 		79FB0EA02C8340A6009ACD94 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 79FB0E9F2C8340A6009ACD94 /* Kingfisher */; };
@@ -157,6 +158,7 @@
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
 		79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrowthDiaryView.swift; sourceTree = "<group>"; };
 		79BCE2732C72F775002F630C /* FontWeightLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightLabel.swift; sourceTree = "<group>"; };
+		79CDB5F52C8648BF001A3926 /* weightLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weightLineChartView.swift; sourceTree = "<group>"; };
 		79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailGrowthDiaryView.swift; sourceTree = "<group>"; };
 		79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailGrowthDiaryViewController.swift; sourceTree = "<group>"; };
 		9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialPlusButtonView.swift; sourceTree = "<group>"; };
@@ -384,6 +386,7 @@
 				79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */,
 				793E9CE02C7CDF8F00DB4B30 /* DropDownView.swift */,
 				79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */,
+				79CDB5F52C8648BF001A3926 /* weightLineChartView.swift */,
 			);
 			path = GrowthDiary;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				9F2BD4362C75C4EC006FDD69 /* SpecialListViewCell.swift in Sources */,
 				9F2BD43A2C75C555006FDD69 /* SpecialDetailViewController.swift in Sources */,
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
+				79CDB5F62C8648BF001A3926 /* weightLineChartView.swift in Sources */,
 				C154FA1C2C7C11B500624AA3 /* WriteReplyListView.swift in Sources */,
 				C12FC0EF2C790D19000BB52E /* ProfileView.swift in Sources */,
 				469B443C2C6305E300B1C49B /* AuthService.swift in Sources */,

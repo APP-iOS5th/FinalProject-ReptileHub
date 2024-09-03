@@ -51,7 +51,8 @@ struct GrowthDiaryResponse: Codable {
     var parentInfo: ParentsResponse?
 }
 
-struct LizardInfoResponse: Codable {
+struct LizardInfoResponse: Codable, Identifiable {
+    var id = UUID().uuidString
     var name: String
     var species: String
     var morph: String?

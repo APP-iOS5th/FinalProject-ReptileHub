@@ -215,9 +215,35 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailWeightGraph: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = UIColor.textFieldBorderLine.cgColor
         view.clipsToBounds = true
         view.backgroundColor = .textFieldSegmentBG
+        view.addSubview(detailWeightLineChartView.view)
+        
         return view
+    }()
+    private lazy var detailWeightLineChartView: UIHostingController<weightLineChartView> = {
+        let hostingController = UIHostingController(rootView: weightLineChartView(
+            // TODO: 데이터 넘겨받는걸로 수정해야함
+            weightData: [
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -1186400), gender: "남성", weight: 3, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -3186400), gender: "남성", weight: 1, feedMethod: "자율", tailexistence: true),
+//                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -5536400), gender: "남성", weight: 2, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -7586400), gender: "남성", weight: 3, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -9586400), gender: "남성", weight: 4, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -11586400), gender: "남성", weight: 5, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays:Date(timeIntervalSinceNow: -13586400), gender: "남성", weight: 6, feedMethod: "자율", tailexistence: true),
+//                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -15586400), gender: "남성", weight: 7, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -17586400), gender: "남성", weight: 8, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -20586400), gender: "남성", weight: 8, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(), gender: "남성", weight: 8, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: 3086400), gender: "남성", weight: 11, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: 5586400), gender: "남성", weight: 12, feedMethod: "자율", tailexistence: true),
+                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: 8086400), gender: "남성", weight: 13, feedMethod: "자율", tailexistence: true),
+            ]
+        ))
+        return hostingController
     }()
     
     //MARK: - 무게 추이 타이틀 + 그래프 스택 뷰
@@ -409,6 +435,16 @@ class DetailGrowthDiaryView: UIView {
         detailWeightStackView.snp.makeConstraints { make in
             make.height.equalTo(200)
         }
+        
+        detailWeightLineChartView.view.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(detailWeightStackView)
+            make.height.equalTo(200)
+        }
+        
+        
+//        detailWeightLineChartView.snp.makeConstraints { make in
+//            make.leading.trailing.equalTo(detailWeightStackView)
+//        }
         
         //        detailSpecialNoteHeaderStackView.snp.makeConstraints { make in
         //            make.top.equalTo(detailStackView.snp.bottom).offset(30)
