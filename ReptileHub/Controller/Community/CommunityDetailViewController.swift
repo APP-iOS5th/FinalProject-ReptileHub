@@ -223,7 +223,6 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
                 print("댓글 작성 에러 : \(error.localizedDescription)")
             } else {
                 print("댓글 작성 성공!")
-                
                 CommunityService.shared.fetchComments(forPost: postId) { result in
                     switch result {
                     case .success(let commentsData):
@@ -235,8 +234,11 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
                             height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
                         }
                         self.detailView.updateCommentTableViewHeight(height: height)
-
+                        
                         self.detailView.commentTableView.reloadData()
+                        
+                        // 디테일 뷰의 댓글 카운트 1 증가
+                        self.detailView.grantNewValueCommentCount()
                     case .failure(let error):
                         print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
                     }

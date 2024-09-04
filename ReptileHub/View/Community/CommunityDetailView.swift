@@ -482,6 +482,13 @@ class CommunityDetailView: UIView {
         delegate?.createCommentAction(postId: self.postID, commentText: commentTextView.text)
     }
     
+    func grantNewValueCommentCount() {
+        DispatchQueue.main.async {
+                self.commentCount.text = String((Int(self.commentCount.text ?? "0") ?? 0) + 1)
+                self.commentCount.setNeedsLayout()
+            }
+    }
+    
     
     // UIScrollViewDelegate의 scrollViewDidScroll에 사용
     func imageScrollCount(scrollView: UIScrollView) {
