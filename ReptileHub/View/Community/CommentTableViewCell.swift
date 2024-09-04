@@ -18,6 +18,8 @@ class CommentTableViewCell: UITableViewCell {
     let elementStackView: UIStackView = UIStackView()
     
     private var menuButton: UIButton = UIButton()
+    private var myMenu: [UIAction] = []
+    private var otherMenu: [UIAction] = []
     
 
     
@@ -111,8 +113,11 @@ class CommentTableViewCell: UITableViewCell {
         menuButton.tintColor = .gray
         menuButton.transform = CGAffineTransform(rotationAngle: .pi / 2) // 90도 회전
         
-        menuButton.addTarget(self, action: #selector(actionMenuButton), for: .touchUpInside)
-            
+        myMenu = [ UIAction(title: "복사하기", image: UIImage(systemName: "trash"), handler: { _ in  }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in  }) ]
+        otherMenu = [ UIAction(title: "복사하기", image: UIImage(systemName: "trash"), handler: { _ in  }) ]
+        
+        menuButton.showsMenuAsPrimaryAction = true
+        
         self.contentView.addSubview(menuButton)
         
         menuButton.snp.makeConstraints { make in
@@ -120,18 +125,18 @@ class CommentTableViewCell: UITableViewCell {
             make.trailing.equalTo(self.contentView.snp.trailing)
         }
     }
-    
-    @objc
-    private func actionMenuButton() {
-        print("메뉴 버튼 클릭.")
-    }
-    
+
     //MARK: - configure cell
-    func configureCell(profileURL: String, name: String, content: String, createAt: String) {
+    func configureCell(profileURL: String, name: String, content: String, createAt: String, commentUserId: String) {
         profileImage.setImage(with: profileURL)
         nameLabel.text = name
         commentLabel.text = content
         timestampLabel.text = createAt
+        
+        let isMine: Bool = commentUserId == UserService.shared.currentUserId
+        
+        menuButton.menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: isMine ? myMenu : otherMenu)
+
     }
 
 }

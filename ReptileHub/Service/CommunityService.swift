@@ -353,6 +353,8 @@ class CommunityService {
         }
     }
 
+
+    
     //MARK: - 댓글 작성 함수
     func addComment(postID: String, userID: String, content: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -398,6 +400,9 @@ class CommunityService {
             }
         }
     }
+    
+    
+    
     //MARK: - 댓글 불러오기 함수
     func fetchComments(forPost postID:String, completion: @escaping(Result<[CommentResponse],Error>) -> Void) {
         let db = Firestore.firestore()

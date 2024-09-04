@@ -172,8 +172,8 @@ class CommunityTableViewCell: UITableViewCell {
     
     //MARK: - menu 버튼
     private func setupMenuButton() {
-        myMenu = [UIAction(title: "수정하기", image: UIImage(systemName: "trash"), handler: { _ in self.editButtonAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteButtonAction() })]
-        otherMenu = [ UIAction(title: "차단하기", image: UIImage(systemName: "trash"), handler: { _ in self.blockButtonAction() }), UIAction(title: "신고하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.reportButtonAction() })]
+        myMenu = [ UIAction(title: "수정하기", image: UIImage(systemName: "trash"), handler: { _ in self.editButtonAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteButtonAction() }) ]
+        otherMenu = [ UIAction(title: "차단하기", image: UIImage(systemName: "trash"), handler: { _ in self.blockButtonAction() }), UIAction(title: "신고하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.reportButtonAction() }) ]
         
         menuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         menuButton.contentMode = .scaleAspectFit

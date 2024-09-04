@@ -8,7 +8,13 @@
 import UIKit
 import SnapKit
 
+protocol CommunityDetailViewDelegate: AnyObject {
+    func createCommentAction(postId: String, commentText: String)
+}
+
 class CommunityDetailView: UIView {
+    
+    weak var delegate: CommunityDetailViewDelegate?
 
     var postID: String = "nil"
     var postUserId: String = "nil"
@@ -473,15 +479,7 @@ class CommunityDetailView: UIView {
     
     @objc
     private func sendButtonAction() {
-        CommunityService.shared.addComment(postID: self.postID, userID: UserService.shared.currentUserId, content: commentTextView.text) { error in
-            if let error = error {
-                print("댓글 게시 중 오류 발생: \(error.localizedDescription)")
-            } else {
-                print("댓글 게시 성공")
-                self.commentTextView.text = ""
-                self.commentTableView.reloadData()
-            }
-        }
+        delegate?.createCommentAction(postId: self.postID, commentText: commentTextView.text)
     }
     
     

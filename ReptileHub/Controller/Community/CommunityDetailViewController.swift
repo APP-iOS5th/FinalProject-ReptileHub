@@ -29,6 +29,8 @@ class CommunityDetailViewController: UIViewController {
         
         self.title = "커뮤니티"
         
+        detailView.delegate = self
+        
         setupMenuButton()
         setupDetailView()
     }
@@ -178,11 +180,13 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
         
         let commentData = self.fetchComments[indexPath.row]
         
-        UserService.shared.fetchUserProfile(uid: self.fetchComments[indexPath.row].userID) { result in
+        guard let createAt = commentData.createdAt?.timefomatted else { return cell }
+        
+        UserService.shared.fetchUserProfile(uid: commentData.userID) { result in
             switch result {
             case .success(let userData):
                 print("CommunityDetailVC 유저 정보 가져오기 성공")
-                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: commentData.createdAt!.timefomatted)
+                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: createAt, commentUserId: commentData.userID)
             case .failure(let error):
                 print("CommunityDetailVC 유저 정보 가져오기 실패 : \(error.localizedDescription)")
             }
@@ -211,3 +215,36 @@ extension CommunityDetailViewController: UITextViewDelegate {
         detailView.textViewChange(textView: textView)
     }
 }
+
+extension CommunityDetailViewController: CommunityDetailViewDelegate {
+    func createCommentAction(postId: String, commentText: String) {
+        CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { error in
+            if let error = error {
+                print("댓글 작성 에러 : \(error.localizedDescription)")
+            } else {
+                print("댓글 작성 성공!")
+                
+                CommunityService.shared.fetchComments(forPost: postId) { result in
+                    switch result {
+                    case .success(let commentsData):
+                        self.fetchComments = commentsData
+                        
+                        var height: CGFloat = 50
+
+                        for comment in self.fetchComments {
+                            height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+                        }
+                        self.detailView.updateCommentTableViewHeight(height: height)
+
+                        self.detailView.commentTableView.reloadData()
+                    case .failure(let error):
+                        print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
+                    }
+                }
+                
+            }
+        }
+    }
+    
+}
+
