@@ -16,6 +16,11 @@ class weightAddEditViewController: UIViewController {
         return button
     }()
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        weightAddEditView.weightAddEditViewScrollState()
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()

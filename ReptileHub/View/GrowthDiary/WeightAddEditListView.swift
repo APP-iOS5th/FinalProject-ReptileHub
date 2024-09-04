@@ -39,5 +39,16 @@ class WeightAddEditListView: UIView {
     func registerWeightAddEditTablCell(_ cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
         weightAddEditTableView.register(cellClass, forCellReuseIdentifier: identifier)
     }
+    
+    func weightAddEditViewScrollState(){
+        weightAddEditTableView.setNeedsLayout()
+        weightAddEditTableView.layoutIfNeeded()
+        
+        if weightAddEditTableView.contentSize.height > weightAddEditTableView.bounds.height{
+            weightAddEditTableView.isScrollEnabled = true
+        }else{
+            weightAddEditTableView.isScrollEnabled = false
+        }
+    }
 
 }
