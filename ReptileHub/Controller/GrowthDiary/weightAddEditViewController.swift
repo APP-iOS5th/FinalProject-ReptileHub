@@ -11,14 +11,24 @@ class weightAddEditViewController: UIViewController {
 
     private lazy var weightAddEditView = WeightAddEditListView()    
     
+    private lazy var addButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
+        return button
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUI()
+    }
+    
+    private func setUI(){
         self.title = "무게 추이"
         self.view = weightAddEditView
         self.view.backgroundColor = .white
+        self.navigationItem.rightBarButtonItem = self.addButton
         weightAddEditView.configureWeightAddEditTablview(delegate: self, dataSouce: self)
         weightAddEditView.registerWeightAddEditTablCell(WeightAddEditViewCell.self, forCellReuseIdentifier: WeightAddEditViewCell.identifier)
-        
     }
 }
 
