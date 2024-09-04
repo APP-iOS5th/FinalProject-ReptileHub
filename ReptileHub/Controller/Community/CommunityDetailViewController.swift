@@ -178,6 +178,8 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
         
+        cell.delegate = self
+        
         let commentData = self.fetchComments[indexPath.row]
         
         guard let createAt = commentData.createdAt?.timefomatted else { return cell }
@@ -238,7 +240,7 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
                         self.detailView.commentTableView.reloadData()
                         
                         // 디테일 뷰의 댓글 카운트 1 증가
-                        self.detailView.grantNewValueCommentCount()
+                        self.detailView.addCommentCount()
                     case .failure(let error):
                         print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
                     }
@@ -250,3 +252,25 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
     
 }
 
+extension CommunityDetailViewController: CommentTableViewCellDelegate {
+    func deleteCommentAction(cell: CommentTableViewCell) {
+        let alert = UIAlertController(title: "알림", message: "댓글을 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
+            // 선택한 셀의 indexPath
+            guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+            
+            CommunityService.shared.deleteComment(postID: self.detailView.postID, commentID: self.fetchComments[indexPath.row].commentID) { error in
+                if let error = error {
+                    print("댓글 삭제 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    print("댓글 삭제 성공")
+                    self.fetchComments.remove(at: indexPath.row)
+                    self.detailView.commentTableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.detailView.subtractCommentCount()
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+}

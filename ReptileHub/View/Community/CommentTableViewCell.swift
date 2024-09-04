@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol CommentTableViewCellDelegate: AnyObject {
+    func deleteCommentAction(cell: CommentTableViewCell)
+}
+
 class CommentTableViewCell: UITableViewCell {
+    
+    weak var delegate: CommentTableViewCellDelegate?
     
     // 상단 게시글 정보
     private let profileImage: UIImageView = UIImageView()
@@ -113,8 +119,8 @@ class CommentTableViewCell: UITableViewCell {
         menuButton.tintColor = .gray
         menuButton.transform = CGAffineTransform(rotationAngle: .pi / 2) // 90도 회전
         
-        myMenu = [ UIAction(title: "복사하기", image: UIImage(systemName: "trash"), handler: { _ in  }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in  }) ]
-        otherMenu = [ UIAction(title: "복사하기", image: UIImage(systemName: "trash"), handler: { _ in  }) ]
+        myMenu = [ UIAction(title: "복사하기", image: UIImage(systemName: "trash"), handler: { _ in self.copyCommentAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteCommentAction() }) ]
+        otherMenu = [ UIAction(title: "복사하기", image: UIImage(systemName: "trash"), handler: { _ in self.copyCommentAction() }) ]
         
         menuButton.showsMenuAsPrimaryAction = true
         
@@ -124,6 +130,15 @@ class CommentTableViewCell: UITableViewCell {
             make.top.equalTo(self.contentView.snp.top).offset(10)
             make.trailing.equalTo(self.contentView.snp.trailing)
         }
+    }
+    
+    private func copyCommentAction() {
+        print("댓글 복사하기 클릭.")
+    }
+    
+    private func deleteCommentAction() {
+        print("댓글 삭제하기 클릭.")
+        self.delegate?.deleteCommentAction(cell: self)
     }
 
     //MARK: - configure cell
