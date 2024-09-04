@@ -8,11 +8,17 @@
 import UIKit
 import SnapKit
 
+protocol SpecialDetailViewDelegate: AnyObject {
+    func deleteSpecialNoteButtonTapped(data: DiaryResponse)
+}
+
 class SpecialDetailViewController: UIViewController {
     
+    
+    var delegate: SpecialDetailViewDelegate?
     private let specialDetailView = SpecialDetailView()
-    let saveSpecialData: SpecialEntry
-    init(saverEntries: SpecialEntry) {
+    let saveSpecialData: DiaryResponse
+    init(saverEntries: DiaryResponse) {
         self.saveSpecialData = saverEntries
         super.init(nibName: nil, bundle: nil)
     }
@@ -27,8 +33,10 @@ class SpecialDetailViewController: UIViewController {
         setupNavigationBar()
         specialDetailView.writeSpecialDetail(data: saveSpecialData)
         print(saveSpecialData)
-        // Do any additional setup after loading the view.
     }
+    
+    //TODO: diaryID, LizardName 데이터 받아오기 (넘겨주숑)
+    
     //MARK: - Navigationbar & UIMenu
     private func setupNavigationBar() {
         navigationItem.title = "특이사항"
@@ -45,7 +53,10 @@ class SpecialDetailViewController: UIViewController {
             return [
                 UIAction(title: "수정하기", image: UIImage(systemName: "pencil"),handler: { [weak self]_ in
                     self?.navigateToEditScreen() }),
-                UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
+                UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { [weak self] _ in
+                    guard let deleteData = self?.saveSpecialData else { return }
+                    self?.delegate?.deleteSpecialNoteButtonTapped(data: deleteData)
+                }),
                 
             ]
         }

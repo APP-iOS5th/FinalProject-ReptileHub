@@ -19,7 +19,8 @@ class SpecialListViewCell: UITableViewCell {
         specialImageView.tintColor = UIColor(named: "imagePickerColor")
         specialImageView.backgroundColor = UIColor(named: "imagePickerPlaceholderColor")
         specialImageView.layer.cornerRadius = 5
-        specialImageView.contentMode = .scaleAspectFit // scaleAspectFill?
+        specialImageView.contentMode = .scaleAspectFill
+        specialImageView.clipsToBounds = true
         return specialImageView
     }()
     
@@ -127,60 +128,14 @@ class SpecialListViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    func configureCell(specialEntry: SpecialEntry) {
-        specialImageView.image = specialEntry.image.first ?? UIImage(systemName: "camera")
-        dateLabel.text = specialEntry.date.formatted(.dateTime.year().month().day())
-        specialTitle.text = specialEntry.specialTitle
-        specialText.text = specialEntry.specialText
+    //MARK: - 셀 데이터 받아오는 함수
+    func configureCell(specialEntry: DiaryResponse) {
+        specialImageView.setImage(with: specialEntry.imageURLs.first!)
+        dateLabel.text = specialEntry.createdAt?.formatted
+        specialTitle.text = specialEntry.title
+        specialText.text = specialEntry.content
     }
 
-}
-
-class SpecialEntry {
-    let date: Date
-    let image: [UIImage?]
-    let specialTitle: String
-    let specialText: String
-    
-    init?(date: Date, image: [UIImage?], specialTitle: String, specialText: String) {
-        if specialTitle.isEmpty || specialText.isEmpty {
-            return nil
-        }
-        self.date = Date()
-        self.image = image
-        self.specialTitle = specialTitle
-        self.specialText = specialText
-    }
-}
-
-struct SampleSpecialNoteData {
-    var specialEntries: [SpecialEntry] = []
-    
-    mutating func createSampleSpecialEntryData() {
-        let photo1 = [UIImage(named: "tempImage")]
-        let photo2 = [UIImage(named: "profile")]
-        let photo3 = [UIImage(systemName: "cloud.sun"), UIImage(named: "tempImage"), UIImage(named: "profile")]
-        guard let specialEntry1 = SpecialEntry(date: Date.now,
-                                               image: photo1 , specialTitle: "Today is good day", specialText: "Good" ) else {
-            fatalError("Unable to instantiate journalEntry1")
-        }
-        guard let specialEntry2 = SpecialEntry(date: Date.retrieveDateFromToday(by: 1),
-                                               image: photo2 , specialTitle: "Today is good day", specialText: "Bad" ) else {
-            fatalError("Unable to instantiate journalEntry1")
-        }
-        guard let specialEntry3 = SpecialEntry(date: Date.retrieveDateFromToday(by: 2),
-                                               image: photo3 , specialTitle: "Today is good day", specialText: "SoSo" ) else {
-            fatalError("Unable to instantiate journalEntry1")
-        }
-        
-        specialEntries += [specialEntry1, specialEntry2, specialEntry3]
-    }
-}
-extension Date {
-    static func retrieveDateFromToday(by day: Int) -> Date {
-        let calendar = Calendar.current
-        return calendar.date(byAdding: .day, value: day, to: Date.now)!
-    }
 }
 
 

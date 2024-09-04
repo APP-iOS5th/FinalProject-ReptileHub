@@ -202,13 +202,18 @@ class SpecialDetailView: UIView {
             make.centerY.equalTo(pageCountView)
         }
     }
-    func writeSpecialDetail(data: SpecialEntry) {
+    //MARK: - SpecialDetialView 데이터 보내주는 함수
+    func writeSpecialDetail(data: DiaryResponse) {
         print("안되면 울거야",specialImages)
-        specialImages.append(contentsOf: data.image.map{ UIImageView(image: $0)})
+        for url in data.imageURLs {
+        let imageView = UIImageView()
+            imageView.setImage(with: url)
+        specialImages.append(imageView)
+        }
         print("제발 되게 해주세요.",specialImages)
-        specialTitle.text = data.specialTitle
-        dateLabel.text = data.date.toString()
-        specialText.text = data.specialText
+        specialTitle.text = data.title
+        dateLabel.text = data.createdAt?.formatted
+        specialText.text = data.content
 //        print(data.image ?? UIImage(systemName: "person")!)
         setupImageScrollView()
         setupImagePageCountLabel()

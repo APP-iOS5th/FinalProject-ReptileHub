@@ -11,15 +11,20 @@ import SnapKit
 class SpecialListViewController: UIViewController {
     private let specialListView = SpecialListView()
     
-    var sampleSpecialNoteData = SampleSpecialNoteData()
+    private var specialListData: [DiaryResponse] = []
+    
     
     private var headerHeight = 100.0
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        fetchSpecialList()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view = specialListView
-        sampleSpecialNoteData.createSampleSpecialEntryData()
         specialListView.configureTableView(delegate: self, datasource: self)
         // UIMenu 관련 셀 호출
         specialListView.registerCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
@@ -27,16 +32,38 @@ class SpecialListViewController: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         title = "특이사항"
     }
-    
+    private func fetchSpecialList() {
+        DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: "5F9492AD-9C03-4A9A-8443-64D8BACF519D") { [weak self] response in
+            switch response{
+            case .success(let specialListData):
+                self?.specialListData = specialListData
+                self?.specialListView.tableView.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+            
+        }
+    }
 
 }
 //MARK: - TableView 관련
-extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource {
-
+extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource, SpecialDetailViewDelegate {
+    // SpecialEditView 삭제 함수
+    func deleteSpecialNoteButtonTapped(data: DiaryResponse) {
+        DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: "5F9492AD-9C03-4A9A-8443-64D8BACF519D", entryID: data.entryID) { [weak self] error in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                print("삭제 완료")
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
+    
     // 셀 개수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        return 10
-        sampleSpecialNoteData.specialEntries.count
+        specialListData.count
     }
     // 셀 높이
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -47,14 +74,27 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SpecialListViewCell.identifier, for: indexPath) as? SpecialListViewCell else {
                 return UITableViewCell()
             }
-        // UIMenu UIAction 설정
+        // UIMenu UIAction 설정 (셀 삭제)
         let menuItems = [
-                UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
+            UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { [weak self] _ in
+                guard let entryID = self?.specialListData[indexPath.row].entryID else {
+                    return
+                }
+                DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: "5F9492AD-9C03-4A9A-8443-64D8BACF519D", entryID: entryID) { [weak self] error in
+                    if let error = error {
+                        print(error.localizedDescription)
+                    } else {
+                        print("삭제 완료")
+                        self?.fetchSpecialList()
+                        self?.specialListView.tableView.reloadData()
+                    }
+                } 
+            }),
                 ]
         // UIMenu title 설정
         let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: menuItems)
         // 셀에 메뉴 설정
-        let specialEntry = sampleSpecialNoteData.specialEntries[indexPath.row]
+        let specialEntry = specialListData[indexPath.row]
         cell.configureCell(specialEntry: specialEntry)
         cell.configure(with: menu)
         cell.selectionStyle = .none
@@ -62,10 +102,14 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
     }
     // 셀 기능
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let specialEntry = sampleSpecialNoteData.specialEntries[indexPath.row]
+        let specialEntry = specialListData[indexPath.row]
         let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry)
-//        self.navigationController?.pushViewController(specialDetailViewController, animated: true)
+        specialDetailViewController.delegate = self
+        
         show(specialDetailViewController, sender: self)
+    }
+    func deleteSpecialNoteButtonTapped() {
+        
     }
     // 헤더 뷰 호출
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -77,14 +121,9 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource 
             let specialEditViewController = SpecialEditViewController()
             self?.navigationController?.pushViewController(specialEditViewController, animated: true)
         }
-        return specialPlusButtonView
+        return specialPlusButtonView 
     }
-    @objc private func addSpecialNote() {
-        let specialEditViewController = SpecialEditViewController()
-//        let navController = UINavigationController(rootViewController: SpecialEditViewController)
-//        specialEditViewController.delegate = self
-//        present(navController, animated: true)
-    }
+    
     
     
 }

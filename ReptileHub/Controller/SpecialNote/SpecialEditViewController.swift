@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import FirebaseAuth
 
 class SpecialEditViewController: UIViewController {
     
@@ -17,9 +18,11 @@ class SpecialEditViewController: UIViewController {
         super.viewDidLoad()
         self.view = specialEditView
         specialEditView.configureSpecialEditView(delegate: self, datasource: self, textViewDelegate: self)
+        specialEditView.delegate = self
         navigationItem.title = "특이사항"
         // Do any additional setup after loading the view.
     }
+    
 
 }
 //MARK: - SpecialEditView Image CollectionViewDelegate 관련
@@ -107,5 +110,30 @@ extension SpecialEditViewController: UITextViewDelegate {
         }
     }
 }
-
-
+//MARK: - SpecialEidtView 데이터 저장해서 게시
+extension SpecialEditViewController: SpecialEditViewDelegate {
+    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String) {
+        print("""
+                [현재 등록할 게시글 내용]
+                imageData: \(imageData)
+                date: \(date)
+                title: \(title)
+                text: \(text)
+                """)
+        guard let userID = Auth.auth().getUserID() else {
+            return
+        }
+        let diaryID = "5F9492AD-9C03-4A9A-8443-64D8BACF519D"
+        DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){
+            error in
+                if let error = error {
+                            print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
+                        } else {
+                            print("게시글 게시 성공")
+                            self.navigationController?.popViewController(animated: true)
+                        }
+        }
+    }
+    
+    
+}
