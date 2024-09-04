@@ -66,6 +66,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
         }
     }
     
+    
     func updateImage() {
         // 다른 뷰 컨트롤러에서 돌아왔을 때 이미지를 다시 로드해야 하는 경우
         shouldReloadImage = true

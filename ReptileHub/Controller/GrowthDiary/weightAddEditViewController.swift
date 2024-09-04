@@ -35,6 +35,11 @@ class weightAddEditViewController: UIViewController {
         weightAddEditView.configureWeightAddEditTablview(delegate: self, dataSouce: self)
         weightAddEditView.registerWeightAddEditTablCell(WeightAddEditViewCell.self, forCellReuseIdentifier: WeightAddEditViewCell.identifier)
     }
+    
+    //무게 추가하는 뷰 컨트롤러로 이동 액션
+    private func moveAddWeightController(){
+        
+    }
 }
 
 extension weightAddEditViewController: UITableViewDelegate, UITableViewDataSource{
