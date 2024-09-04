@@ -13,6 +13,8 @@ let imageCache = NSCache<NSString, UIImage>()
 
 protocol CommunityTableViewCellDelegate: AnyObject {
     func deleteAlert(cell: CommunityTableViewCell)
+    
+    func blockAlert(cell: CommunityTableViewCell)
 }
 
 class CommunityTableViewCell: UITableViewCell {
@@ -189,20 +191,21 @@ class CommunityTableViewCell: UITableViewCell {
     }
     
     private func editButtonAction() {
-        print("edit")
+        print("CommunityTableViewCell edit")
     }
     
     private func deleteButtonAction() {
-        print("delete")
+        print("CommunityTableViewCell delete")
         delegate?.deleteAlert(cell: self)
     }
 
     private func blockButtonAction() {
-        print("block")
+        print("CommunityTableViewCell block")
+        delegate?.blockAlert(cell: self)
     }
     
     private func reportButtonAction() {
-        print("report")
+        print("CommunityTableViewCell report")
     }
     
     
