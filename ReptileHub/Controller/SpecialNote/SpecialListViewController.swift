@@ -13,6 +13,16 @@ class SpecialListViewController: UIViewController {
     
     private var specialListData: [DiaryResponse] = []
     
+    var diaryID: String
+    
+    init(diaryID: String) {
+            self.diaryID = diaryID
+            super.init(nibName: nil, bundle: nil)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     
     private var headerHeight = 100.0
     
@@ -33,7 +43,7 @@ class SpecialListViewController: UIViewController {
         title = "특이사항"
     }
     private func fetchSpecialList() {
-        DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: "5F9492AD-9C03-4A9A-8443-64D8BACF519D") { [weak self] response in
+        DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let specialListData):
                 self?.specialListData = specialListData
@@ -50,7 +60,7 @@ class SpecialListViewController: UIViewController {
 extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource, SpecialDetailViewDelegate {
     // SpecialEditView 삭제 함수
     func deleteSpecialNoteButtonTapped(data: DiaryResponse) {
-        DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: "5F9492AD-9C03-4A9A-8443-64D8BACF519D", entryID: data.entryID) { [weak self] error in
+        DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: data.entryID) { [weak self] error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -77,10 +87,10 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
         // UIMenu UIAction 설정 (셀 삭제)
         let menuItems = [
             UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { [weak self] _ in
-                guard let entryID = self?.specialListData[indexPath.row].entryID else {
+                guard let entryID = self?.specialListData[indexPath.row].entryID, let diaryID = self?.diaryID else {
                     return
                 }
-                DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: "5F9492AD-9C03-4A9A-8443-64D8BACF519D", entryID: entryID) { [weak self] error in
+                DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: entryID) { [weak self] error in
                     if let error = error {
                         print(error.localizedDescription)
                     } else {
@@ -118,7 +128,8 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
                 }
         // 버튼 액션 설정
         specialPlusButtonView.buttonAction = { [weak self] in
-            let specialEditViewController = SpecialEditViewController()
+            guard let diaryID = self?.diaryID else {return}
+            let specialEditViewController = SpecialEditViewController(diaryID: diaryID)
             self?.navigationController?.pushViewController(specialEditViewController, animated: true)
         }
         return specialPlusButtonView 

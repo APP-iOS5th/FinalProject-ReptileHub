@@ -14,6 +14,17 @@ class SpecialEditViewController: UIViewController {
     
     private let specialEditView = SpecialEditView()
     
+    var diaryID: String
+    
+    init(diaryID: String) {
+            self.diaryID = diaryID
+            super.init(nibName: nil, bundle: nil)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = specialEditView
@@ -123,7 +134,6 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
         guard let userID = Auth.auth().getUserID() else {
             return
         }
-        let diaryID = "5F9492AD-9C03-4A9A-8443-64D8BACF519D"
         DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){
             error in
                 if let error = error {

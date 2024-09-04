@@ -71,8 +71,8 @@ class SpecialDetailViewController: UIViewController {
     }
     // 수정 화면으로 전환하는 함수
         private func navigateToEditScreen() {
-            let editViewController = SpecialEditViewController()
-            navigationController?.pushViewController(editViewController, animated: true)
+//            let editViewController = SpecialEditViewController()
+//            navigationController?.pushViewController(editViewController, animated: true)
         }
 
 }
