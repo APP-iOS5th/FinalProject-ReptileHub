@@ -24,6 +24,7 @@ extension Date{
 //    print("Image removed from cache successfully")
 //}
 extension UIImageView{
+    //배열로도 받아올 수 있게하기
     func setImage(with urlString: String) {
         ImageCache.default.retrieveImage(forKey: urlString, options: nil) { result in
             

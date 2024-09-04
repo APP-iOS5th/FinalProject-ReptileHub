@@ -36,12 +36,20 @@ class DetailGrowthDiaryViewController: UIViewController {
         detailGrowthDiaryView.detailShowSpecialNoteButtonTapped = { [weak self] in
             self?.showNavigaionSpecialNotes()
         }
+        detailGrowthDiaryView.detailShowWeightInfoButtonTapped = { [weak self] in
+            self?.showNavigationWeightInfo()
+        }
         
     }
     
     private func showNavigaionSpecialNotes(){
         let showGrowthDiaryToSpeicialNotes = SpecialListViewController()
         self.navigationController?.pushViewController(showGrowthDiaryToSpeicialNotes, animated: true)
+    }
+    
+    private func showNavigationWeightInfo(){
+        let showGrowthDiaryToWeightInfo = weightAddEditViewController()
+        self.navigationController?.pushViewController(showGrowthDiaryToWeightInfo, animated: true)
     }
     
     // TODO: menu는 성장일지에서 필요가 없으므로 옵셔널로 처리 요청

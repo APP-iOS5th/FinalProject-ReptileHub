@@ -12,6 +12,7 @@ class DetailGrowthDiaryView: UIView {
     
     //MARK: - 특이사항 전체보기 버튼 액션 클로저로 생성
     var detailShowSpecialNoteButtonTapped: (() -> Void)?
+    var detailShowWeightInfoButtonTapped: (() -> Void)?
     
     var detailTableViewHeightContaint: Constraint?
     
@@ -199,6 +200,10 @@ class DetailGrowthDiaryView: UIView {
         button.configuration = config
         button.contentHorizontalAlignment = .trailing
         
+        button.addAction(UIAction{ [weak self] _ in
+            self?.detailShowWeightInfoButtonTapped?()
+        }, for: .touchUpInside)
+        
         return button
     }()
     
@@ -223,8 +228,8 @@ class DetailGrowthDiaryView: UIView {
         
         return view
     }()
-    private lazy var detailWeightLineChartView: UIHostingController<weightLineChartView> = {
-        let hostingController = UIHostingController(rootView: weightLineChartView(
+    private lazy var detailWeightLineChartView: UIHostingController<WeightLineChartView> = {
+        let hostingController = UIHostingController(rootView: WeightLineChartView(
             // TODO: 데이터 넘겨받는걸로 수정해야함
             weightData: [
                 LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -1186400), gender: "남성", weight: 3, feedMethod: "자율", tailexistence: true),

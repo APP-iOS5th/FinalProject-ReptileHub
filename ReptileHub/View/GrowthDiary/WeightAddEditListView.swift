@@ -7,16 +7,17 @@
 
 import UIKit
 
-class weightAddEditListView: UIView {
+class WeightAddEditListView: UIView {
     
     //MARK: - 무게 추이 테이블 뷰
-    private lazy var weightAddEditTableView = {
+    private lazy var weightAddEditTableView: UITableView = {
         let view = UITableView()
         return view
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setUI()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -34,4 +35,9 @@ class weightAddEditListView: UIView {
         self.weightAddEditTableView.delegate = delegate
         self.weightAddEditTableView.dataSource = dataSouce
     }
+    
+    func registerWeightAddEditTablCell(_ cellClass: AnyClass?, forCellReuseIdentifier identifier: String) {
+        weightAddEditTableView.register(cellClass, forCellReuseIdentifier: identifier)
+    }
+
 }

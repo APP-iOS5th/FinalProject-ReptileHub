@@ -56,7 +56,7 @@ import Charts
 ////    MonthlyHoursOfSunshine(month: 12, hoursOfSunshine: 62)
 //]
 
-struct weightLineChartView: View {
+struct WeightLineChartView: View {
     var weightData: [LizardInfoResponse]
     
     var body: some View {
@@ -117,7 +117,7 @@ struct weightLineChartView: View {
 }
 
 #Preview {
-    weightLineChartView( weightData: [
+    WeightLineChartView( weightData: [
         LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -1186400), gender: "남성", weight: 3, feedMethod: "자율", tailexistence: true),
         LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -3186400), gender: "남성", weight: 1, feedMethod: "자율", tailexistence: true),
 //                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -5536400), gender: "남성", weight: 2, feedMethod: "자율", tailexistence: true),
