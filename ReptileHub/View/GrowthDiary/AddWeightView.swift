@@ -27,6 +27,14 @@ class AddWeightView: UIView {
         return picker
     }()
     
+    
+    //MARK: - 날씨 추가 스택 뷰
+    private lazy var addWeightDateStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [addWeightDateTitle, addWeightDatePicker])
+        view.axis = .horizontal
+        return view
+    }()
+    
     //MARK: - 몸무게 입력
     private lazy var addWeightTitle: UILabel = {
         let label = UILabel()
@@ -41,13 +49,7 @@ class AddWeightView: UIView {
         textField.keyboardType = .numberPad //숫자만 입력 가능하게 설정
         return textField
     }()
-    
-    //MARK: - 날씨 추가 스택 뷰
-    private lazy var addWeightDateStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [addWeightDateTitle, addWeightDatePicker])
-        view.axis = .horizontal
-        return view
-    }()
+   
     
     //MARK: - 몸무게 추가 스택 뷰
     private lazy var addWeightStackView: UIStackView = {
@@ -86,12 +88,10 @@ class AddWeightView: UIView {
             make.leading.trailing.equalTo(addWeightContentView)
         }
         
-        addWeightTitle.snp.makeConstraints { make in
+        addWeightStackView.snp.makeConstraints { make in
             make.top.equalTo(addWeightDateStackView.snp.bottom).offset(20)
             make.leading.trailing.equalTo(addWeightContentView)
         }
-        
-        
     }
 }
 
