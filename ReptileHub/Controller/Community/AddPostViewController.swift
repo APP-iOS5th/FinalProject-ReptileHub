@@ -92,7 +92,9 @@ extension AddPostViewController: PHPickerViewControllerDelegate {
 }
 
 extension AddPostViewController: UITextViewDelegate {
+    // 텍스트 뷰의 텍스트가 변경될 때 호출되는 델리게이트 메서드
     func textViewDidChange(_ textView: UITextView) {
+
         if textView.text == "" {
             self.addPostView.textViewPlaceholder.isHidden = false
         } else {
@@ -117,19 +119,21 @@ extension AddPostViewController: PHPickerCollectionViewCellDelegate {
 
 extension AddPostViewController: AddPostViewDelegate {
     func didTapPostButton(imageData: [Data], title: String, content: String) {
+        let currentUid = UserService.shared.currentUserId
         print("""
                 [현재 등록할 게시글 내용]
+                userid: \(currentUid)
                 imageData: \(imageData)
                 title: \(title)
                 content: \(content)
                 """)
-        let userID = "R8FK52H2UebtfjNeODkNTEpsOgG3"
         
-        CommunityService.shared.createPost(userID: userID, title: title, content: content, images: imageData) { error in
+        CommunityService.shared.createPost(userID: currentUid, title: title, content: content, images: imageData) { error in
             if let error = error {
                         print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
                     } else {
                         print("게시글 게시 성공")
+                        self.navigationController?.popViewController(animated: true)
                     }
         }
     }

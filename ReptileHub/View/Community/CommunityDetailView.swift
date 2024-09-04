@@ -8,9 +8,16 @@
 import UIKit
 import SnapKit
 
+protocol CommunityDetailViewDelegate: AnyObject {
+    func createCommentAction(postId: String, commentText: String)
+}
+
 class CommunityDetailView: UIView {
     
+    weak var delegate: CommunityDetailViewDelegate?
+
     var postID: String = "nil"
+    var postUserId: String = "nil"
     
     // 키보드 탭 제스쳐
     lazy var tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
@@ -54,6 +61,8 @@ class CommunityDetailView: UIView {
     private let contentText: UILabel = UILabel()
     
     // 좋아요, 댓글 개수
+    private var likeButton: UIButton = UIButton(type: .custom)
+    private var likeButtonToggle: Bool?
     private let likeCount: UILabel = UILabel()
     private let commentCount: UILabel = UILabel()
     private let countInfoStackView: UIStackView = UIStackView()
@@ -110,17 +119,13 @@ class CommunityDetailView: UIView {
         super.init(coder: coder)
     }
     
-    
 
-    
     // super view 클릭시 키보드 내려감
     @objc
     func tapHandler(_ sender: UIView) {
         commentTextView.resignFirstResponder()
     }
-    
-    
-    
+
     //MARK: - 스크롤뷰 세팅
     private func setupMainScrollView() {
         scrollView.alwaysBounceVertical = true
@@ -143,22 +148,17 @@ class CommunityDetailView: UIView {
             make.top.leading.trailing.bottom.equalTo(scrollView)
             make.width.equalTo(scrollView.snp.width)
         }
-        
-//        let stackViewHeight = stackView.heightAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
-//        stackViewHeight.priority = .defaultLow
-//        stackViewHeight.isActive = true
+
     }
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
-        profileImage.image = UIImage(systemName: "person")
         profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 30
         profileImage.clipsToBounds = true
     }
     
-    
-    
+ 
     //MARK: - 제목, 닉네임, 시간 StackView(elementStackView)
     private func setupElementStackView() {
         titleLabel.text = "공부는 최대한 미뤄라."
@@ -181,28 +181,19 @@ class CommunityDetailView: UIView {
     
     @objc
     private func toggleButton() {
-//        print("좋아요 버튼 토글.")
-//        
-//        CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
-//            switch result {
-//            case  .success(let boolValue):
-//                print("북마크 토글 현상황: \(boolValue)")
-//                self.bookMarkButtonToggle = boolValue
-//                
-//                let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
-//                let bookmarkImage = UIImage(systemName: self.bookMarkButtonToggle! ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
-//                self.bookMarkButton.setImage(bookmarkImage, for: .normal)
-//            case .failure(let error):
-//                print("북마크 토글 에러 : \(error.localizedDescription)")
-//            }
-//        }
+        print("북마크 버튼 토글.")
         
-        UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: "R8FK52H2UebtfjNeODkNTEpsOgG3") { error in
-            if let error = error {
-                print("error: \(error.localizedDescription)")
-            } else {
-                print("유저 차단")
+        CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
+            switch result {
+            case  .success(let boolValue):
+                print("북마크 토글 현상황: \(boolValue)")
+                self.bookMarkButtonToggle = boolValue
                 
+                let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+                let bookmarkImage = UIImage(systemName: self.bookMarkButtonToggle! ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+                self.bookMarkButton.setImage(bookmarkImage, for: .normal)
+            case .failure(let error):
+                print("북마크 토글 에러 : \(error.localizedDescription)")
             }
         }
     }
@@ -318,6 +309,7 @@ class CommunityDetailView: UIView {
     private func setupTextView() {
         contentText.text = "게시글 본문 예시 내용입니다."
         contentText.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        contentText.numberOfLines = 0
 
         self.stackView.addArrangedSubview(contentText)
         
@@ -330,7 +322,11 @@ class CommunityDetailView: UIView {
     
     //MARK: - count info stackview - 좋아요, 댓글 수 스택뷰
     private func setupCountInfoStackView() {
-        let likeImage = UIImageView(image: UIImage(systemName: "heart"))
+//        let likeImage = UIImageView(image: UIImage(systemName: "heart"))
+        likeButton = UIButton(type: .custom)
+        let config = UIImage.SymbolConfiguration(pointSize: 18)
+        likeButton.setImage(UIImage(systemName: "heart", withConfiguration: config), for: .normal)
+        likeButton.addTarget(self, action: #selector(likeToggleButton), for: .touchUpInside)
         let commentImage = UIImageView(image: UIImage(systemName: "message"))
         
         countInfoStackView.axis = .horizontal
@@ -341,7 +337,7 @@ class CommunityDetailView: UIView {
         likeCount.text = "123"
         commentCount.text = "123"
         
-        countInfoStackView.addArrangedSubview(likeImage)
+        countInfoStackView.addArrangedSubview(likeButton)
         countInfoStackView.addArrangedSubview(likeCount)
         countInfoStackView.addArrangedSubview(commentImage)
         countInfoStackView.addArrangedSubview(commentCount)
@@ -354,6 +350,29 @@ class CommunityDetailView: UIView {
             make.height.equalTo(20)
         }
     }
+    
+    @objc
+    private func likeToggleButton() {
+        print("좋아요 버튼 토글.")
+        
+        CommunityService.shared.toggleLikePost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
+            switch result {
+            case .success(let boolValue):
+                print("좋아요 현 상황 : \(boolValue)")
+                let currentLikeCount = Int(self.likeCount.text ?? "0") ?? 0
+                
+                self.likeButtonToggle = boolValue
+                let config = UIImage.SymbolConfiguration(pointSize: 18)
+                self.likeButton.setImage(UIImage(systemName: boolValue ? "heart.fill" : "heart", withConfiguration: config), for: .normal)
+                
+                self.likeCount.text = boolValue ? String(currentLikeCount + 1) : String(currentLikeCount - 1)
+                
+            case .failure(let error):
+                print("좋아요 토글 에러 : \(error.localizedDescription)")
+            }
+        }
+    }
+    
     
     //MARK: - 본문과 댓글 사이의 구분선(두꺼움)
     private func setupDivisionThickLine() {
@@ -460,15 +479,21 @@ class CommunityDetailView: UIView {
     
     @objc
     private func sendButtonAction() {
-        CommunityService.shared.addComment(postID: self.postID, userID: UserService.shared.currentUserId, content: commentTextView.text) { error in
-            if let error = error {
-                print("댓글 게시 중 오류 발생: \(error.localizedDescription)")
-            } else {
-                print("댓글 게시 성공")
-                self.commentTextView.text = ""
-                self.commentTableView.reloadData()
+        delegate?.createCommentAction(postId: self.postID, commentText: commentTextView.text)
+    }
+    
+    func addCommentCount() {
+        DispatchQueue.main.async {
+                self.commentCount.text = String((Int(self.commentCount.text ?? "0") ?? 0) + 1)
+                self.commentCount.setNeedsLayout()
             }
-        }
+    }
+    
+    func subtractCommentCount() {
+        DispatchQueue.main.async {
+                self.commentCount.text = String((Int(self.commentCount.text ?? "0") ?? 0) - 1)
+                self.commentCount.setNeedsLayout()
+            }
     }
     
     
@@ -526,24 +551,27 @@ class CommunityDetailView: UIView {
         commentTextView.delegate = textViewDelegate
     }
     
-    func configureFetchData(profileImageName: String, title: String, name: String, creatAt: String, imagesName: [String], content: String, likeCount: Int, commentCount: Int, postID: String, isLiked: Bool, isBookmarked: Bool) {
-        self.postID = postID
+    func configureFetchData(postDetailData: PostDetailResponse, likeCount: Int, commentCount: Int, profileImageName: String, name: String) {
+        self.postID = postDetailData.postID
+        self.postUserId = postDetailData.userID
         
         profileImage.setImage(with: profileImageName)
-        titleLabel.text = title
+        titleLabel.text = postDetailData.title
         nicknameLabel.text = name
-        timestampLabel.text = creatAt
-        contentText.text = content
+        timestampLabel.text = postDetailData.createdAt?.timefomatted
+        contentText.text = postDetailData.content
         self.likeCount.text = "\(likeCount)"
         self.commentCount.text = "\(commentCount)"
         
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
-        let bookmarkImage = UIImage(systemName: isBookmarked ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+        let bookmarkImage = UIImage(systemName: postDetailData.isBookmarked ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
         bookMarkButton.setImage(bookmarkImage, for: .normal)
         
+        let config = UIImage.SymbolConfiguration(pointSize: 18)
+        likeButton.setImage(UIImage(systemName: postDetailData.isLiked ? "heart.fill" : "heart", withConfiguration: config), for: .normal)
         
-        if imagesName.count > 0 {
-            for imageName in imagesName {
+        if postDetailData.imageURLs.count > 0 {
+            for imageName in postDetailData.imageURLs {
                 let imageView: UIImageView = UIImageView()
                 imageView.setImage(with: imageName)
                 
