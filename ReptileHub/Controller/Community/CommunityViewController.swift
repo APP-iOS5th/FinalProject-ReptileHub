@@ -34,7 +34,7 @@ class CommunityViewController: UIViewController {
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
         
-        CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: "R8FK52H2UebtfjNeODkNTEpsOgG3") { result in
+        CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let thumnails):
                 print("차단유저 제외 모든 post 불러오기 성공")
