@@ -79,19 +79,19 @@ class CommunityDetailViewController: UIViewController {
         let isMine: Bool = detailView.postUserId == UserService.shared.currentUserId
         
         myMenu = [
-            UIAction(title: "수정하기", image: UIImage(systemName: "pencil"), handler: { _ in
+            UIAction(title: "게시글 수정하기", image: UIImage(systemName: "square.and.pencil"), handler: { _ in
                 self.editButtonAction()
             }),
-            UIAction(title: "삭제하기", image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
+            UIAction(title: "게시글 삭제하기", image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
                 self.deleteButtonAction()
             })
         ]
         
         otherMenu = [
-            UIAction(title: "차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in
+            UIAction(title: "작성자 차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in
                 self.blockButtonAction()
             }),
-            UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.triangle"), attributes: .destructive, handler: { _ in
+            UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.bubble"), attributes: .destructive, handler: { _ in
                 self.reportButtonAction()
             })
         ]
@@ -120,7 +120,7 @@ class CommunityDetailViewController: UIViewController {
                     print("게시글 삭제 중 오류 발생: \(error.localizedDescription)")
                 } else {
                     print("게시글 삭제 성공")
-                    self.dismiss(animated: true)
+                    self.navigationController?.popViewController(animated: true)
                 }
             }
         }))
@@ -129,6 +129,20 @@ class CommunityDetailViewController: UIViewController {
 
     private func blockButtonAction() {
         print("block")
+        let alert = UIAlertController(title: "알림", message: "해당 게시글 작성자를 차단하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "차단하기", style: .destructive, handler: { _ in
+            
+            UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: self.detailView.postUserId) { error in
+                if let error = error {
+                    print("차단 실패 : \(error.localizedDescription)")
+                } else {
+                    print("차단 성공, 뒤로 가기.")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
     }
     
     private func reportButtonAction() {
@@ -253,6 +267,7 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
 }
 
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
+
     func deleteCommentAction(cell: CommentTableViewCell) {
         let alert = UIAlertController(title: "알림", message: "댓글을 삭제하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
@@ -266,8 +281,34 @@ extension CommunityDetailViewController: CommentTableViewCellDelegate {
                 } else {
                     print("댓글 삭제 성공")
                     self.fetchComments.remove(at: indexPath.row)
-                    self.detailView.commentTableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.detailView.commentTableView.deleteRows(at: [indexPath], with: .none)
+                    
+                    var height: CGFloat = 50
+
+                    for comment in self.fetchComments {
+                        height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+                    }
+                    self.detailView.updateCommentTableViewHeight(height: height)
+                    
                     self.detailView.subtractCommentCount()
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func blockCommentAction(cell: CommentTableViewCell) {
+        let alert = UIAlertController(title: "알림", message: "해당 유저를 차단하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "차단하기", style: .destructive, handler: { _ in
+            // 선택한 셀의 indexPath
+            guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+            
+            UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: self.fetchComments[indexPath.row].userID) { error in
+                if let error = error {
+                    print("차단 실패 : \(error.localizedDescription)")
+                } else {
+                    print("댓글 작성자 차단 성공")
                 }
             }
         }))

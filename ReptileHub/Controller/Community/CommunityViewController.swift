@@ -196,7 +196,7 @@ extension CommunityViewController: CommunityTableViewCellDelegate {
     }
     
     func blockAlert(cell: CommunityTableViewCell) {
-        let alert = UIAlertController(title: "알림", message: "해당 유저를 삭제하시겠습니까?", preferredStyle: .alert)
+        let alert = UIAlertController(title: "알림", message: "해당 유저를 차단하시겠습니까?", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "차단하기", style: .destructive, handler: { _ in
             // 선택한 셀의 indexPath
@@ -218,18 +218,6 @@ extension CommunityViewController: CommunityTableViewCellDelegate {
                     }
                 }
             }
-            CommunityService.shared.deletePost(postID: self.fetchTestData[indexPath.row].postID, userID: self.fetchTestData[indexPath.row].userID) { error in
-                if let error = error {
-                    print("게시글 삭제 중 오류 발생: \(error.localizedDescription)")
-                } else {
-                    print("게시글 삭제 성공")
-                }
-            }
-            
-            self.fetchTestData.remove(at: indexPath.row)
-            
-            // 선택한 셀을 테이블 뷰에서 삭제
-            self.communityListView.communityTableView.deleteRows(at: [indexPath], with: .automatic)
         }))
         present(alert, animated: true, completion: nil)
     }
