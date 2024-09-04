@@ -143,6 +143,17 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
                 
             case .failure(let error):
                 print("상세 게시글 가져오기 실패 : \(error.localizedDescription)")
+                print("해당 게시글은 삭제된 게시글임. 리로드.")
+                CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
+                    switch result {
+                    case .success(let newPostList):
+                        self.fetchTestData = newPostList
+                        self.communityListView.communityTableView.reloadData()
+                    case .failure(let error):
+                        print("게시글 다시 불러오기 에러 : \(error.localizedDescription)")
+                    }
+                }
+
             }
         }
 
