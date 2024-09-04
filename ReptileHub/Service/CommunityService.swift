@@ -376,7 +376,7 @@ class CommunityService {
     }
 
     //MARK: - 댓글 작성 함수
-    func addComment(postID: String, userID: String, content: String, completion: @escaping (Error?) -> Void) {
+    func addComment(postID: String, userID: String, content: String, completion: @escaping (Result<[CommentResponse], Error>) -> Void) {
         let db = Firestore.firestore()
         let commentID = UUID().uuidString
         let createdAt = FieldValue.serverTimestamp()
@@ -421,10 +421,11 @@ class CommunityService {
         }) { (result, error) in
             if let error = error {
                 print("Failed to add comment: \(error.localizedDescription)")
-                completion(error)
+                completion(.failure(error))
             } else {
                 print("댓글 추가 완료!!")
-                completion(nil)
+                // 댓글 추가 완료 후, 해당 포스트의 모든 댓글을 가져옴
+                self.fetchComments(forPost: postID, completion: completion)
             }
         }
     }
