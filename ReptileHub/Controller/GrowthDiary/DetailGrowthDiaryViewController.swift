@@ -59,12 +59,12 @@ class DetailGrowthDiaryViewController: UIViewController {
     private func fetchDetailData(){
         // TODO: uid 불러오는 코드 수정
         guard let userID = Auth.auth().getUserID() else { return }
-        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: userID, diaryID: diaryID) { response in
+        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: userID, diaryID: diaryID) { [weak self] response in
             switch response{
-            case .none:
-                print("실패")
-            case .some(_):
-                print("받아왔음")
+            case .success(let responseData):
+                self?.detailGrowthDiaryView.configureDetailGrowthDiaryData(detailData: responseData)
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
             }
         }
     }

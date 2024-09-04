@@ -110,15 +110,16 @@ class GrowthDiaryEditViewController: UIViewController, PHPickerViewControllerDel
     }
     
     private func fetchGrowthDiaryDetails() {
-        let userID = "XYmrUBcFhjdYZSM8TFihX0QNN7O2"
-        let diaryID = "4258CA71-F227-4F28-955F-A79952B33671"
-        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: userID, diaryID: diaryID) { [weak self] diaryResponse in
-            guard let self = self, let diaryResponse = diaryResponse else { return }
-            
-            DispatchQueue.main.async {
-                self.populateData(with: diaryResponse)
-            }
-        }
+        // TODO: 이 부분 주석 안하면 실행 안됌..
+//        let userID = "XYmrUBcFhjdYZSM8TFihX0QNN7O2"
+//        let diaryID = "4258CA71-F227-4F28-955F-A79952B33671"
+//        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: userID, diaryID: diaryID) { [weak self] diaryResponse in
+//            guard let self = self, let diaryResponse = diaryResponse else { return }
+//            
+//            DispatchQueue.main.async {
+//                self.populateData(with: diaryResponse)
+//            }
+//        }
     }
     
     private func populateData(with diaryResponse: GrowthDiaryResponse) {

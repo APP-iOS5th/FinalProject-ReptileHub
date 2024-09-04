@@ -146,32 +146,45 @@ class DiaryPostService {
     }
     
     //MARK: - DiaryDetail 정보 불러오는 함수. 썸네일에서 받아온 diaryID 를 할당해서 조회 하면 해당 detail 정보를 받을 수 있다 .
-    func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (GrowthDiaryResponse?) -> Void) {
-        db.collection("users").document(userID)
-            .collection("growth_diaries_details")
-            .document(diaryID)
-            .getDocument { (document, error) in
-                if let error = error {
-                    print("Error getting document: \(error)")
-                    completion(nil)
-                    return
+    func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (Result<GrowthDiaryResponse, Error>) -> Void) {
+            db.collection("users").document(userID)
+                .collection("growth_diaries_details")
+                .document(diaryID)
+                .getDocument { (document, error) in
+                    if let error = error {
+                        print("Error getting document: \(error)")
+                        completion(.failure(error))
+                        return
+                    }
+                    
+                    guard let document = document, let data = document.data() else {
+                        print("Document does not exist or no data available")
+                        let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist or no data available"])
+                        completion(.failure(noDataError))
+                        return
+                    }
+                    
+                    do {
+                        // 수동으로 데이터를 파싱하여 GrowthDiaryResponse 객체를 생성
+                        let lizardInfo = try JSONDecoder().decode(LizardInfoResponse.self, from: JSONSerialization.data(withJSONObject: data["lizardInfo"] as Any))
+                        
+                        var parentInfo: ParentsResponse? = nil
+                        if let parentInfoData = data["parentInfo"] as? [String: Any] {
+                            let mother = try JSONDecoder().decode(ParentInfoResponse.self, from: JSONSerialization.data(withJSONObject: parentInfoData["mother"] as Any))
+                            let father = try JSONDecoder().decode(ParentInfoResponse.self, from: JSONSerialization.data(withJSONObject: parentInfoData["father"] as Any))
+                            
+                            parentInfo = ParentsResponse(mother: mother, father: father)
+                        }
+                        
+                        let diaryResponse = GrowthDiaryResponse(lizardInfo: lizardInfo, parentInfo: parentInfo)
+                        print("diaryResponse \(diaryResponse)")
+                        completion(.success(diaryResponse))
+                    } catch {
+                        print("Failed to decode diary details: \(error)")
+                        completion(.failure(error))
+                    }
                 }
-                
-                guard let document = document, document.exists else {
-                    print("Document does not exist")
-                    completion(nil)
-                    return
-                }
-                
-                print("Document data: \(document.data() ?? [:])")  // Document의 데이터 확인
-                if let diaryResponse = try? document.data(as: GrowthDiaryResponse.self) {
-                    completion(diaryResponse)
-                } else {
-                    print("Failed to decode DiaryResponse")  // 디코딩 실패 여부 확인
-                    completion(nil)
-                }
-            }
-    }
+        }
     
     //MARK: - 성장일지 삭제 - 등록된 도마뱀 삭제시 -> 썸네일, detail, 성장일기 및 관련 image Storage 에서 삭제 및 프로필에 등록된 도마뱀 개수 -1
     func deleteGrowthDiary(userID: String, diaryID: String, completion: @escaping (Error?) -> Void) {

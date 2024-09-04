@@ -569,6 +569,48 @@ class DetailGrowthDiaryView: UIView {
     //
     //           return cell.contentView
     //       }
+    func configureDetailGrowthDiaryData(detailData: GrowthDiaryResponse){
+        print("FFSDFSDFDFDSFDSFDFS")
+        print(detailData)
+        let lizardData = detailData.lizardInfo
+        
+        // TODO: 이미지 없을 때 처리 해주기
+        if let imageURL = lizardData.imageURL{
+            detailThumbnailImageView.setImage(with: imageURL)
+        }else{
+            detailThumbnailImageView.image = UIImage(named: "tempImage")
+        }
+        print("a")
+        detailLiazardNameLabel.text = lizardData.name
+        detailLizardSepciesMorphInfoLabel.text = "lizardData.species, 모프\(String(describing: (lizardData.morph != nil) ? lizardData.morph : "없음"))"
+        detailHatchDaysLabel.text = lizardData.hatchDays.formatted
+        detailFeedMethodLabel.text = lizardData.feedMethod
+        detailTailLabel.text = lizardData.tailexistence ? "있음" : "없음"
+        
+        // TODO: 부모뷰도 넣어주기
+        guard let fatherData = detailData.parentInfo?.father, 
+                let motherData = detailData.parentInfo?.mother else { return }
+        if let fatherImageView = detailFatherInfoView.viewWithTag(0) as? UIImageView,
+           let fatherName = detailFatherInfoView.viewWithTag(1) as? UILabel,
+           let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(2) as? UILabel
+        {
+            // TODO: 지금은 무조건 있다고 가정
+            fatherImageView.setImage(with: fatherData.imageURL!)
+            fatherName.text = fatherData.name
+            fatherSpeciesMorph.text = "\(fatherData.morph != nil ? fatherData.morph! : "없음")"
+        }
+        
+        if let motherImageView = detailMotherInfoView.viewWithTag(0) as? UIImageView,
+           let motherName = detailMotherInfoView.viewWithTag(1) as? UILabel,
+           let motherSpeciesMorph = detailMotherInfoView.viewWithTag(2) as? UILabel
+        {
+            // TODO: 지금은 무조건 있다고 가정
+            motherImageView.setImage(with: motherData.imageURL!)
+            motherName.text = motherData.name
+            motherSpeciesMorph.text = "\(motherData.morph != nil ? motherData.morph! : "없음")"
+        }
+        
+    }
 }
 
 #if DEBUG
