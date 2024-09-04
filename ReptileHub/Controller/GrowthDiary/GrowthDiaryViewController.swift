@@ -103,7 +103,7 @@ extension GrowthDiaryViewController{
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailGrowthDiaryVicontroller = DetailGrowthDiaryViewController()
+        let detailGrowthDiaryVicontroller = DetailGrowthDiaryViewController(diaryID: thumbnailData[indexPath.item].diary_id)
         self.navigationController?.pushViewController(detailGrowthDiaryVicontroller, animated: true)
     }
 }

@@ -6,14 +6,27 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class DetailGrowthDiaryViewController: UIViewController {
     private lazy var detailGrowthDiaryView = DetailGrowthDiaryView()
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
+    private var detailData: GrowthDiaryResponse?
+    let diaryID: String
+    
+    init(diaryID: String) {
+        self.diaryID = diaryID
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     let tempData: [Int] = [1,2,3]
+    
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -23,6 +36,7 @@ class DetailGrowthDiaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUP()
+        fetchDetailData()
     }
     
     private func setUP(){
@@ -33,13 +47,26 @@ class DetailGrowthDiaryViewController: UIViewController {
         detailGrowthDiaryView.registerDetailPreviewTableCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
         //        detailGrowthDiaryView.updateTableViewHeight()
         //        loadData()
+        
         detailGrowthDiaryView.detailShowSpecialNoteButtonTapped = { [weak self] in
             self?.showNavigaionSpecialNotes()
         }
         detailGrowthDiaryView.detailShowWeightInfoButtonTapped = { [weak self] in
             self?.showNavigationWeightInfo()
         }
-        
+    }
+    
+    private func fetchDetailData(){
+        // TODO: uid 불러오는 코드 수정
+        guard let userID = Auth.auth().getUserID() else { return }
+        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: userID, diaryID: diaryID) { response in
+            switch response{
+            case .none:
+                print("실패")
+            case .some(_):
+                print("받아왔음")
+            }
+        }
     }
     
     private func showNavigaionSpecialNotes(){
