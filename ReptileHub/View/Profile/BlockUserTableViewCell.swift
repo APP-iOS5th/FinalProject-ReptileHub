@@ -10,11 +10,6 @@ import SnapKit
 
 class BlockUserTableViewCell: UITableViewCell {
     
-    // BlockUserProfile 더미 데이터
-    let blockedUsers: [BlockUserProfile] = [
-        BlockUserProfile(uid: "001", name: "놀고싶다", profileImageURL: "blockUserProfile")
-    ]
-    
     private let BlockUserImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -71,9 +66,6 @@ class BlockUserTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setBlockUserImage()
-        setBlockUserName()
-        
         contentView.addSubview(stackView)
         BlockUserImage.addSubview(blurEffectView)
         BlockUserImage.addSubview(eyeSlashImageView)
@@ -107,12 +99,9 @@ class BlockUserTableViewCell: UITableViewCell {
     }
     
     
-    private func setBlockUserImage() {
-        BlockUserImage.image = UIImage(named: blockedUsers[0].profileImageURL)
-    }
-    
-    private func setBlockUserName() {
-        BlockUserName.text = blockedUsers[0].name
+   func setBlockUserData(blockUserData: BlockUserProfile) {
+        BlockUserImage.setImage(with: blockUserData.profileImageURL)
+        BlockUserName.text = blockUserData.name
     }
     
     @objc private func toggleBlurEffect() {
@@ -122,6 +111,15 @@ class BlockUserTableViewCell: UITableViewCell {
     
     @objc private func selectBlockCancel() {
         print("차단 해제 버튼 ~")
+        
+        // TODO: - unBlockUserID 수정 + reload 추가
+        UserService.shared.unblockUser(currentUserID: UserService.shared.currentUserId, unBlockUserID: "R8FK52H2UebtfjNeODkNTEpsOgG3") { error in
+            if let error = error {
+                print("error: \(error.localizedDescription)")
+            } else {
+                print("차단 해제")
+            }
+        }
     }
     
     required init?(coder: NSCoder) {

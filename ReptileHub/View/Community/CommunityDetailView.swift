@@ -181,19 +181,28 @@ class CommunityDetailView: UIView {
     
     @objc
     private func toggleButton() {
-        print("좋아요 버튼 토글.")
+//        print("좋아요 버튼 토글.")
+//        
+//        CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
+//            switch result {
+//            case  .success(let boolValue):
+//                print("북마크 토글 현상황: \(boolValue)")
+//                self.bookMarkButtonToggle = boolValue
+//                
+//                let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+//                let bookmarkImage = UIImage(systemName: self.bookMarkButtonToggle! ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+//                self.bookMarkButton.setImage(bookmarkImage, for: .normal)
+//            case .failure(let error):
+//                print("북마크 토글 에러 : \(error.localizedDescription)")
+//            }
+//        }
         
-        CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
-            switch result {
-            case  .success(let boolValue):
-                print("북마크 토글 현상황: \(boolValue)")
-                self.bookMarkButtonToggle = boolValue
+        UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: "R8FK52H2UebtfjNeODkNTEpsOgG3") { error in
+            if let error = error {
+                print("error: \(error.localizedDescription)")
+            } else {
+                print("유저 차단")
                 
-                let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
-                let bookmarkImage = UIImage(systemName: self.bookMarkButtonToggle! ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
-                self.bookMarkButton.setImage(bookmarkImage, for: .normal)
-            case .failure(let error):
-                print("북마크 토글 에러 : \(error.localizedDescription)")
             }
         }
     }

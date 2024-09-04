@@ -8,11 +8,17 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import FirebaseAuth
 
 class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
-    private let editUserInfoView = EditUserInfoView()
     
-    private var isImageChanged = false  // 이미지가 변경되었는지 확인하는 플래그
+    var editUserInfoData : (String, String)?
+    var previousViewController: ProfileViewController?
+    
+    private let editUserInfoView = EditUserInfoView()
+    private let profileView = ProfileViewController()
+    
+    private var isImageChanged = false  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +32,11 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
         editUserInfoView.ProfileNameEdit.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         editUserInfoView.UserInfoCancelButton.addTarget(self, action: #selector(cancelButtonTouch), for: .touchUpInside)
         editUserInfoView.UserInfoSaveButton.addTarget(self, action: #selector(saveButtonTouch), for: .touchUpInside)
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        editUserInfoView.setProfileImageEdit(imageName: editUserInfoData!.1, name: editUserInfoData!.0)
     }
     
     @objc func selectImage() {
@@ -57,6 +68,20 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     
     @objc func saveButtonTouch() {
         print("저장 ~")
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        UserService.shared.updateUserProfile(uid: uid, newName: editUserInfoView.ProfileNameEdit.text, newProfileImage: editUserInfoView.ProfileImageEdit.image) { [weak self] error in
+            if let error = error {
+                print("error\(error.localizedDescription)")
+            } else {
+                print("놀고 싶 다")
+                if let previousVC = self?.previousViewController{
+                                    print("privousVC", previousVC)
+                                    previousVC.updateImage()
+                                }
+                self?.dismiss(animated: true)
+                self?.editUserInfoData = nil
+            }
+        }
     }
     
     @objc func cancelButtonTouch() {

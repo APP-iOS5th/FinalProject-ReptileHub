@@ -9,7 +9,7 @@ import UIKit
 
 class WriteReplyListView: UIView {
     
-    private var replyListTableView: UITableView = {
+    var replyListTableView: UITableView = {
        let tableView = UITableView()
         tableView.register(WriteReplyListTableViewCell.self, forCellReuseIdentifier: "replyCell")
         return tableView

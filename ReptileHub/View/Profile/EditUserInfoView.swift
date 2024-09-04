@@ -81,7 +81,6 @@ class EditUserInfoView: UIView {
         keyboardManager.hideNoti()
         
         setupView()
-        setProfileImageEdit()
     }
     
     required init?(coder: NSCoder) {
@@ -138,9 +137,11 @@ class EditUserInfoView: UIView {
             make.height.equalTo(50)
         }
     }
+   
     
-    private func setProfileImageEdit() {
-        ProfileImageEdit.image = UIImage(named: users[0].profileImageURL)
+    func setProfileImageEdit(imageName: String?, name: String?) {
+        ProfileImageEdit.setImage(with: imageName!)
+        ProfileNameEdit.text = name
     }
 }
 

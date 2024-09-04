@@ -11,10 +11,6 @@ import SnapKit
 class ProfileView: UIView {
     
     // 배경 수정 필요
-    // UserProfile 더미 데이터
-    let users: [UserProfile] = [
-        UserProfile(uid: "1001", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
-    ]
 
     // MARK: - Properties (프로필 이미지, 이름, 스택뷰, 테이블뷰 등)
     private let profileImage: UIImageView = {
@@ -111,7 +107,7 @@ class ProfileView: UIView {
         return stackView
     }()
     
-    private let postList: UITableView = {
+    private (set) var postList: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.isScrollEnabled = false
