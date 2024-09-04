@@ -11,19 +11,28 @@ import SnapKit
 class SpecialDetailViewController: UIViewController {
     
     private let specialDetailView = SpecialDetailView()
-    
+    let saveSpecialData: SpecialEntry
+    init(saverEntries: SpecialEntry) {
+        self.saveSpecialData = saverEntries
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view = specialDetailView
         setupNavigationBar()
+        specialDetailView.writeSpecialDetail(data: saveSpecialData)
+        print(saveSpecialData)
         // Do any additional setup after loading the view.
     }
-    
-    // Navigationbar & UIMenu
+    //MARK: - Navigationbar & UIMenu
     private func setupNavigationBar() {
         navigationItem.title = "특이사항"
-        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         let ellipsis: UIButton = {
             let ellipsis = UIButton()
             ellipsis.setImage(UIImage(systemName: "ellipsis"), for: .normal)

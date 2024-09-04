@@ -21,6 +21,8 @@ class TabbarViewController: UITabBarController {
             print("currentUser -----  \(user.uid)")
         }
 
+    
+
         let firstNavigationController = UINavigationController(rootViewController: communityVC)
         let secondNavigationController = UINavigationController(rootViewController: diaryVC)
         let thirdNavigationController = UINavigationController(rootViewController: profileVC)
@@ -30,6 +32,7 @@ class TabbarViewController: UITabBarController {
         thirdNavigationController.tabBarItem = UITabBarItem(title: "프로필", image: UIImage(systemName: "person"), tag: 2)
         
         self.viewControllers = [firstNavigationController, secondNavigationController, thirdNavigationController]
+        self.tabBar.tintColor = .addBtnGraphTabbar
     }
     
     deinit {
@@ -39,3 +42,4 @@ class TabbarViewController: UITabBarController {
     
 
 }
+

@@ -18,6 +18,22 @@ class ProfileViewController: UIViewController {
     override func loadView() {
         super.viewDidLoad()
         
+        
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        UserService.shared.fetchUserProfile(uid: uid) { results in
+           print("지금 프로필 검색 uid -\(uid)") 
+            switch results {
+                
+            case .success(let profile):
+                print("porfile \(profile)")
+            case .failure(let error):
+                print("error \(error.localizedDescription)")
+            }
+        }
+        
+        
+        
         self.navigationItem.title = "프로필"
         
         self.view = profileView
@@ -31,6 +47,11 @@ class ProfileViewController: UIViewController {
         profileView.secondButton.addTarget(self, action: #selector(writePostButtonTouch), for: .touchUpInside)
         profileView.withdrawalButton.addTarget(self, action: #selector(withdrawalButtonTouch), for: .touchUpInside)
         profileView.logoutButton.addTarget(self, action: #selector(logoutButtonTouch), for: .touchUpInside)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        profileView.updateScrollState()
     }
     
     @objc func editUserInfo() {

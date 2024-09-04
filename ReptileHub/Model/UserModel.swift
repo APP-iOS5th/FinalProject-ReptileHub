@@ -15,6 +15,7 @@ struct BlockUserProfile {
 
 struct UserProfile {
     var uid: String
+    let providerUID: String
     let name: String
     let profileImageURL: String
     let loginType: String

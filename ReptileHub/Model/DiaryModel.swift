@@ -97,6 +97,7 @@ struct DiaryResponse:Codable {
     let content: String
     let imageURLs: [String]
     let createdAt: Date?
+    let selectedDate: Date?
 }
 
 // 도마뱀 날짜별 무게

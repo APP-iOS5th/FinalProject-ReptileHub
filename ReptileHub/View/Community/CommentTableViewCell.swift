@@ -9,32 +9,36 @@ import UIKit
 
 class CommentTableViewCell: UITableViewCell {
     
-    var commentText: String?
-    
     // 상단 게시글 정보
     private let profileImage: UIImageView = UIImageView()
     
-    let titleLabel: UILabel = UILabel()
+    let nameLabel: UILabel = UILabel()
     let commentLabel: UILabel = UILabel()
     let timestampLabel: UILabel = UILabel()
     let elementStackView: UIStackView = UIStackView()
     
     private var menuButton: UIButton = UIButton()
+    
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        setupProfileImage()
+        setupMenuButton()
+        setupElementStackView()
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        // Configure the view for the selected state
-    }
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
         profileImage.image = UIImage(systemName: "person")
-        profileImage.backgroundColor = .green
+        profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 20
         profileImage.clipsToBounds = true
         
@@ -49,26 +53,23 @@ class CommentTableViewCell: UITableViewCell {
     
     //MARK: - 제목, 닉네임, 시간 StackView(elementStackView)
     private func setupElementStackView() {
-        titleLabel.text = "부천 정구현"
-        titleLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
-        commentLabel.text = commentText
+        nameLabel.text = "부천 정구현"
+        nameLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
+        nameLabel.sizeToFit()
+
+        commentLabel.text = "테스트 내용"
         commentLabel.numberOfLines = 0
         commentLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         timestampLabel.text = "24.08.09 17:31"
         timestampLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
         timestampLabel.textColor = UIColor.lightGray
-        
-        titleLabel.backgroundColor = .green
-        commentLabel.backgroundColor = .yellow
-        timestampLabel.backgroundColor = .blue
-        
+
         elementStackView.axis = .vertical
-        elementStackView.distribution = .equalSpacing
+        elementStackView.distribution = .fill
         elementStackView.alignment = .firstBaseline
         elementStackView.spacing = 0
-        elementStackView.backgroundColor = .systemPink
-        
-        elementStackView.addArrangedSubview(titleLabel)
+
+        elementStackView.addArrangedSubview(nameLabel)
         elementStackView.addArrangedSubview(commentLabel)
         elementStackView.addArrangedSubview(timestampLabel)
         
@@ -81,18 +82,21 @@ class CommentTableViewCell: UITableViewCell {
             make.bottom.equalTo(self.contentView.snp.bottom).offset(-5)
         }
         
-        titleLabel.snp.makeConstraints { make in
+        nameLabel.snp.makeConstraints { make in
             make.top.equalTo(elementStackView.snp.top)
             make.leading.equalTo(elementStackView.snp.leading)
+            make.height.equalTo(15)
         }
         timestampLabel.snp.makeConstraints { make in
             make.leading.equalTo(elementStackView.snp.leading)
             make.bottom.equalTo(elementStackView.snp.bottom)
+            make.height.equalTo(13)
         }
         commentLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom)
+            make.top.equalTo(nameLabel.snp.bottom)
             make.leading.equalTo(elementStackView.snp.leading)
             make.bottom.equalTo(timestampLabel.snp.top)
+            make.height.equalTo(30).priority(250)
         }
     }
     
@@ -123,10 +127,11 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure cell
-    func configureCell() {
-        setupProfileImage()
-        setupMenuButton()
-        setupElementStackView()
+    func configureCell(profileURL: String, name: String, content: String, createAt: String) {
+        profileImage.setImage(with: profileURL)
+        nameLabel.text = name
+        commentLabel.text = content
+        timestampLabel.text = createAt
     }
 
 }

@@ -10,7 +10,7 @@ import SnapKit
 
 class CommunityDetailView: UIView {
     
-    var dummyData = ["동해물과 백두산이 마르도 닳도록 하느님이 보우하사 우리나라 만세. 무궁화 삼천리 화려강산 대한사람 대한으로 부디 보전하세.", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~", "링딩동", "다크초코 6.7만 달성~", "커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~커뮤니티 상세 페이지 댓글 테이블 뷰 동적 크기 조절. 테이블 뷰 내의 셀들의 높이가 각각 달라지는 상황에서 테이블 뷰를 스크롤되지않고, 셀들의 크기의 합을 테이블 뷰 높이의 합으로 가져가면서 테이블 뷰가 아닌 스크롤 뷰에서 스크롤 할 수 있도록 구현하고싶다..~~",]
+    var postID: String = "nil"
     
     // 키보드 탭 제스쳐
     lazy var tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapHandler))
@@ -31,7 +31,8 @@ class CommunityDetailView: UIView {
     private let timestampLabel: UILabel = UILabel()
     private let elementStackView: UIStackView = UIStackView()
     
-    private let likeButton: UIButton = UIButton()
+    private let bookMarkButton: UIButton = UIButton()
+    private var bookMarkButtonToggle: Bool?
     
     private var menuButton: UIBarButtonItem = UIBarButtonItem()
     
@@ -41,16 +42,12 @@ class CommunityDetailView: UIView {
     private let divisionLine: UIView = UIView()
     
     // 본문 이미지
-    private let contentImages: [UIImageView] = [
-        UIImageView(image: UIImage(named: "choba")),
-        UIImageView(image: UIImage(named: "cookie")),
-        UIImageView(image: UIImage(named: "cookie")),
-    ]
+    lazy var contentImages: [UIImageView] = []
     private var imageViews: [UIView] = []
     private let imageStackView: UIStackView = UIStackView()
     private let imageScrollView: UIScrollView = UIScrollView()
     // 이미지 개수 나타내는 UI
-    private let imagePageCount: UILabel = UILabel()
+    lazy var imagePageCount: UILabel = UILabel()
     private let pageCountView: UIView = UIView()
     
     // 본문 텍스트
@@ -65,7 +62,7 @@ class CommunityDetailView: UIView {
     private let divisionThickLine: UIView = UIView()
     
     // 댓글 부분
-    private let commentTableView: UITableView = UITableView(frame: .zero)
+    let commentTableView: UITableView = UITableView(frame: .zero)
     
     // 댓글의 높이를 계산하기위한 변수
     private var tableViewHeight: CGFloat = 0.0
@@ -80,6 +77,7 @@ class CommunityDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         
         // 제스처 적용(슈퍼뷰 클릭시 키보드 내려감)
         self.addGestureRecognizer(tapGesture)
@@ -112,23 +110,24 @@ class CommunityDetailView: UIView {
         super.init(coder: coder)
     }
     
+    
+
+    
     // super view 클릭시 키보드 내려감
     @objc
     func tapHandler(_ sender: UIView) {
         commentTextView.resignFirstResponder()
     }
-
+    
     
     
     //MARK: - 스크롤뷰 세팅
     private func setupMainScrollView() {
         scrollView.alwaysBounceVertical = true
-        scrollView.backgroundColor = .green
         
         stackView.axis = .vertical
         stackView.distribution = .equalCentering
         stackView.alignment = .firstBaseline
-        stackView.backgroundColor = .red
         
         self.addSubview(scrollView)
         
@@ -141,22 +140,24 @@ class CommunityDetailView: UIView {
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.leading.trailing.bottom.equalTo(scrollView.contentLayoutGuide)
+            make.top.leading.trailing.bottom.equalTo(scrollView)
             make.width.equalTo(scrollView.snp.width)
         }
         
-        let stackViewHeight = stackView.heightAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
-        stackViewHeight.priority = .defaultLow
-        stackViewHeight.isActive = true
+//        let stackViewHeight = stackView.heightAnchor.constraint(greaterThanOrEqualTo: self.heightAnchor)
+//        stackViewHeight.priority = .defaultLow
+//        stackViewHeight.isActive = true
     }
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
         profileImage.image = UIImage(systemName: "person")
-        profileImage.backgroundColor = .green
+        profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 30
         profileImage.clipsToBounds = true
     }
+    
+    
     
     //MARK: - 제목, 닉네임, 시간 StackView(elementStackView)
     private func setupElementStackView() {
@@ -171,7 +172,6 @@ class CommunityDetailView: UIView {
         elementStackView.axis = .vertical
         elementStackView.distribution = .fillEqually
         elementStackView.alignment = .leading
-        elementStackView.backgroundColor = .systemPink
         
         elementStackView.addArrangedSubview(titleLabel)
         elementStackView.addArrangedSubview(nicknameLabel)
@@ -179,14 +179,34 @@ class CommunityDetailView: UIView {
     }
     
     
+    @objc
+    private func toggleButton() {
+        print("좋아요 버튼 토글.")
+        
+        CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: self.postID) { result in
+            switch result {
+            case  .success(let boolValue):
+                print("북마크 토글 현상황: \(boolValue)")
+                self.bookMarkButtonToggle = boolValue
+                
+                let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+                let bookmarkImage = UIImage(systemName: self.bookMarkButtonToggle! ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+                self.bookMarkButton.setImage(bookmarkImage, for: .normal)
+            case .failure(let error):
+                print("북마크 토글 에러 : \(error.localizedDescription)")
+            }
+        }
+    }
+    
     //MARK: - title StackView + 좋아요 버튼
     private func setupTitleStackView() {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
-        let heartImage = UIImage(systemName: "heart", withConfiguration: imageConfig)
+        let bookmarkImage = UIImage(systemName: "bookmark", withConfiguration: imageConfig)
         
-        likeButton.setImage(heartImage, for: .normal)
+        bookMarkButton.setImage(bookmarkImage, for: .normal)
+        bookMarkButton.addTarget(self, action: #selector(toggleButton), for: .touchUpInside)
         
-        likeButton.snp.makeConstraints { make in
+        bookMarkButton.snp.makeConstraints { make in
             make.width.equalTo(40)
         }
         
@@ -194,11 +214,10 @@ class CommunityDetailView: UIView {
         titleStackView.distribution = .fill
         titleStackView.alignment = .center
         titleStackView.spacing = 10
-        titleStackView.backgroundColor = .yellow
         
         titleStackView.addArrangedSubview(profileImage)
         titleStackView.addArrangedSubview(elementStackView)
-        titleStackView.addArrangedSubview(likeButton)
+        titleStackView.addArrangedSubview(bookMarkButton)
         
         self.stackView.addArrangedSubview(titleStackView)
         
@@ -223,7 +242,7 @@ class CommunityDetailView: UIView {
     
     //MARK: - 제목, 본문과의 구분선
     private func setupDivisionLine() {
-        divisionLine.backgroundColor = .lightGray
+        divisionLine.backgroundColor = .textFieldLine
         
         self.stackView.addArrangedSubview(divisionLine)
         
@@ -240,11 +259,10 @@ class CommunityDetailView: UIView {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fillEqually
         imageStackView.alignment = .center
-        imageStackView.backgroundColor = .green
+        imageStackView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.15)
         
         imageScrollView.alwaysBounceHorizontal = true
         imageScrollView.isPagingEnabled = true
-        imageScrollView.backgroundColor = .blue
         
         self.stackView.addArrangedSubview(imageScrollView)
         
@@ -262,38 +280,12 @@ class CommunityDetailView: UIView {
             make.top.leading.trailing.bottom.equalTo(imageScrollView)
         }
         
-        for i in 0..<contentImages.count {
-            let imageView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 230))
-            
-            contentImages[i].contentMode = .scaleAspectFit
-            
-            imageView.addSubview(contentImages[i])
-            
-            contentImages[i].snp.makeConstraints { make in
-                make.centerX.equalTo(imageView)
-                make.height.equalTo(230)
-            }
-            
-            imageViews.append(imageView)
-        }
-        
-        for imageView in imageViews {
-            imageView.backgroundColor = .gray
-            imageStackView.addArrangedSubview(imageView)
-            
-            imageView.snp.makeConstraints { make in
-                make.height.equalTo(230)
-                make.width.equalTo(imageScrollView)
-            }
-            
-        }
-        
         
     }
     
     //MARK: - 본문 이미지의 페이지 현황
     private func setupImagePageCountLabel() {
-        pageCountView.backgroundColor = .lightGray
+        pageCountView.backgroundColor = .gray.withAlphaComponent(0.5)
         pageCountView.layer.cornerRadius = 12
         
         pageCountView.addSubview(imagePageCount)
@@ -306,10 +298,7 @@ class CommunityDetailView: UIView {
             make.trailing.equalTo(imageScrollView.snp.trailing).offset(-10)
             make.bottom.equalTo(imageScrollView.snp.bottom).offset(-10)
         }
-        
-        imagePageCount.text = "1/\(contentImages.count)"
-        imagePageCount.backgroundColor = .lightGray
-        
+ 
         imagePageCount.snp.makeConstraints { make in
             make.centerX.equalTo(pageCountView)
             make.centerY.equalTo(pageCountView)
@@ -320,8 +309,7 @@ class CommunityDetailView: UIView {
     private func setupTextView() {
         contentText.text = "게시글 본문 예시 내용입니다."
         contentText.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        contentText.backgroundColor = .lightGray
-        
+
         self.stackView.addArrangedSubview(contentText)
         
         contentText.snp.makeConstraints { make in
@@ -360,7 +348,7 @@ class CommunityDetailView: UIView {
     
     //MARK: - 본문과 댓글 사이의 구분선(두꺼움)
     private func setupDivisionThickLine() {
-        divisionThickLine.backgroundColor = .lightGray
+        divisionThickLine.backgroundColor = .textFieldLine
         
         self.stackView.addArrangedSubview(divisionThickLine)
         
@@ -376,37 +364,35 @@ class CommunityDetailView: UIView {
     private func setupCommentTableView() {
         let headerView: UILabel = UILabel()
         headerView.text = "댓글"
-        headerView.backgroundColor = .yellow
         headerView.frame = CGRect(x: 0, y: 0, width: 0, height: 40)
         
         
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
         commentTableView.isScrollEnabled = false
-        commentTableView.backgroundColor = .lightGray
-        commentTableView.estimatedRowHeight = 60
+        commentTableView.estimatedRowHeight = 100
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
         
         self.stackView.addArrangedSubview(commentTableView)
-        
-        commentTableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        var resultHeight: CGFloat = 0.0
-        
-        for comment in dummyData {
-            let height = getLabelHeight(tableView: commentTableView,text: comment)
-            resultHeight += height
-        }
-        
+
         commentTableView.snp.makeConstraints { make in
             make.top.equalTo(divisionThickLine.snp.bottom)
             make.leading.equalTo(self.stackView.snp.leading).offset(24)
             make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
             make.bottom.equalTo(self.stackView.snp.bottom)
-            make.height.equalTo(resultHeight)
+            make.height.greaterThanOrEqualTo(100)
         }
     }
     
+    func updateCommentTableViewHeight(height: CGFloat) {
+        commentTableView.snp.remakeConstraints { make in
+            make.top.equalTo(divisionThickLine.snp.bottom)
+            make.leading.equalTo(self.stackView.snp.leading).offset(24)
+            make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
+            make.bottom.equalTo(self.stackView.snp.bottom)
+            make.height.equalTo(height)
+        }
+    }
     
     
     //MARK: - 댓글 작성란 setup
@@ -415,17 +401,18 @@ class CommunityDetailView: UIView {
         commentTextView.font = UIFont.systemFont(ofSize: 18)
         commentTextView.isScrollEnabled = false
         commentTextView.textContainer.lineFragmentPadding = 15
-        commentTextView.backgroundColor = .lightGray
+        commentTextView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.6)
         
         placeHolder.text = "댓글을 남겨보세요"
         placeHolder.font = UIFont.systemFont(ofSize: 18, weight: .light)
-        placeHolder.textColor = .white
+        placeHolder.textColor = .textFieldPlaceholder
         
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25)
         let planeImage = UIImage(systemName: "paperplane.fill", withConfiguration: imageConfig)
         sendButton.setImage(planeImage, for: .normal)
-        
-        commentBackgroundView.backgroundColor = .gray
+        sendButton.tintColor = .addBtnGraphTabbar
+        sendButton.addTarget(self, action: #selector(sendButtonAction), for: .touchUpInside)
+        commentBackgroundView.backgroundColor = .groupProfileBG
         
         self.addSubview(commentBackgroundView)
         
@@ -462,40 +449,19 @@ class CommunityDetailView: UIView {
         }
     }
     
-    //MARK: - UILabel의 높이를 측정하는 메서드
-    func getLabelHeight(tableView: UITableView, text: String) -> CGFloat {
-        let label = UILabel(
-            frame: .init(
-                x: .zero,
-                y: .zero,
-                width: tableView.frame.width - 75,
-                height: .greatestFiniteMagnitude
-            )
-        )
-        label.text = text
-        label.numberOfLines = 0
-        label.font = .systemFont(ofSize: 13)
-        label.sizeToFit()
-        let labelHeight = label.frame.height
-        return labelHeight
-    }
-    
-    func remakeTableView() {
-        // 뷰가 나타나고 셀의 크기를 취합하여 테이블 뷰의 레이아웃(높이)를 다시 잡음.
-        commentTableView.snp.remakeConstraints { make in
-            make.top.equalTo(divisionThickLine.snp.bottom)
-            make.leading.equalTo(self.stackView.snp.leading).offset(24)
-            make.trailing.equalTo(self.stackView.snp.trailing).offset(-24)
-            make.bottom.equalTo(self.stackView.snp.bottom)
-            make.height.equalTo(tableViewHeight + 40) // 40은 위ㅔㅇ서 지정한 테이블뷰-헤더뷰 크기임.
+    @objc
+    private func sendButtonAction() {
+        CommunityService.shared.addComment(postID: self.postID, userID: UserService.shared.currentUserId, content: commentTextView.text) { error in
+            if let error = error {
+                print("댓글 게시 중 오류 발생: \(error.localizedDescription)")
+            } else {
+                print("댓글 게시 성공")
+                self.commentTextView.text = ""
+                self.commentTableView.reloadData()
+            }
         }
     }
     
-    func initHeightValue() {
-        // 뷰가 나타날 때 해당 값들을 초기화함.
-        tableViewHeight = 0.0
-        rowHeights = [:]
-    }
     
     // UIScrollViewDelegate의 scrollViewDidScroll에 사용
     func imageScrollCount(scrollView: UIScrollView) {
@@ -503,24 +469,9 @@ class CommunityDetailView: UIView {
             return
         }
         let pageIndex = round(scrollView.contentOffset.x / scrollView.frame.width)
-        print(round(scrollView.contentOffset.x))
-        print(scrollView.frame.width)
         self.imagePageCount.text = "\(Int(pageIndex) + 1)/\(self.contentImages.count)"
     }
-    
-    // UITableView의 heightForRowAt에 사용
-    func tableViewCellHeight(indexPath: IndexPath, tableView: UITableView) -> CGFloat {
-        if let cachedHeight = rowHeights[indexPath] {
-            return cachedHeight
-        }
-        
-        let labelHeight = getLabelHeight(tableView: tableView, text: dummyData[indexPath.row])
-        
-        // 50 = cell의 commentLabel의 버티컬 패딩 값 조절을 위한 값 / 증가(패딩 증가) / 감소(패딩 감소)
-        tableViewHeight += (labelHeight + 50)
-        rowHeights[indexPath] = labelHeight + 50
-        return labelHeight
-    }
+
     
     // UITextViewDelegate의 textViewDidChange에 사용
     func textViewChange(textView: UITextView) {
@@ -566,7 +517,97 @@ class CommunityDetailView: UIView {
         commentTextView.delegate = textViewDelegate
     }
     
+    func configureFetchData(profileImageName: String, title: String, name: String, creatAt: String, imagesName: [String], content: String, likeCount: Int, commentCount: Int, postID: String, isLiked: Bool, isBookmarked: Bool) {
+        self.postID = postID
+        
+        profileImage.setImage(with: profileImageName)
+        titleLabel.text = title
+        nicknameLabel.text = name
+        timestampLabel.text = creatAt
+        contentText.text = content
+        self.likeCount.text = "\(likeCount)"
+        self.commentCount.text = "\(commentCount)"
+        
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 23, weight: .medium)
+        let bookmarkImage = UIImage(systemName: isBookmarked ? "bookmark.fill" : "bookmark", withConfiguration: imageConfig)
+        bookMarkButton.setImage(bookmarkImage, for: .normal)
+        
+        
+        if imagesName.count > 0 {
+            for imageName in imagesName {
+                let imageView: UIImageView = UIImageView()
+                imageView.setImage(with: imageName)
+                
+                contentImages.append(imageView)
+            }
+            
+            for i in 0..<(contentImages.count) {
+                let imageView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 230))
+                
+                contentImages[i].contentMode = .scaleAspectFit
+                
+                imageView.addSubview(contentImages[i])
+                
+                
+                contentImages[i].snp.makeConstraints { make in
+                    make.centerX.equalTo(imageView)
+                    make.height.equalTo(230)
+                }
+                
+                imageViews.append(imageView)
+            }
+            
+            for imageView in imageViews {
+                imageView.backgroundColor = .textFieldLine
+                
+                imageStackView.addArrangedSubview(imageView)
+                
+                imageView.snp.makeConstraints { make in
+                    make.height.equalTo(230)
+                    make.width.equalTo(imageScrollView.snp.width)
+                }
+            }
+        } else {
+            self.imageScrollView.removeFromSuperview()
+            self.imagePageCount.removeFromSuperview()
+            
+            contentText.snp.remakeConstraints() { make in
+                make.top.equalTo(divisionLine.snp.bottom).offset(10)
+                make.leading.trailing.equalTo(titleStackView)
+                make.height.greaterThanOrEqualTo(80)
+            }
+        }
+        
+        self.updateImageStackView()
+        
+    }
     
+    private func updateImageStackView() {
+        // 이미지 스택 뷰의 기존 콘텐츠를 제거
+        imageStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        for imageView in contentImages {
+            let containerView = UIView()
+            containerView.addSubview(imageView)
+            
+            imageView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+                make.width.equalTo(self.frame.width) // 스크롤뷰 너비에 맞춤
+                make.height.equalTo(230) // 고정 높이
+            }
+            
+            imageStackView.addArrangedSubview(containerView)
+            containerView.snp.makeConstraints { make in
+                make.width.equalTo(self.imageScrollView.snp.width) // 스크롤뷰와 같은 너비
+                make.height.equalTo(230)
+            }
+        }
+        
+        imageStackView.layoutIfNeeded() // 레이아웃 업데이트
+    }
+    
+    
+
 }
 
 
