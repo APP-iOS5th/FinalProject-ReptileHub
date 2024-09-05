@@ -65,9 +65,11 @@ class LoginViewController: UIViewController {
         AuthService.shared.loginWithGoogle(presentingViewController: self) { success in
             if success {
                 self.navigateToMainView()
+                print("로그인 성공")
             } else {
                 let loginType = "Google"
                 self.showLoginError(loginType:loginType)
+                print("로그인 실패 : \(self.showLoginError(loginType: loginType))")
             }
         }
     }

@@ -79,7 +79,7 @@ class CommunityDetailView: UIView {
     
     // 댓글 작성란
     private let commentBackgroundView: UIView = UIView()
-    private let commentTextView: UITextView = UITextView()
+    let commentTextView: UITextView = UITextView()
     private let sendButton: UIButton = UIButton()
     private let placeHolder: UILabel = UILabel()
     

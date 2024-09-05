@@ -25,38 +25,62 @@ class AuthService:NSObject {
     private override init() {}
     
     //MARK: - Google OAuth 로그인
-    func loginWithGoogle(presentingViewController:UIViewController, completion: @escaping (Bool)-> Void) {
+    func loginWithGoogle(presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
+        print("구글 로그인 시작")
         guard let clientID = FirebaseApp.app()?.options.clientID else {
+            print("구글 로그인 클라이언트 아이디 없음")
             completion(false)
             return
         }
-        
+
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
-        
+
         GIDSignIn.sharedInstance.signIn(withPresenting: presentingViewController) { result, error in
             guard error == nil else {
                 print("DEBUG: 에러발생 - \(error?.localizedDescription ?? "No Error Description")")
                 completion(false)
                 return
             }
-            
+
             guard let user = result?.user else {
-                print ("DEBUG: Google Sign in 에러 - 유저 찾기 실패")
+                print("DEBUG: Google Sign in 에러 - 유저 찾기 실패")
                 completion(false)
                 return
             }
-            
-            let googleUser = GoogleAuthUser(user: user)
-            
-            // 소셜 로그인 성공 시 Firestore에서 유저 존재 여부 확인
-            self.checkIfUserExists(providerUID: googleUser.uid, loginType: googleUser.loginType) { exists in
-                if exists {
-                    // 이미 유저가 존재하는 경우 바로 로그인 처리
-                    completion(true)
-                } else {
-                    // 유저가 존재하지 않는 경우 약관 동의 뷰로 이동
-                    self.navigateToTermsAgreementView(user: googleUser, presentingViewController: presentingViewController, completion: completion)
+
+            // idToken과 accessToken은 이제 옵셔널이 아니기 때문에 직접 접근 가능
+            guard let idToken = user.idToken?.tokenString else { return }
+            let accessToken = user.accessToken.tokenString
+
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+
+            // Firebase에 로그인
+            Auth.auth().signIn(with: credential) { authResult, error in
+                if let error = error {
+                    print("DEBUG: Firebase Sign In Error: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+
+                guard let authUser = authResult?.user else {
+                    print("DEBUG: Firebase 사용자 없음")
+                    completion(false)
+                    return
+                }
+
+                print("Firebase 로그인 성공: \(authUser.uid)")
+
+                // Firestore에서 유저 존재 여부 확인
+                self.checkIfUserExists(providerUID: user.userID ?? "", loginType: "Google") { exists in
+                    if exists {
+                        print("이미 유저가 존재하는 경우 바로 로그인 처리, 현재 구글 유저 uid : \(user.userID ?? "")")
+                        completion(true)
+                    } else {
+                        print("유저가 존재하지 않는 경우 약관 동의 뷰로 이동")
+                        let googleUser = GoogleAuthUser(user: user)
+                        self.navigateToTermsAgreementView(user: googleUser, presentingViewController: presentingViewController, completion: completion)
+                    }
                 }
             }
         }
