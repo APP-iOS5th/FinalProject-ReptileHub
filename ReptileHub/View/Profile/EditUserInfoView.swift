@@ -14,7 +14,7 @@ class EditUserInfoView: UIView {
     
     // UserProfile 더미 데이터
     let users: [UserProfile] = [
-        UserProfile(uid: "1001", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
+        UserProfile(uid: "1001", providerUID: "123", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
     ]
 
     var ProfileImageEdit: UIImageView = {
