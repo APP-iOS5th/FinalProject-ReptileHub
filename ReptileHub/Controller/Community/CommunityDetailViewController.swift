@@ -237,6 +237,7 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
         CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { result in
             switch result {
             case .success(let latestComments):
+                self.detailView.commentTextView.text = ""
                 self.fetchComments = latestComments
                 
                 var height: CGFloat = 50
