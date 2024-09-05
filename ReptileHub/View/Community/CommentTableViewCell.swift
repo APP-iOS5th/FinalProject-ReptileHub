@@ -7,7 +7,15 @@
 
 import UIKit
 
+protocol CommentTableViewCellDelegate: AnyObject {
+    func deleteCommentAction(cell: CommentTableViewCell)
+    
+    func blockCommentAction(cell: CommentTableViewCell)
+}
+
 class CommentTableViewCell: UITableViewCell {
+    
+    weak var delegate: CommentTableViewCellDelegate?
     
     // 상단 게시글 정보
     private let profileImage: UIImageView = UIImageView()
@@ -18,6 +26,8 @@ class CommentTableViewCell: UITableViewCell {
     let elementStackView: UIStackView = UIStackView()
     
     private var menuButton: UIButton = UIButton()
+    private var myMenu: [UIAction] = []
+    private var otherMenu: [UIAction] = []
     
 
     
@@ -37,7 +47,7 @@ class CommentTableViewCell: UITableViewCell {
     
     //MARK: - 프로필 이미지
     private func setupProfileImage() {
-        profileImage.image = UIImage(systemName: "person")
+//        profileImage.image = UIImage(systemName: "person")
         profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 20
         profileImage.clipsToBounds = true
@@ -111,8 +121,16 @@ class CommentTableViewCell: UITableViewCell {
         menuButton.tintColor = .gray
         menuButton.transform = CGAffineTransform(rotationAngle: .pi / 2) // 90도 회전
         
-        menuButton.addTarget(self, action: #selector(actionMenuButton), for: .touchUpInside)
+        myMenu = [ UIAction(title: "텍스트 복사하기", image: UIImage(systemName: "doc.on.doc"), handler: { _ in self.copyCommentAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteCommentAction() }) ]
+        otherMenu = [ UIAction(title: "텍스트 복사하기", image: UIImage(systemName: "doc.on.doc"), handler: { _ in self.copyCommentAction() }), UIAction(title: "작성자 차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in
+            self.blockCommentAction()
+        }),
+        UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.bubble"), attributes: .destructive, handler: { _ in
             
+        }) ]
+        
+        menuButton.showsMenuAsPrimaryAction = true
+        
         self.contentView.addSubview(menuButton)
         
         menuButton.snp.makeConstraints { make in
@@ -121,17 +139,31 @@ class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    @objc
-    private func actionMenuButton() {
-        print("메뉴 버튼 클릭.")
+    private func copyCommentAction() {
+        print("댓글 복사하기 클릭.")
     }
     
+    private func deleteCommentAction() {
+        print("댓글 삭제하기 클릭.")
+        self.delegate?.deleteCommentAction(cell: self)
+    }
+    
+    private func blockCommentAction() {
+        print("댓글 작성자 차단하기 클릭.")
+        self.delegate?.blockCommentAction(cell: self)
+    }
+
     //MARK: - configure cell
-    func configureCell(profileURL: String, name: String, content: String, createAt: String) {
+    func configureCell(profileURL: String, name: String, content: String, createAt: String, commentUserId: String) {
         profileImage.setImage(with: profileURL)
         nameLabel.text = name
         commentLabel.text = content
         timestampLabel.text = createAt
+        
+        let isMine: Bool = commentUserId == UserService.shared.currentUserId
+        
+        menuButton.menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: isMine ? myMenu : otherMenu)
+
     }
 
 }

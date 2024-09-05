@@ -108,12 +108,12 @@ extension SpecialEditViewController: UITextViewDelegate {
     }
 }
 
-
-extension SpecialEditViewController:SpecialEditViewDelegate {
-   
-    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String) {
-        <#code#>
-    }
-    
-    
-}
+//
+//extension SpecialEditViewController:SpecialEditViewDelegate {
+//   
+//    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String) {
+//        <#code#>
+//    }
+//    
+//    
+//}
