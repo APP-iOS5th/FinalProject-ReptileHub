@@ -13,7 +13,8 @@ class DetailGrowthDiaryViewController: UIViewController {
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
-//    private var detailData: GrowthDiaryResponse?
+    
+    private var previewSpecialNotesData: [DiaryResponse] = []
     let diaryID: String
     
     init(diaryID: String) {
@@ -31,6 +32,11 @@ class DetailGrowthDiaryViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         detailGrowthDiaryView.updateTableViewHeight()
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        fetchSpecialNotesData()
     }
     
     override func viewDidLoad() {
@@ -67,6 +73,18 @@ class DetailGrowthDiaryViewController: UIViewController {
             }
         }
     }
+
+    // TODO: 최대 3개까지 주는건지(2개 있을 경우는 2개만 주는 지)
+    private func fetchSpecialNotesData(){
+        DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: diaryID, limit: 3) { [weak self] response in
+            switch response{
+            case .success(let responseData):
+                self?.previewSpecialNotesData = responseData
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
     
     private func showNavigaionSpecialNotes(){
         let showGrowthDiaryToSpeicialNotes = SpecialListViewController()
@@ -84,7 +102,7 @@ class DetailGrowthDiaryViewController: UIViewController {
 
 extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tempData.count == 0{
+        if previewSpecialNotesData.count == 0{
             detailGrowthDiaryView.detailPreviesSpecialNoteTableView.isHidden = true
             detailGrowthDiaryView.emptyview.isHidden = false
         }else{
@@ -102,6 +120,7 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SpecialListViewCell.identifier, for: indexPath) as? SpecialListViewCell else {
             return UITableViewCell()
         }
+        // TODO: cell 대입함수 사용하기
         cell.selectionStyle = .none
         return cell
     }
