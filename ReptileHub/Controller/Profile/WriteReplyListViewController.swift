@@ -59,7 +59,14 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "replyCell", for: indexPath) as! WriteReplyListTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
-        cell.setCommentData(commentData: fetchComments[indexPath.row])
+        CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
+            switch result {
+            case .success(let fetchThumnailData):
+                cell.setCommentData(commentData: self.fetchComments[indexPath.row], postData: fetchThumnailData[indexPath.row])
+            case .failure(let error):
+                print("\(error.localizedDescription)")
+            }
+        }
             
         return cell
     }
@@ -79,7 +86,7 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
                     switch result {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
-                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt:  postDetailResponse.createdAt!.timefomatted, imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID, isLiked: postDetail.isLiked, isBookmarked: postDetail.isBookmarked)
+                        detailViewController.detailView.configureFetchData(postDetailData: postDetailResponse, likeCount: postDetailResponse.likeCount,  commentCount: postDetailResponse.commentCount, profileImageName: userData.profileImageURL, name: userData.name)
                         detailViewController.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(detailViewController, animated: true)
                     case .failure(let error):

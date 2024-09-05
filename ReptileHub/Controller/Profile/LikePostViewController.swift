@@ -59,7 +59,17 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "likeCell", for: indexPath) as! CommunityTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         let data = fetchBookmarks[indexPath.row]
-        cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount)
+//        cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount)
+        
+        UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
+            switch result {
+            case .success(let userData):
+                cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID)
+            case .failure(let error):
+                print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
+                
+            }
+        }
 //        let menuItems = [
 //            UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
 //        ]
@@ -86,7 +96,8 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
                     switch result {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
-                        detailViewController.detailView.configureFetchData(profileImageName: userData.profileImageURL, title: postDetailResponse.title, name: userData.name, creatAt:  postDetailResponse.createdAt!.timefomatted, imagesName: postDetailResponse.imageURLs, content: postDetailResponse.content, likeCount: postDetailResponse.likeCount, commentCount: postDetailResponse.commentCount, postID: postDetail.postID, isLiked: postDetail.isLiked, isBookmarked: postDetail.isBookmarked)
+
+                        detailViewController.detailView.configureFetchData(postDetailData: postDetailResponse, likeCount:  self.fetchBookmarks[indexPath.row].likeCount, commentCount:  self.fetchBookmarks[indexPath.row].commentCount, profileImageName: userData.profileImageURL, name: userData.name)
                         detailViewController.hidesBottomBarWhenPushed = true
                         self.navigationController?.pushViewController(detailViewController, animated: true)
                     case .failure(let error):

@@ -55,6 +55,12 @@ class ProfileViewController: UIViewController {
         profileView.updateScrollState()
     }
     
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        
+        loadData()
+    }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

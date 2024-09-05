@@ -8,7 +8,12 @@
 import UIKit
 import SnapKit
 
+protocol BlockUserTableViewCellDelegate: AnyObject {
+    func deleteBlockAction(cell: BlockUserTableViewCell)
+}
+
 class BlockUserTableViewCell: UITableViewCell {
+    weak var delegate: BlockUserTableViewCellDelegate?
     
     private let BlockUserImage: UIImageView = {
         let imageView = UIImageView()
@@ -112,14 +117,7 @@ class BlockUserTableViewCell: UITableViewCell {
     @objc private func selectBlockCancel() {
         print("차단 해제 버튼 ~")
         
-        // TODO: - unBlockUserID 수정 + reload 추가
-        UserService.shared.unblockUser(currentUserID: UserService.shared.currentUserId, unBlockUserID: "R8FK52H2UebtfjNeODkNTEpsOgG3") { error in
-            if let error = error {
-                print("error: \(error.localizedDescription)")
-            } else {
-                print("차단 해제")
-            }
-        }
+        self.delegate?.deleteBlockAction(cell: self)
     }
     
     required init?(coder: NSCoder) {

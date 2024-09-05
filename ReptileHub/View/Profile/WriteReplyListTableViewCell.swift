@@ -97,12 +97,12 @@ class WriteReplyListTableViewCell: UITableViewCell {
         }
     }
     
-    func setCommentData(commentData: CommentResponse) {
+    func setCommentData(commentData: CommentResponse, postData: ThumbnailPostResponse) {
         commentDetail.text = commentData.content
         
         // TODO: - 게시글 타이틀, 게시글의 총 댓글 개수로 수정 
-        commentCount.text = String(commentData.likeCount)
-        postTitle.text = commentData.postID
+        commentCount.text = String(postData.commentCount)
+        postTitle.text = postData.title
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm" // 원하는 포맷으로 설정
