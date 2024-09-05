@@ -499,6 +499,50 @@ extension DiaryPostService {
         }
     }
     
+    //MARK: - 특정 성장 일지 속 일기 불러오기 함수
+    func fetchDiaryEntry(userID: String, diaryID: String, entryID: String, completion: @escaping (Result<DiaryResponse, Error>) -> Void) {
+        let db = Firestore.firestore()
+        
+        let entryRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("diary_entries").document(entryID)
+        
+        entryRef.getDocument { (document, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let document = document, document.exists, let data = document.data() else {
+                let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for entryID \(entryID)"])
+                completion(.failure(noDataError))
+                return
+            }
+            
+            // 일기 데이터를 DiaryResponse로 변환
+            if let entryID = data["entryID"] as? String,
+               let title = data["title"] as? String,
+               let content = data["content"] as? String,
+               let imageURLs = data["imageURLs"] as? [String],
+               let selectedDate = data["selectedDate"] as? Timestamp {
+                let diaryEntry = DiaryResponse(
+                    entryID: entryID,
+                    title: title,
+                    content: content,
+                    imageURLs: imageURLs,
+                    createdAt: selectedDate.dateValue(),
+                    selectedDate: selectedDate.dateValue()
+                )
+                completion(.success(diaryEntry))
+            } else {
+                let parseError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse document data for entryID \(entryID)"])
+                completion(.failure(parseError))
+            }
+        }
+    }
+    
+    
+    
     //MARK: - 성장 일지 속 일기 삭제 함수
     func deleteDiaryEntry(userID: String, diaryID: String, entryID: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
