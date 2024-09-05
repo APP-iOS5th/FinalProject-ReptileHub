@@ -15,13 +15,14 @@ protocol SpecialDetailViewDelegate: AnyObject {
 class SpecialDetailViewController: UIViewController {
     
     var diaryID: String
-    
+    var lizardName: String
     var delegate: SpecialDetailViewDelegate?
     private let specialDetailView = SpecialDetailView()
     let saveSpecialData: DiaryResponse
-    init(saverEntries: DiaryResponse, diaryID: String) {
+    init(saverEntries: DiaryResponse, diaryID: String, lizardName: String) {
         self.saveSpecialData = saverEntries
         self.diaryID = diaryID
+        self.lizardName = lizardName
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -33,7 +34,7 @@ class SpecialDetailViewController: UIViewController {
 
         self.view = specialDetailView
         setupNavigationBar()
-        specialDetailView.writeSpecialDetail(data: saveSpecialData)
+        specialDetailView.writeSpecialDetail(data: saveSpecialData, lizardName: lizardName)
         print(saveSpecialData)
     }
     

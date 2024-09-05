@@ -140,7 +140,7 @@ class SpecialEditView: UIView {
     
     
     //MARK: - 설명 글자 수 카운트 및 제한 표시
-    private lazy var countTextLabel: UILabel = {
+    private(set) lazy var countTextLabel: UILabel = {
         let countTextLabel = UILabel()
         countTextLabel.text = "0/1000"
         countTextLabel.font = .systemFont(ofSize: 10)
@@ -174,7 +174,7 @@ class SpecialEditView: UIView {
         self.addSubview(descriptionLabel)
         self.addSubview(descriptionTextView)
         self.addSubview(textViewPlaceholder)
-        self.addSubview(countTextLabel)
+//        self.addSubview(countTextLabel)
         self.addSubview(saveButton)
         
         //MARK: -- UI AutoLayout
@@ -216,10 +216,10 @@ class SpecialEditView: UIView {
             make.leading.equalTo(descriptionTextView.snp.leading).offset(14)
         }
         
-        countTextLabel.snp.makeConstraints{(make) in
-            make.trailing.equalTo(descriptionTextView.snp.trailingMargin)
-            make.bottom.equalTo(descriptionTextView.snp.bottomMargin)
-        }
+//        countTextLabel.snp.makeConstraints{(make) in
+//            make.trailing.equalTo(descriptionTextView.snp.trailingMargin)
+//            make.bottom.equalTo(descriptionTextView.snp.bottomMargin)
+//        }
         
         saveButton.snp.makeConstraints{(make) in
             make.centerX.equalTo(self)

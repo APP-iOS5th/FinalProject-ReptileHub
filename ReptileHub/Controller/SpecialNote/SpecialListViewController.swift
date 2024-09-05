@@ -15,14 +15,17 @@ class SpecialListViewController: UIViewController {
     
     var diaryID: String
     
-    init(diaryID: String) {
-            self.diaryID = diaryID
-            super.init(nibName: nil, bundle: nil)
-        }
+    var lizardName: String
+    
+    init(diaryID: String, lizardName:String) {
+        self.diaryID = diaryID
+        self.lizardName = lizardName
+        super.init(nibName: nil, bundle: nil)
+    }
 
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private var headerHeight = 100.0
     
@@ -113,7 +116,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
     // 셀 기능
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let specialEntry = specialListData[indexPath.row]
-        let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry, diaryID: diaryID)
+        let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry, diaryID: diaryID, lizardName: lizardName)
         specialDetailViewController.delegate = self
         show(specialDetailViewController, sender: self)
     }

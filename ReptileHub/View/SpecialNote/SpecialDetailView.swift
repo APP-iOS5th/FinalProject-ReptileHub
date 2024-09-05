@@ -203,7 +203,7 @@ class SpecialDetailView: UIView {
         }
     }
     //MARK: - SpecialDetialView 데이터 보내주는 함수
-    func writeSpecialDetail(data: DiaryResponse) {
+    func writeSpecialDetail(data: DiaryResponse, lizardName: String) {
         print("안되면 울거야",specialImages)
         for url in data.imageURLs {
         let imageView = UIImageView()
@@ -212,6 +212,7 @@ class SpecialDetailView: UIView {
         }
         print("제발 되게 해주세요.",specialImages)
         specialTitle.text = data.title
+        specialLizardName.text = lizardName
         dateLabel.text = data.createdAt?.formatted
         specialText.text = data.content
 //        print(data.image ?? UIImage(systemName: "person")!)
