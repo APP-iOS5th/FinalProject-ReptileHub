@@ -10,9 +10,9 @@ import SnapKit
 
 class WritePostListView: UIView {
 
-    private var WritePostTableView: UITableView = {
+    private (set) var WritePostTableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(WritePostListTableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
     

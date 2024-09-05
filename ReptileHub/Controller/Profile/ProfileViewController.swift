@@ -11,7 +11,21 @@ import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
-    private var list = ["내가 작성한 댓글", "내가 찜한 게시물", "내가 차단한 사용자"]
+    var userProfileData = [String]()
+    private var shouldReloadImage = false {
+        didSet {
+            print("모몽가\(shouldReloadImage)")
+
+            if shouldReloadImage {
+                self.loadData()
+                print("고양이")
+                editUserInfo()
+                shouldReloadImage = false
+            }
+        }
+    }
+    
+    private var list = ["내가 작성한 댓글", "북마크한 게시글", "내가 차단한 사용자"]
     
     private let profileView = ProfileView()
     
@@ -35,6 +49,9 @@ class ProfileViewController: UIViewController {
         
         
         self.navigationItem.title = "프로필"
+        print("쿠키런 조아")
+        
+        loadData()
         
         self.view = profileView
         profileView.configureListTableView(delegate: self, datasource: self)
@@ -54,20 +71,61 @@ class ProfileViewController: UIViewController {
         profileView.updateScrollState()
     }
     
-    @objc func editUserInfo() {
-        let editController = EditUserInfoViewController()
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
         
+        loadData()
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        print("배고파요")
+      
+    }
+    
+    func loadData(){ 
+        
+        UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
+            switch result {
+            case .success(let userData):
+                self.userProfileData.removeAll()
+                self.userProfileData.append(contentsOf: [userData.name, userData.profileImageURL])
+                self.profileView.setProfileData(userData: userData)
+                self.profileView.postList.reloadData()
+                print("userData: \(userData)")
+                print("불러오기 성공: \(self.userProfileData)")
+            case .failure(let error):
+                print("불러오기 실패: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func updateImage() {
+        // 다른 뷰 컨트롤러에서 돌아왔을 때 이미지를 다시 로드해야 하는 경우
+        shouldReloadImage = true
+        print("강아지")
+    }
+    
+    @objc func editUserInfo() { 
+        let editController = EditUserInfoViewController()
+        editController.editUserInfoData = (userProfileData[0], userProfileData[1])
         if let sheet = editController.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
-        
+        editController.previousViewController = self
         self.present(editController, animated: true, completion: nil)
     }
 
     @objc func myReptileButtonTouch() {
-        let myReptileController = ReptileViewController()
-        self.navigationController?.pushViewController(myReptileController, animated: true)
+//        let myReptileController = GrowthDiaryViewController()
+//        self.navigationController?.pushViewController(myReptileController, animated: true)
+        
+        if let tabBarController = self.tabBarController {
+            tabBarController.selectedIndex = 1
+        }
     }
 
     @objc func writePostButtonTouch() {

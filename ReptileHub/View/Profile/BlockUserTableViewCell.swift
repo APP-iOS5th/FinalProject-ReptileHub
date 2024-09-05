@@ -8,12 +8,12 @@
 import UIKit
 import SnapKit
 
+protocol BlockUserTableViewCellDelegate: AnyObject {
+    func deleteBlockAction(cell: BlockUserTableViewCell)
+}
+
 class BlockUserTableViewCell: UITableViewCell {
-    
-    // BlockUserProfile 더미 데이터
-    let blockedUsers: [BlockUserProfile] = [
-        BlockUserProfile(uid: "001", name: "놀고싶다", profileImageURL: "blockUserProfile")
-    ]
+    weak var delegate: BlockUserTableViewCellDelegate?
     
     private let BlockUserImage: UIImageView = {
         let imageView = UIImageView()
@@ -71,9 +71,6 @@ class BlockUserTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setBlockUserImage()
-        setBlockUserName()
-        
         contentView.addSubview(stackView)
         BlockUserImage.addSubview(blurEffectView)
         BlockUserImage.addSubview(eyeSlashImageView)
@@ -107,12 +104,9 @@ class BlockUserTableViewCell: UITableViewCell {
     }
     
     
-    private func setBlockUserImage() {
-        BlockUserImage.image = UIImage(named: blockedUsers[0].profileImageURL)
-    }
-    
-    private func setBlockUserName() {
-        BlockUserName.text = blockedUsers[0].name
+   func setBlockUserData(blockUserData: BlockUserProfile) {
+        BlockUserImage.setImage(with: blockUserData.profileImageURL)
+        BlockUserName.text = blockUserData.name
     }
     
     @objc private func toggleBlurEffect() {
@@ -122,6 +116,8 @@ class BlockUserTableViewCell: UITableViewCell {
     
     @objc private func selectBlockCancel() {
         print("차단 해제 버튼 ~")
+        
+        self.delegate?.deleteBlockAction(cell: self)
     }
     
     required init?(coder: NSCoder) {

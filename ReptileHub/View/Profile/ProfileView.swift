@@ -9,13 +9,8 @@ import UIKit
 import SnapKit
 
 class ProfileView: UIView {
-
     
     // 배경 수정 필요
-    // UserProfile 더미 데이터
-    let users: [UserProfile] = [
-        UserProfile(uid: "1001", providerUID: "123", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
-    ]
 
     // MARK: - Properties (프로필 이미지, 이름, 스택뷰, 테이블뷰 등)
     private let profileImage: UIImageView = {
@@ -112,7 +107,7 @@ class ProfileView: UIView {
         return stackView
     }()
     
-    private let postList: UITableView = {
+    private (set) var postList: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.isScrollEnabled = false
@@ -162,11 +157,7 @@ class ProfileView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        setProfileImage()
-        setProfileName()
-        setProfileLizardCount()
-        setProfilePostCount()
-        setProfileLoginType()
+       
     }
     
     required init?(coder: NSCoder) {
@@ -226,24 +217,12 @@ class ProfileView: UIView {
         }
     }
     
-    private func setProfileImage() {
-        profileImage.image = UIImage(named: users[0].profileImageURL)
-    }
-    
-    private func setProfileName() {
-        profileName.text = users[0].name
-    }
-    
-    private func setProfileLizardCount() {
-        firstButton.setTitle(String(users[0].lizardCount), for: .normal)
-    }
-    
-    private func setProfilePostCount() {
-        secondButton.setTitle(String(users[0].postCount), for: .normal)
-    }
-    
-    private func setProfileLoginType() {
-        thirdImage.image = UIImage(named: users[0].loginType)
+    func setProfileData(userData: UserProfile) {
+        profileImage.setImage(with: userData.profileImageURL) // 
+        profileName.text = userData.name
+        firstButton.setTitle(String(userData.lizardCount), for: .normal)
+        secondButton.setTitle(String(userData.postCount), for: .normal)
+        thirdImage.image = UIImage(named: userData.loginType)
     }
     
     func configureListTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {

@@ -10,15 +10,15 @@ import SnapKit
 
 class WriteReplyListTableViewCell: UITableViewCell {
     
-    let posts: [ThumbnailPostResponse] = [
-        ThumbnailPostResponse(
-            postID: "123", title: "잠 온다 !", userID: "1001", thumbnailURL: "profile", previewContent: "들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ 들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ ", likeCount: 150, commentCount: 25, createdAt: Date()
-        )]
-    
-    let comments: [CommentResponse] = [
-        CommentResponse(
-            commentID: "123", postID: "456", userID: "789", content: "토비는 자러갈거야 (๑'ᵕ'๑)⸝*", createdAt: Date(), likeCount: 42
-        )]
+//    let posts: [ThumbnailPostResponse] = [
+//        ThumbnailPostResponse(
+//            postID: "123", title: "잠 온다 !", userID: "1001", thumbnailURL: "profile", previewContent: "들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ 들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ ", likeCount: 150, commentCount: 25, createdAt: Date()
+//        )]
+//    
+//    let comments: [CommentResponse] = [
+//        CommentResponse(
+//            commentID: "123", postID: "456", userID: "789", content: "토비는 자러갈거야 (๑'ᵕ'๑)⸝*", createdAt: Date(), likeCount: 42
+//        )]
     
     private var commentDetail: UILabel = {
         let label = UILabel()
@@ -68,11 +68,6 @@ class WriteReplyListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setCommentDetail()
-        setCommentCount()
-        setCommentDate()
-        setCommentPostTitle()
-        
         contentView.addSubview(commentDetail)
         contentView.addSubview(commentDate)
         contentView.addSubview(stackView)
@@ -102,22 +97,16 @@ class WriteReplyListTableViewCell: UITableViewCell {
         }
     }
     
-    private func setCommentDetail() {
-        commentDetail.text = comments[0].content
-    }
-    
-    private func setCommentCount() {
-        commentCount.text = String(posts[0].commentCount)
-    }
-    
-    private func setCommentPostTitle() {
-        postTitle.text = posts[0].title
-    }
-    
-    private func setCommentDate() {
+    func setCommentData(commentData: CommentResponse, postData: PostDetailResponse) {
+        commentDetail.text = commentData.content
+        
+        // TODO: - 게시글 타이틀, 게시글의 총 댓글 개수로 수정 
+        commentCount.text = String(postData.commentCount)
+        postTitle.text = postData.title
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm" // 원하는 포맷으로 설정
-        commentDate.text = dateFormatter.string(for: comments[0].createdAt)
+        commentDate.text = dateFormatter.string(for: commentData.createdAt)
     }
     
     required init?(coder: NSCoder) {

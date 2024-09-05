@@ -9,9 +9,9 @@ import UIKit
 
 class LikePostView: UIView {
     
-    private var likePostTableView: UITableView = {
+    private (set) var likePostTableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(LikePostTableViewCell.self, forCellReuseIdentifier: "likeCell")
+        tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "likeCell")
         
         return tableView
         

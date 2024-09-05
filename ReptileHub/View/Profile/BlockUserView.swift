@@ -10,7 +10,7 @@ import SnapKit
 
 class BlockUserView: UIView {
     
-    let blockUserTableView: UITableView = {
+    private (set) var blockUserTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(BlockUserTableViewCell.self, forCellReuseIdentifier: "userCell")
         return tableView
