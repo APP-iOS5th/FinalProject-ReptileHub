@@ -222,7 +222,18 @@ class ProfileView: UIView {
         profileName.text = userData.name
         firstButton.setTitle(String(userData.lizardCount), for: .normal)
         secondButton.setTitle(String(userData.postCount), for: .normal)
-        thirdImage.image = UIImage(named: userData.loginType)
+//        thirdImage.image = UIImage(named: userData.loginType)
+        
+        switch userData.loginType {
+           case "Kakao":
+               thirdImage.image = UIImage(named: "kakaotalk")
+           case "Google":
+               thirdImage.image = UIImage(named: "googleIcon")
+           case "Apple":
+               thirdImage.image = UIImage(named: "appleIcon")
+           default:
+               thirdImage.image = UIImage(named: "default_icon") // 기본 이미지 설정
+           }
     }
     
     func configureListTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
