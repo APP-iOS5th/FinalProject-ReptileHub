@@ -90,9 +90,9 @@ class ProfileViewController: UIViewController {
         UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let userData):
+                self.profileView.setProfileData(userData: userData)
                 self.userProfileData.removeAll()
                 self.userProfileData.append(contentsOf: [userData.name, userData.profileImageURL])
-                self.profileView.setProfileData(userData: userData)
                 self.profileView.postList.reloadData()
                 print("userData: \(userData)")
                 print("불러오기 성공: \(self.userProfileData)")

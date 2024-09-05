@@ -30,7 +30,7 @@ class CommunityViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.view = communityListView
         
         communityListView.delegate = self
