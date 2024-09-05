@@ -451,15 +451,15 @@ class CommunityDetailView: UIView {
     
     @objc
     private func sendButtonAction() {
-        CommunityService.shared.addComment(postID: self.postID, userID: UserService.shared.currentUserId, content: commentTextView.text) { error in
-            if let error = error {
-                print("댓글 게시 중 오류 발생: \(error.localizedDescription)")
-            } else {
-                print("댓글 게시 성공")
-                self.commentTextView.text = ""
-                self.commentTableView.reloadData()
-            }
-        }
+//        CommunityService.shared.addComment(postID: self.postID, userID: UserService.shared.currentUserId, content: commentTextView.text) { error in
+//            if let error = error {
+//                print("댓글 게시 중 오류 발생: \(error.localizedDescription)")
+//            } else {
+//                print("댓글 게시 성공")
+//                self.commentTextView.text = ""
+//                self.commentTableView.reloadData()
+//            }
+//        }
     }
     
     

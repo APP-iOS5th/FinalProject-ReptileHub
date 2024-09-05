@@ -484,19 +484,19 @@ class DetailGrowthDiaryView: UIView {
         detailParentImageView.layer.cornerRadius = 5
         detailParentImageView.layer.borderWidth = 1.0
         detailParentImageView.layer.borderColor = UIColor.textFieldBorderLine.cgColor
-        detailParentImageView.tag = 0
+        detailParentImageView.tag = 1
         
         let detailParentNameLabel = UILabel()
         detailParentNameLabel.text = "아빠 도마뱀 이름"
         detailParentNameLabel.font = UIFont.systemFont(ofSize: 16)
         detailParentNameLabel.textColor = UIColor.textFieldTitle
-        detailParentNameLabel.tag = 1
+        detailParentNameLabel.tag = 2
         
         let detailParentSpecialsMorphLabel = UILabel()
         detailParentSpecialsMorphLabel.text = "아빠 도마뱀, 모프없음"
         detailParentSpecialsMorphLabel.textColor = UIColor.textFieldPlaceholder
         detailParentSpecialsMorphLabel.font = UIFont.systemFont(ofSize: 12)
-        detailParentSpecialsMorphLabel.tag = 2
+        detailParentSpecialsMorphLabel.tag = 3
         
         let detailParentView = UIView()
         detailParentView.addSubview(detailParentImageView)
@@ -582,7 +582,7 @@ class DetailGrowthDiaryView: UIView {
         }
         print("a")
         detailLiazardNameLabel.text = lizardData.name
-        detailLizardSepciesMorphInfoLabel.text = "lizardData.species, 모프\(String(describing: (lizardData.morph != nil) ? lizardData.morph : "없음"))"
+        detailLizardSepciesMorphInfoLabel.text = "lizardData.species, 모프\(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
         detailHatchDaysLabel.text = lizardData.hatchDays.formatted
         detailFeedMethodLabel.text = lizardData.feedMethod
         detailTailLabel.text = lizardData.tailexistence ? "있음" : "없음"
@@ -590,19 +590,21 @@ class DetailGrowthDiaryView: UIView {
         // TODO: 부모뷰도 넣어주기
         guard let fatherData = detailData.parentInfo?.father, 
                 let motherData = detailData.parentInfo?.mother else { return }
-        if let fatherImageView = detailFatherInfoView.viewWithTag(0) as? UIImageView,
-           let fatherName = detailFatherInfoView.viewWithTag(1) as? UILabel,
-           let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(2) as? UILabel
+        
+        if let fatherImageView = detailFatherInfoView.viewWithTag(1) as? UIImageView,
+           let fatherName = detailFatherInfoView.viewWithTag(2) as? UILabel,
+           let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(3) as? UILabel
         {
+            
             // TODO: 지금은 무조건 있다고 가정
             fatherImageView.setImage(with: fatherData.imageURL!)
             fatherName.text = fatherData.name
             fatherSpeciesMorph.text = "\(fatherData.morph != nil ? fatherData.morph! : "없음")"
         }
         
-        if let motherImageView = detailMotherInfoView.viewWithTag(0) as? UIImageView,
-           let motherName = detailMotherInfoView.viewWithTag(1) as? UILabel,
-           let motherSpeciesMorph = detailMotherInfoView.viewWithTag(2) as? UILabel
+        if let motherImageView = detailMotherInfoView.viewWithTag(1) as? UIImageView,
+           let motherName = detailMotherInfoView.viewWithTag(2) as? UILabel,
+           let motherSpeciesMorph = detailMotherInfoView.viewWithTag(3) as? UILabel
         {
             // TODO: 지금은 무조건 있다고 가정
             motherImageView.setImage(with: motherData.imageURL!)

@@ -13,7 +13,7 @@ class DetailGrowthDiaryViewController: UIViewController {
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
-    private var detailData: GrowthDiaryResponse?
+//    private var detailData: GrowthDiaryResponse?
     let diaryID: String
     
     init(diaryID: String) {
@@ -57,11 +57,10 @@ class DetailGrowthDiaryViewController: UIViewController {
     }
     
     private func fetchDetailData(){
-        // TODO: uid 불러오는 코드 수정
-        guard let userID = Auth.auth().getUserID() else { return }
-        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: userID, diaryID: diaryID) { [weak self] response in
+        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let responseData):
+                print("성공")
                 self?.detailGrowthDiaryView.configureDetailGrowthDiaryData(detailData: responseData)
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")

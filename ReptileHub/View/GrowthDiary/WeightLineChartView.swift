@@ -61,7 +61,7 @@ struct WeightLineChartView: View {
     
     var body: some View {
         GroupBox{
-            Chart(weightData.sorted(by: {$0.hatchDays < $1.hatchDays})) { weight in
+            Chart(weightData.sorted(by: {$0.hatchDays < $1.hatchDays}), id: \.self.weight) { weight in
                 // TODO: 생성날짜로 바꿔야함
                 LineMark(x: .value("Month", formatDate(weight.hatchDays)),
                          y: .value("Weight", weight.weight)
