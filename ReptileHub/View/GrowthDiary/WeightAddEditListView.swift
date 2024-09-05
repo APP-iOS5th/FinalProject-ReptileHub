@@ -40,6 +40,10 @@ class WeightAddEditListView: UIView {
         weightAddEditTableView.register(cellClass, forCellReuseIdentifier: identifier)
     }
     
+    func reloadWeightAddEditListView(){
+        self.weightAddEditTableView.reloadData()
+    }
+    
     func weightAddEditViewScrollState(){
         weightAddEditTableView.setNeedsLayout()
         weightAddEditTableView.layoutIfNeeded()
@@ -50,5 +54,4 @@ class WeightAddEditListView: UIView {
             weightAddEditTableView.isScrollEnabled = false
         }
     }
-
 }

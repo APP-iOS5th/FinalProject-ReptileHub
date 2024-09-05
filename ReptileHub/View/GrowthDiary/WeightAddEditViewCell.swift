@@ -74,5 +74,10 @@ class WeightAddEditViewCell: UITableViewCell {
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-Spacing.mainSpacing)
             make.centerY.equalTo(self.contentView)
         }
-    }    
+    }
+    
+    func configureWeightCell(weightEntry: WeightEntry){
+        weightAddEditViewCellDateLabel.text = weightEntry.date.formatted
+        weightAddEditViewCellWeightLabel.text = "무게 : \(weightEntry.weight)kg"
+    }
 }

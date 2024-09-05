@@ -11,6 +11,7 @@ import SnapKit
 class DetailGrowthDiaryView: UIView {
     
     //MARK: - 특이사항 전체보기 버튼 액션 클로저로 생성
+    // TODO: delegate를 사용하기
     var detailShowSpecialNoteButtonTapped: (() -> Void)?
     var detailShowWeightInfoButtonTapped: (() -> Void)?
     

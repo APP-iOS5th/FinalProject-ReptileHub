@@ -92,7 +92,7 @@ class DetailGrowthDiaryViewController: UIViewController {
     }
     
     private func showNavigationWeightInfo(){
-        let showGrowthDiaryToWeightInfo = weightAddEditViewController()
+        let showGrowthDiaryToWeightInfo = weightAddEditViewController(diaryID: diaryID)
         self.navigationController?.pushViewController(showGrowthDiaryToWeightInfo, animated: true)
     }
     

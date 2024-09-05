@@ -9,18 +9,35 @@ import UIKit
 
 class weightAddEditViewController: UIViewController {
 
-    private lazy var weightAddEditView = WeightAddEditListView()    
+    private lazy var weightAddEditView = WeightAddEditListView()
+    
+    private let diaryID: String
+    private var weightEntries: [WeightEntry] = []
+    
+    init(diaryID: String) {
+        self.diaryID = diaryID
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
         return button
     }()
     
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        fetchWeightData()        
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         weightAddEditView.weightAddEditViewScrollState()
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +53,18 @@ class weightAddEditViewController: UIViewController {
         weightAddEditView.registerWeightAddEditTablCell(WeightAddEditViewCell.self, forCellReuseIdentifier: WeightAddEditViewCell.identifier)
     }
     
+    private func fetchWeightData(){
+        DiaryPostService.shared.fetchDailyWeightEntries(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
+            switch response{
+            case .success(let responseData):
+                self?.weightEntries = responseData
+                self?.weightAddEditView.reloadWeightAddEditListView()
+            case .failure(let error):
+                print("ERROR: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     //무게 추가하는 뷰 컨트롤러로 이동 액션
     private func moveAddWeightController(){
         
@@ -44,7 +73,7 @@ class weightAddEditViewController: UIViewController {
 
 extension weightAddEditViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        weightEntries.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -52,6 +81,7 @@ extension weightAddEditViewController: UITableViewDelegate, UITableViewDataSourc
                 return UITableViewCell()
             }
         cell.selectionStyle = .none
+        cell.configureWeightCell(weightEntry: weightEntries[indexPath.row])
         return cell
     }
     

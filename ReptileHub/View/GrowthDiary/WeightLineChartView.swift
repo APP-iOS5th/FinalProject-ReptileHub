@@ -58,7 +58,6 @@ import Charts
 
 struct WeightLineChartView: View {
     var weightData: [LizardInfoResponse]
-    
     var body: some View {
         GroupBox{
             Chart(weightData.sorted(by: {$0.hatchDays < $1.hatchDays}), id: \.self.weight) { weight in
