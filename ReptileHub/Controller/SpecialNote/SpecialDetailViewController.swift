@@ -14,12 +14,14 @@ protocol SpecialDetailViewDelegate: AnyObject {
 
 class SpecialDetailViewController: UIViewController {
     
+    var diaryID: String
     
     var delegate: SpecialDetailViewDelegate?
     private let specialDetailView = SpecialDetailView()
     let saveSpecialData: DiaryResponse
-    init(saverEntries: DiaryResponse) {
+    init(saverEntries: DiaryResponse, diaryID: String) {
         self.saveSpecialData = saverEntries
+        self.diaryID = diaryID
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -71,8 +73,9 @@ class SpecialDetailViewController: UIViewController {
     }
     // 수정 화면으로 전환하는 함수
         private func navigateToEditScreen() {
-//            let editViewController = SpecialEditViewController()
-//            navigationController?.pushViewController(editViewController, animated: true)
+            let editViewController = SpecialEditViewController(diaryID: diaryID , editMode: true)
+            editViewController.editEntry = saveSpecialData
+            navigationController?.pushViewController(editViewController, animated: true)
         }
 
 }

@@ -42,7 +42,7 @@ class SpecialListViewController: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         title = "특이사항"
     }
-    private func fetchSpecialList() {
+    func fetchSpecialList() {
         DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let specialListData):
@@ -113,9 +113,8 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
     // 셀 기능
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let specialEntry = specialListData[indexPath.row]
-        let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry)
+        let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry, diaryID: diaryID)
         specialDetailViewController.delegate = self
-        
         show(specialDetailViewController, sender: self)
     }
     func deleteSpecialNoteButtonTapped() {
@@ -129,7 +128,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
         // 버튼 액션 설정
         specialPlusButtonView.buttonAction = { [weak self] in
             guard let diaryID = self?.diaryID else {return}
-            let specialEditViewController = SpecialEditViewController(diaryID: diaryID)
+            let specialEditViewController = SpecialEditViewController(diaryID: diaryID, editMode: false)
             self?.navigationController?.pushViewController(specialEditViewController, animated: true)
         }
         return specialPlusButtonView 

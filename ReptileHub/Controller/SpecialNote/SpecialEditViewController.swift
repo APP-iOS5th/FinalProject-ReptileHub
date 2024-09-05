@@ -16,15 +16,35 @@ class SpecialEditViewController: UIViewController {
     
     var diaryID: String
     
-    init(diaryID: String) {
-            self.diaryID = diaryID
-            super.init(nibName: nil, bundle: nil)
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+    var editMode: Bool
     
+    var editEntry: DiaryResponse?
+    
+    var originalImageURLs: [String] = []
+    
+    var removedImageURLs: [String] = []
+    
+    init(diaryID: String, editMode: Bool) {
+        self.diaryID = diaryID
+        self.editMode = editMode
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        if editMode {
+            if let editEntry = self.editEntry {
+                originalImageURLs = editEntry.imageURLs
+                specialEditView.configureEdit(configureEditData: editEntry)
+            }
+        }
+    }
+    func fetchEditData() {
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = specialEditView
@@ -102,11 +122,34 @@ extension SpecialEditViewController: PHPickerViewControllerDelegate {
 extension SpecialEditViewController: SpecialPHPickerCollectionViewCellDelegate {
     
     func didTapDeleteButton(indexPath: IndexPath) {
-        print("콜렉션 뷰 셀 삭제버튼 클릭.")
+//        print("콜렉션 뷰 셀 삭제버튼 클릭.")
+//        
+//        self.specialEditView.selectedImages.remove(at: indexPath.item - 1)
+//        self.specialEditView.imagePickerCollectionView.reloadData()
+//        print("콜렉션 뷰 셀 삭제 후 selectedImages : \(self.specialEditView.selectedImages)")
+//        if indexPath.item < specialEditView.imageData.count {
+//            // 만약 삭제할 이미지가 기존의 이미지라면
+//            if indexPath.item < originalImageURLs.count {
+//                let removedImageURL = originalImageURLs[indexPath.item]
+//                removedImageURLs.append(removedImageURL) // 삭제해야될 url 들을 배열에 저장해서 관리
+//                originalImageURLs.remove(at: indexPath.item) // 기존 이미지 URL에서 제거
+//            }else {
+//                // 새로운 이미지의 경우, newImagesData에서 제거 - 기존 이미지 뒤에 새로 선택한 사진이 나옴
+//                let newImageIndex = indexPath.item - originalImageURLs.count
+//                specialEditView.imageData.remove(at: newImageIndex)
+//            }
+//
+////            images.remove(at: index)
+//            specialEditView.imageData.remove(at: indexPath.item - originalImageURLs.count)
+//            specialEditView.imagePickerCollectionView.reloadData()
+//        } else {
+//            print(indexPath.item)
+//            specialEditView.imageData.remove(at: indexPath.item - originalImageURLs.count)
+//            specialEditView.imagePickerCollectionView.reloadData()
+//            print(specialEditView.selectedImages)
+//            print("기이ㅣㅇ이이이이이이ㅣ이이이ㅣ잉ㄹ게에에에에에에에ㅔ")
+//        }
         
-        self.specialEditView.selectedImages.remove(at: indexPath.item - 1)
-        self.specialEditView.imagePickerCollectionView.reloadData()
-        print("콜렉션 뷰 셀 삭제 후 selectedImages : \(self.specialEditView.selectedImages)")
     }
     
 }
@@ -120,28 +163,46 @@ extension SpecialEditViewController: UITextViewDelegate {
             self.specialEditView.textViewPlaceholder.isHidden = true
         }
     }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = ""
+        }
+    }
 }
 //MARK: - SpecialEidtView 데이터 저장해서 게시
 extension SpecialEditViewController: SpecialEditViewDelegate {
     func didTapPostButton(imageData: [Data], date: Date, title: String, text: String) {
-        print("""
-                [현재 등록할 게시글 내용]
-                imageData: \(imageData)
-                date: \(date)
-                title: \(title)
-                text: \(text)
-                """)
         guard let userID = Auth.auth().getUserID() else {
             return
         }
-        DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){
-            error in
+        if editMode {
+            guard let editEntry = self.editEntry else { return }
+            DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs) { error in
                 if let error = error {
-                            print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
-                        } else {
-                            print("게시글 게시 성공")
-                            self.navigationController?.popViewController(animated: true)
-                        }
+                    print(error.localizedDescription)
+                } else {
+                    print("업데이트 완료")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+        else {
+            print("""
+                    [현재 등록할 게시글 내용]
+                    imageData: \(imageData)
+                    date: \(date)
+                    title: \(title)
+                    text: \(text)
+                    """)
+            DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){
+                error in
+                    if let error = error {
+                                print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
+                            } else {
+                                print("게시글 게시 성공")
+                                self.navigationController?.popViewController(animated: true)
+                            }
+            }
         }
     }
     

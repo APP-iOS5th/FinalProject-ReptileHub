@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import Kingfisher
 
 protocol SpecialEditViewDelegate: AnyObject {
     func didTapPostButton(imageData: [Data], date: Date, title: String, text: String)
@@ -267,6 +268,34 @@ class SpecialEditView: UIView {
         
         return PHPickerViewController(configuration: config)
         
+    }
+    func configureEdit(configureEditData: DiaryResponse) {
+        var images = [UIImage]()
+        for image in configureEditData.imageURLs {
+            let uiImage = UIImage()
+            KingfisherManager.shared.retrieveImage(with: URL(string: image)!) { result in
+                
+                switch result {
+                    case .success(let value):
+                        // 성공적으로 이미지를 다운로드했을 때
+                        let image = value.image
+                        print("Image downloaded: (image)")
+
+                        // 다운로드한 UIImage를 사용
+//                           self.useDownloadedImage(image)
+                            
+                        self.selectedImages.append(image)
+
+                    case .failure(let error):
+                        // 에러 처리
+                        print("Error downloading image: (error)")
+                    }
+                }
+        }
+        datePicker.date = configureEditData.createdAt!
+        specialTitle.text = configureEditData.title
+        descriptionTextView.text = configureEditData.content
+        textViewPlaceholder.isHidden = true
     }
 
 }
