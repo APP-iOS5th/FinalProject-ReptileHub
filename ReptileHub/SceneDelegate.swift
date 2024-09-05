@@ -20,20 +20,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         
-        let tabVC = SpecialEditViewController()
-        window?.rootViewController = tabVC
         
+        if let currentUser = Auth.auth().currentUser {
+            print("과연 지금 유저는? ---------------  \(currentUser.uid)")
+                    // 유저가 로그인 되어 있는 경우 TabbarViewController 설정
+                    let tabVC = TabbarViewController()
+                    window?.rootViewController = tabVC
+                } else {
+                    // 유저가 로그인 되어 있지 않은 경우 LoginViewController 설정
+                    let loginVC = LoginViewController()
+                    window?.rootViewController = loginVC
+                }
         
-//        if let currentUser = Auth.auth().currentUser {
-//            print("과연 지금 유저는? ---------------  \(currentUser.uid)")
-//                    // 유저가 로그인 되어 있는 경우 TabbarViewController 설정
-//                    let tabVC = TabbarViewController()
-//                    window?.rootViewController = tabVC
-//                } else {
-//                    // 유저가 로그인 되어 있지 않은 경우 LoginViewController 설정
-//                    let loginVC = LoginViewController()
-//                    window?.rootViewController = loginVC
-//                }
         self.window?.makeKeyAndVisible()
     }
 

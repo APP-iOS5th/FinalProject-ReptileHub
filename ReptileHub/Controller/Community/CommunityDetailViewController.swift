@@ -234,37 +234,57 @@ extension CommunityDetailViewController: UITextViewDelegate {
 
 extension CommunityDetailViewController: CommunityDetailViewDelegate {
     func createCommentAction(postId: String, commentText: String) {
-        CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { error in
-            if let error = error {
-                print("댓글 작성 에러 : \(error.localizedDescription)")
-            } else {
-                print("댓글 작성 성공!")
-                CommunityService.shared.fetchComments(forPost: postId) { result in
-                    switch result {
-                    case .success(let commentsData):
-                        self.fetchComments = commentsData
-                        
-                        var height: CGFloat = 50
-
-                        for comment in self.fetchComments {
-                            height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
-                        }
-                        self.detailView.updateCommentTableViewHeight(height: height)
-                        
-                        self.detailView.commentTableView.reloadData()
-                        
-                        // 디테일 뷰의 댓글 카운트 1 증가
-                        self.detailView.addCommentCount()
-                    case .failure(let error):
-                        print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
-                    }
-                }
+        CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { result in
+            switch result {
+            case .success(let latestComments):
+                self.fetchComments = latestComments
                 
+                var height: CGFloat = 50
+                
+                for comment in self.fetchComments {
+                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+                }
+                self.detailView.updateCommentTableViewHeight(height: height)
+                
+                self.detailView.commentTableView.reloadData()
+                
+                // 디테일 뷰의 댓글 카운트 1 증가
+                self.detailView.addCommentCount()
+            case .failure(let error):
+                print("영등포 차은우 : \(error.localizedDescription)")
             }
         }
     }
     
 }
+
+//error in
+//    if let error = error {
+//        print("댓글 작성 에러 : \(error.localizedDescription)")
+//    } else {
+//        print("댓글 작성 성공!")
+//        CommunityService.shared.fetchComments(forPost: postId) { result in
+//            switch result {
+//            case .success(let commentsData):
+//                self.fetchComments = commentsData
+//                
+//                var height: CGFloat = 50
+//
+//                for comment in self.fetchComments {
+//                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+//                }
+//                self.detailView.updateCommentTableViewHeight(height: height)
+//                
+//                self.detailView.commentTableView.reloadData()
+//                
+//                // 디테일 뷰의 댓글 카운트 1 증가
+//                self.detailView.addCommentCount()
+//            case .failure(let error):
+//                print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
+//            }
+//        }
+//        
+//    }
 
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
 

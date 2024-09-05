@@ -39,6 +39,7 @@ class CommunityViewController: UIViewController {
         title = "커뮤니티"
         
         setupSearchButton()
+
     }
     
     override func viewIsAppearing(_ animated: Bool) {
@@ -55,6 +56,7 @@ class CommunityViewController: UIViewController {
             }
         }
     }
+
     
     //MARK: - rightBarButtonItem 적용
     private func setupSearchButton() {
