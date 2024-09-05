@@ -97,7 +97,7 @@ class WriteReplyListTableViewCell: UITableViewCell {
         }
     }
     
-    func setCommentData(commentData: CommentResponse, postData: ThumbnailPostResponse) {
+    func setCommentData(commentData: CommentResponse, postData: PostDetailResponse) {
         commentDetail.text = commentData.content
         
         // TODO: - 게시글 타이틀, 게시글의 총 댓글 개수로 수정 

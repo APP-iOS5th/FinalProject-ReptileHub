@@ -59,13 +59,16 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "replyCell", for: indexPath) as! WriteReplyListTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
-        CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
+        CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: fetchComments[indexPath.row].postID) { result in
             switch result {
-            case .success(let fetchThumnailData):
-                cell.setCommentData(commentData: self.fetchComments[indexPath.row], postData: fetchThumnailData[indexPath.row])
+            case .success(let fetchCommentPost):
+                cell.setCommentData(commentData: self.fetchComments[indexPath.row], postData: fetchCommentPost)
             case .failure(let error):
                 print("\(error.localizedDescription)")
-            }
+                
+        }
+            
+            
         }
             
         return cell
