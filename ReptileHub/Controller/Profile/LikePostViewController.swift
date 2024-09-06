@@ -20,7 +20,8 @@ class LikePostViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
-        self.title = "내가 찜한 게시글"
+        self.title = "북마크한 게시글"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         self.view = likePostView
         

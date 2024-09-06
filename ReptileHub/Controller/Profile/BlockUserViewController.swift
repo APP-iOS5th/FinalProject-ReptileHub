@@ -17,6 +17,7 @@ class BlockUserViewController: UIViewController {
         
         self.view.backgroundColor = .white
         self.title = "내가 차단한 사용자"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         self.view = blockUserView
         blockUserView.configureBlockUserTableView(delegate: self, datasource: self)

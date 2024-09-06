@@ -31,7 +31,9 @@ class ProfileViewController: UIViewController {
     
     override func loadView() {
         super.viewDidLoad()
-        
+        // 네비게이션 뒤로가기 버튼 
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "back", style: .plain, target: nil, action: nil)
+
         
         guard let uid = Auth.auth().currentUser?.uid else {return}
         

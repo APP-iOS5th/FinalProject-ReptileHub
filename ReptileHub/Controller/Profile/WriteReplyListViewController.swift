@@ -22,6 +22,7 @@ class WriteReplyListViewController: UIViewController {
         
         self.view.backgroundColor = .white
         self.title = "내가 작성한 댓글"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
         self.view = writeReplyView
         
