@@ -134,6 +134,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
         let specialEntry = specialListData[indexPath.row]
         let specialDetailViewController = SpecialDetailViewController(saverEntries: specialEntry, diaryID: diaryID, lizardName: lizardName)
         specialDetailViewController.delegate = self
+        specialDetailViewController.prevoiusListVC = self
         show(specialDetailViewController, sender: self)
     }
     func deleteSpecialNoteButtonTapped() {

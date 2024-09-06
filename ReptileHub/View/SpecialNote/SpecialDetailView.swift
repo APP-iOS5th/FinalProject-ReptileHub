@@ -152,6 +152,8 @@ class SpecialDetailView: UIView {
             make.top.leading.trailing.bottom.equalTo(imageScrollView)
         }
         
+        print("이미지 뷰 개수",imageViews.count)
+        imageViews.removeAll()
         for i in 0..<specialImages.count {
             let imageView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 230))
             
@@ -166,7 +168,11 @@ class SpecialDetailView: UIView {
             
             imageViews.append(imageView)
         }
-        
+        print("추가된 이미지 스택 뷰 1", imageStackView.subviews.count)
+        for o in imageViews{
+            imageStackView.removeArrangedSubview(o)
+        }
+        print(imageStackView.subviews.count)
         for imageView in imageViews {
             imageView.backgroundColor = .gray
             imageStackView.addArrangedSubview(imageView)
@@ -175,6 +181,7 @@ class SpecialDetailView: UIView {
                 make.height.equalTo(230)
                 make.width.equalTo(imageScrollView)
             }
+            print("추가된 이미지 스택 뷰 2", imageStackView.subviews.count)
         }
     }
     //MARK: - 이미지 카운트 레이아웃
@@ -204,22 +211,29 @@ class SpecialDetailView: UIView {
     }
     //MARK: - SpecialDetialView 데이터 보내주는 함수
     func writeSpecialDetail(data: DiaryResponse, lizardName: String) {
-        print(data)
-        print("안되면 울거야",data.imageURLs)
-        specialImages.removeAll()
+//        specialImages = []
+//        imageViews = []
+//        imageStackView = UIStackView()
+        for view in imageStackView.arrangedSubviews {
+            imageStackView.removeArrangedSubview(view)
+            view.removeFromSuperview() // 스택 뷰에서 제거 후 뷰도 슈퍼뷰에서 제거
+        }
+        print("이미지 개수1",specialImages.count)
+        specialImages = []
         for url in data.imageURLs {
         let imageView = UIImageView()
             imageView.setImage(with: url)
         specialImages.append(imageView)
         }
-        print("제발 되게 해주세요.",specialImages)
+        print("이미지 개수2",specialImages.count)
         specialTitle.text = data.title
         specialLizardName.text = lizardName
-        dateLabel.text = data.createdAt?.formatted
+        dateLabel.text = data.selectedDate!.formatted
         specialText.text = data.content
 //        print(data.image ?? UIImage(systemName: "person")!)
         setupImageScrollView()
         setupImagePageCountLabel()
+        print(data.selectedDate)
     }
     //TODO: 
 }

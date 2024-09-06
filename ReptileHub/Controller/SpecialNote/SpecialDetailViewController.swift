@@ -17,8 +17,9 @@ class SpecialDetailViewController: UIViewController {
     var diaryID: String
     var lizardName: String
     var delegate: SpecialDetailViewDelegate?
-    var shouldSpecialData = false
+    var shouldDetailData = false
     private let specialDetailView = SpecialDetailView()
+    var prevoiusListVC: SpecialListViewController?
     var saveSpecialData: DiaryResponse
     init(saverEntries: DiaryResponse, diaryID: String, lizardName: String) {
         self.saveSpecialData = saverEntries
@@ -31,28 +32,22 @@ class SpecialDetailViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     override func viewIsAppearing(_ animated: Bool) {
-        if shouldSpecialData {
-            fetchSpecialDetail()
-            shouldSpecialData = false
-            print("업뎃완아아아ㅏ아ㅏ아아아ㅏ아아아아")
-        } else {
-            print("노노노오오오노업뎃")
+        if shouldDetailData {
+            fetchDetailData()
+            shouldDetailData = false
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = specialDetailView
         setupNavigationBar()
-        fetchSpecialDetail()
-        print("가자아아아아아아ㅏ아아",saveSpecialData)
-        specialDetailView.writeSpecialDetail(data: saveSpecialData, lizardName: lizardName)
-//        print(saveSpecialData)
-        specialDetailView.setupImageScrollView()
-        specialDetailView.setupImagePageCountLabel()
+        fetchDetailData()
+//        specialDetailView.writeSpecialDetail(data: saveSpecialData, lizardName: lizardName)
+        print(saveSpecialData)
     }
     
     func updateSpecialData() {
-        shouldSpecialData = true
+        shouldDetailData = true
     }
     
     //MARK: - Navigationbar & UIMenu
@@ -92,17 +87,16 @@ class SpecialDetailViewController: UIViewController {
         let editViewController = SpecialEditViewController(diaryID: diaryID , editMode: true)
         editViewController.editEntry = saveSpecialData
         editViewController.previousDetailVC = self // SpecialEditVC 로 현재 VC 넘겨주는 코드
+        editViewController.previousVC = prevoiusListVC
         navigationController?.pushViewController(editViewController, animated: true)
     }
-    
-    private func fetchSpecialDetail() {
+    private func fetchDetailData() {
         DiaryPostService.shared.fetchDiaryEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: saveSpecialData.entryID) { [weak self] response in
             switch response {
             case .success(let responseData):
                 guard let lizardName = self?.lizardName else { return }
                 self?.saveSpecialData = responseData
                 self?.specialDetailView.writeSpecialDetail(data: responseData, lizardName: lizardName)
-                print("으...", responseData)
             case .failure(let error):
                 print(error.localizedDescription)
             }

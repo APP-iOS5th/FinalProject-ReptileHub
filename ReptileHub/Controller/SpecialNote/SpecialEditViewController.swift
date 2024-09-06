@@ -179,8 +179,10 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                     print("업데이트 완료")
                     if let previousDetailVC = self?.previousDetailVC {
                         previousDetailVC.updateSpecialData()
-                        print("previousVC~", previousDetailVC)
-                    } 
+                    }
+                    if let previousVC = self?.previousVC {
+                        previousVC.updateSpecialData()
+                    }
                     self?.navigationController?.popViewController(animated: true)
                 } 
             }

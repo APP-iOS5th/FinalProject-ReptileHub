@@ -247,7 +247,7 @@ class SpecialEditView: UIView {
     //MARK: - saveButton 액션 함수
     @objc
     private func saveButtonAction() {
-        delegate?.didTapPostButton(imageData: imageData, date: Date(), title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil")
+        delegate?.didTapPostButton(imageData: imageData, date: datePicker.date, title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil")
     }
     //MARK: - Delegate
     func configureSpecialEditView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, textViewDelegate: UITextViewDelegate) {

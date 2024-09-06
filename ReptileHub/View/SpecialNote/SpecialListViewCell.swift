@@ -51,7 +51,7 @@ class SpecialListViewCell: UITableViewCell {
         return dateLabel
     }()
     //셀 삭제 버튼
-    private lazy var deleteButton: UIButton = {
+    private(set) lazy var deleteButton: UIButton = {
         let deleteButton = UIButton()
         deleteButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         deleteButton.tintColor = .darkGray
