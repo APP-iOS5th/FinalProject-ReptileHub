@@ -17,6 +17,7 @@ class SpecialDetailViewController: UIViewController {
     var diaryID: String
     var lizardName: String
     var delegate: SpecialDetailViewDelegate?
+    var shouldSpecialData = false
     private let specialDetailView = SpecialDetailView()
     let saveSpecialData: DiaryResponse
     init(saverEntries: DiaryResponse, diaryID: String, lizardName: String) {
@@ -29,6 +30,11 @@ class SpecialDetailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func viewIsAppearing(_ animated: Bool) {
+        if shouldSpecialData {
+            shouldSpecialData = false
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,7 +44,9 @@ class SpecialDetailViewController: UIViewController {
         print(saveSpecialData)
     }
     
-    //TODO: diaryID, LizardName 데이터 받아오기 (넘겨주숑)
+    func updateSpecialData() {
+        shouldSpecialData = true
+    }
     
     //MARK: - Navigationbar & UIMenu
     private func setupNavigationBar() {
@@ -76,6 +84,7 @@ class SpecialDetailViewController: UIViewController {
         private func navigateToEditScreen() {
             let editViewController = SpecialEditViewController(diaryID: diaryID , editMode: true)
             editViewController.editEntry = saveSpecialData
+            editViewController.previousDetailVC = self // SpecialEditVC 로 현재 VC 넘겨주는 코드
             navigationController?.pushViewController(editViewController, animated: true)
         }
 

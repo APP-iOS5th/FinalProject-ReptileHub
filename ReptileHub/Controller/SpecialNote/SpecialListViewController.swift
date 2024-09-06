@@ -17,6 +17,8 @@ class SpecialListViewController: UIViewController {
     
     var lizardName: String
     
+    private var shouldSpecialData = false
+    
     init(diaryID: String, lizardName:String) {
         self.diaryID = diaryID
         self.lizardName = lizardName
@@ -31,7 +33,10 @@ class SpecialListViewController: UIViewController {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
-        fetchSpecialList()
+        if shouldSpecialData{
+            fetchSpecialList()
+            shouldSpecialData = false
+        } 
     }
     
     override func viewDidLoad() {
@@ -44,6 +49,7 @@ class SpecialListViewController: UIViewController {
         view.backgroundColor = .white
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         title = "특이사항"
+        fetchSpecialList()
     }
     func fetchSpecialList() {
         DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
@@ -57,6 +63,9 @@ class SpecialListViewController: UIViewController {
             
         }
     }
+    func updateSpecialData() {
+        shouldSpecialData = true
+    }
 
 }
 //MARK: - TableView 관련
@@ -68,6 +77,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
                 print(error.localizedDescription)
             } else {
                 print("삭제 완료")
+                self?.updateSpecialData()//SpecialDetailView에서 삭제했을 때 ListView에 바로 반영되게 하는 함수
                 self?.navigationController?.popViewController(animated: true)
             }
         }
@@ -132,6 +142,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
         specialPlusButtonView.buttonAction = { [weak self] in
             guard let diaryID = self?.diaryID else {return}
             let specialEditViewController = SpecialEditViewController(diaryID: diaryID, editMode: false)
+            specialEditViewController.previousVC = self // SpecialEditVC로 해당 VC 넘겨주는 코드
             self?.navigationController?.pushViewController(specialEditViewController, animated: true)
         }
         return specialPlusButtonView 

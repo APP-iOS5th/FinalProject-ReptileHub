@@ -24,6 +24,10 @@ class SpecialEditViewController: UIViewController {
     
     var removedImageURLs: [String] = []
     
+    weak var previousVC: SpecialListViewController? //SpecialListVC 받는 변수
+    
+    weak var previousDetailVC: SpecialDetailViewController? //SpecialDetailVC 받는 변수
+    
     init(diaryID: String, editMode: Bool) {
         self.diaryID = diaryID
         self.editMode = editMode
@@ -33,7 +37,7 @@ class SpecialEditViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // editMode: 수정 모드
     override func viewIsAppearing(_ animated: Bool) {
         if editMode {
             if let editEntry = self.editEntry {
@@ -42,9 +46,9 @@ class SpecialEditViewController: UIViewController {
             }
         }
     }
-    func fetchEditData() {
-        
-    }
+//    func fetchEditData() {
+//        
+//    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = specialEditView
@@ -120,7 +124,7 @@ extension SpecialEditViewController: PHPickerViewControllerDelegate {
 }
 //MARK: - SpecialEditView Image PHPickerCollectionViewCellDelegate 관련
 extension SpecialEditViewController: SpecialPHPickerCollectionViewCellDelegate {
-    
+    // Image CollectionView 삭제 버튼 관련
     func didTapDeleteButton(indexPath: IndexPath) {
         // 이미지 배열 첫번째는 선택 버튼이라 빼준다.
         let index = indexPath.item - 1
@@ -168,13 +172,16 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
         }
         if editMode {
             guard let editEntry = self.editEntry else { return }
-            DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs) { error in
+            DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs) { [weak self] error in
                 if let error = error {
                     print(error.localizedDescription)
                 } else {
                     print("업데이트 완료")
-                    self.navigationController?.popViewController(animated: true)
-                }
+                    if let previousDetailVC = self?.previousDetailVC {
+                        previousDetailVC.updateSpecialData()
+                    }
+                    self?.navigationController?.popViewController(animated: true)
+                } 
             }
         }
         else {
@@ -185,13 +192,16 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                     title: \(title)
                     text: \(text)
                     """)
-            DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){
+            DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){ [weak self]
                 error in
                     if let error = error {
                                 print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
                             } else {
                                 print("게시글 게시 성공")
-                                self.navigationController?.popViewController(animated: true)
+                                if let previousVC = self?.previousVC {
+                                    previousVC.updateSpecialData()
+                                }
+                                self?.navigationController?.popViewController(animated: true)
                             }
             }
         }
