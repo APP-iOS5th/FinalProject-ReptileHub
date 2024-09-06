@@ -244,6 +244,8 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
             switch result {
             case .success(let latestComments):
                 self.detailView.commentTextView.text = ""
+                self.detailView.sendButton.isEnabled = false
+                self.detailView.sendButton.tintColor = UIColor.lightGray
                 self.fetchComments = latestComments
                 
                 var height: CGFloat = 50

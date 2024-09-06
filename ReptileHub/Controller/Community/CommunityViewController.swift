@@ -47,7 +47,7 @@ class CommunityViewController: UIViewController {
         CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let thumnails):
-                print("차단유저 제외 모든 post 불러오기 성공")
+                print("차단유저 제외 모든 post 불러오기 성공 : \(thumnails)")
                 self.fetchTestData = thumnails
                 self.communityListView.communityTableView.reloadData()
             case .failure(let error):

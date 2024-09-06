@@ -80,7 +80,7 @@ class CommunityDetailView: UIView {
     // 댓글 작성란
     private let commentBackgroundView: UIView = UIView()
     let commentTextView: UITextView = UITextView()
-    private let sendButton: UIButton = UIButton()
+    let sendButton: UIButton = UIButton()
     private let placeHolder: UILabel = UILabel()
     
     
@@ -438,7 +438,8 @@ class CommunityDetailView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25)
         let planeImage = UIImage(systemName: "paperplane.fill", withConfiguration: imageConfig)
         sendButton.setImage(planeImage, for: .normal)
-        sendButton.tintColor = .addBtnGraphTabbar
+        sendButton.tintColor = UIColor.lightGray
+        sendButton.isEnabled = false
         sendButton.addTarget(self, action: #selector(sendButtonAction), for: .touchUpInside)
         commentBackgroundView.backgroundColor = .groupProfileBG
         
@@ -514,8 +515,13 @@ class CommunityDetailView: UIView {
         
         if textView.text == "" {
             placeHolder.textColor = .white
+            sendButton.isEnabled = false
+            sendButton.tintColor = UIColor.lightGray
         } else {
             placeHolder.textColor = .clear
+            sendButton.isEnabled = true
+            sendButton.tintColor = .addBtnGraphTabbar
+                
         }
         
         if estimatedSize.height > 102 {

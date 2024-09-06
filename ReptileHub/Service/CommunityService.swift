@@ -664,7 +664,7 @@ extension CommunityService {
                     return
                 }
                 // 썸네일 문서도 업데이트
-                postRef.updateData(["thumbnail": newThumbnailURL]) { error in
+                postRef.updateData(["thumbnail": newThumbnailURL, "title": newTitle, "previewContent": newContent]) { error in
                     completion(error)
                 }
             }
