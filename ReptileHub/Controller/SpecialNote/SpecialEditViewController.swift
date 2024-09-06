@@ -122,34 +122,25 @@ extension SpecialEditViewController: PHPickerViewControllerDelegate {
 extension SpecialEditViewController: SpecialPHPickerCollectionViewCellDelegate {
     
     func didTapDeleteButton(indexPath: IndexPath) {
-//        print("콜렉션 뷰 셀 삭제버튼 클릭.")
-//        
-//        self.specialEditView.selectedImages.remove(at: indexPath.item - 1)
-//        self.specialEditView.imagePickerCollectionView.reloadData()
-//        print("콜렉션 뷰 셀 삭제 후 selectedImages : \(self.specialEditView.selectedImages)")
-//        if indexPath.item < specialEditView.imageData.count {
-//            // 만약 삭제할 이미지가 기존의 이미지라면
-//            if indexPath.item < originalImageURLs.count {
-//                let removedImageURL = originalImageURLs[indexPath.item]
-//                removedImageURLs.append(removedImageURL) // 삭제해야될 url 들을 배열에 저장해서 관리
-//                originalImageURLs.remove(at: indexPath.item) // 기존 이미지 URL에서 제거
-//            }else {
-//                // 새로운 이미지의 경우, newImagesData에서 제거 - 기존 이미지 뒤에 새로 선택한 사진이 나옴
-//                let newImageIndex = indexPath.item - originalImageURLs.count
-//                specialEditView.imageData.remove(at: newImageIndex)
-//            }
-//
-////            images.remove(at: index)
-//            specialEditView.imageData.remove(at: indexPath.item - originalImageURLs.count)
-//            specialEditView.imagePickerCollectionView.reloadData()
-//        } else {
-//            print(indexPath.item)
-//            specialEditView.imageData.remove(at: indexPath.item - originalImageURLs.count)
-//            specialEditView.imagePickerCollectionView.reloadData()
-//            print(specialEditView.selectedImages)
-//            print("기이ㅣㅇ이이이이이이ㅣ이이이ㅣ잉ㄹ게에에에에에에에ㅔ")
-//        }
-        
+        // 이미지 배열 첫번째는 선택 버튼이라 빼준다.
+        let index = indexPath.item - 1
+        // 삭제할 이미지의 인덱스가 선택된 이미지들의 개수보다 작다면
+        if index < specialEditView.selectedImages.count {
+            // 만약 삭제할 이미지가 기존의 이미지라면
+            if index < originalImageURLs.count {
+                // 삭제할 이미지URL을 변수에 저장
+                let removedImageURL = originalImageURLs[index]
+                removedImageURLs.append(removedImageURL) // 삭제해야될 url 들을 배열에 저장해서 관리
+                originalImageURLs.remove(at:index) // 기존 이미지 URL에서 제거
+            } else {
+                let newImageIndex = index - originalImageURLs.count
+                // 새로운 이미지의 경우, ImagesData에서 제거 - 기존 이미지 뒤에 새로 선택한 사진이 나옴(imageData)
+                specialEditView.imageData.remove(at: newImageIndex)
+            }
+            // 선택된 배열 목록에서 해당 인덱스 제거
+            specialEditView.selectedImages.remove(at: index)
+            specialEditView.imagePickerCollectionView.reloadData()
+        }
     }
     
 }

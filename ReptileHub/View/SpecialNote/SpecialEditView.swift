@@ -216,11 +216,6 @@ class SpecialEditView: UIView {
             make.leading.equalTo(descriptionTextView.snp.leading).offset(14)
         }
         
-//        countTextLabel.snp.makeConstraints{(make) in
-//            make.trailing.equalTo(descriptionTextView.snp.trailingMargin)
-//            make.bottom.equalTo(descriptionTextView.snp.bottomMargin)
-//        }
-        
         saveButton.snp.makeConstraints{(make) in
             make.centerX.equalTo(self)
             make.height.equalTo(50)
