@@ -19,7 +19,7 @@ class SpecialDetailViewController: UIViewController {
     var delegate: SpecialDetailViewDelegate?
     var shouldSpecialData = false
     private let specialDetailView = SpecialDetailView()
-    let saveSpecialData: DiaryResponse
+    var saveSpecialData: DiaryResponse
     init(saverEntries: DiaryResponse, diaryID: String, lizardName: String) {
         self.saveSpecialData = saverEntries
         self.diaryID = diaryID
@@ -32,16 +32,23 @@ class SpecialDetailViewController: UIViewController {
     }
     override func viewIsAppearing(_ animated: Bool) {
         if shouldSpecialData {
+            fetchSpecialDetail()
             shouldSpecialData = false
+            print("업뎃완아아아ㅏ아ㅏ아아아ㅏ아아아아")
+        } else {
+            print("노노노오오오노업뎃")
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.view = specialDetailView
         setupNavigationBar()
+        fetchSpecialDetail()
+        print("가자아아아아아아ㅏ아아",saveSpecialData)
         specialDetailView.writeSpecialDetail(data: saveSpecialData, lizardName: lizardName)
-        print(saveSpecialData)
+//        print(saveSpecialData)
+        specialDetailView.setupImageScrollView()
+        specialDetailView.setupImagePageCountLabel()
     }
     
     func updateSpecialData() {
@@ -81,11 +88,24 @@ class SpecialDetailViewController: UIViewController {
         ellipsis.menu = menu
     }
     // 수정 화면으로 전환하는 함수
-        private func navigateToEditScreen() {
-            let editViewController = SpecialEditViewController(diaryID: diaryID , editMode: true)
-            editViewController.editEntry = saveSpecialData
-            editViewController.previousDetailVC = self // SpecialEditVC 로 현재 VC 넘겨주는 코드
-            navigationController?.pushViewController(editViewController, animated: true)
+    private func navigateToEditScreen() {
+        let editViewController = SpecialEditViewController(diaryID: diaryID , editMode: true)
+        editViewController.editEntry = saveSpecialData
+        editViewController.previousDetailVC = self // SpecialEditVC 로 현재 VC 넘겨주는 코드
+        navigationController?.pushViewController(editViewController, animated: true)
+    }
+    
+    private func fetchSpecialDetail() {
+        DiaryPostService.shared.fetchDiaryEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: saveSpecialData.entryID) { [weak self] response in
+            switch response {
+            case .success(let responseData):
+                guard let lizardName = self?.lizardName else { return }
+                self?.saveSpecialData = responseData
+                self?.specialDetailView.writeSpecialDetail(data: responseData, lizardName: lizardName)
+                print("으...", responseData)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
-
+    }
 }

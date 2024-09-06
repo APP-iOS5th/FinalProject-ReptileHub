@@ -31,7 +31,7 @@ class SpecialDetailView: UIView {
         ]
     // 특이사항 상세 뷰 이미지 뷰
     private var imageViews: [UIView] = []
-    private let imageStackView: UIStackView = UIStackView()
+    private var imageStackView: UIStackView = UIStackView()
     private let imageScrollView: UIScrollView = UIScrollView()
     
     // 특이사항 상세 뷰 이미지 카운트 뷰
@@ -126,7 +126,7 @@ class SpecialDetailView: UIView {
     }
     
     //MARK: -  이미지 스크롤 뷰 레이아웃
-    private func setupImageScrollView() {
+    func setupImageScrollView() {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fill
         imageStackView.alignment = .center
@@ -178,7 +178,7 @@ class SpecialDetailView: UIView {
         }
     }
     //MARK: - 이미지 카운트 레이아웃
-    private func setupImagePageCountLabel() {
+    func setupImagePageCountLabel() {
         pageCountView.backgroundColor = .lightGray
         pageCountView.layer.cornerRadius = 12
         
@@ -204,7 +204,9 @@ class SpecialDetailView: UIView {
     }
     //MARK: - SpecialDetialView 데이터 보내주는 함수
     func writeSpecialDetail(data: DiaryResponse, lizardName: String) {
-        print("안되면 울거야",specialImages)
+        print(data)
+        print("안되면 울거야",data.imageURLs)
+        specialImages.removeAll()
         for url in data.imageURLs {
         let imageView = UIImageView()
             imageView.setImage(with: url)
@@ -219,7 +221,7 @@ class SpecialDetailView: UIView {
         setupImageScrollView()
         setupImagePageCountLabel()
     }
-    
+    //TODO: 
 }
 //MARK: - 이미지 스크롤 카운트
 extension SpecialDetailView: UIScrollViewDelegate {

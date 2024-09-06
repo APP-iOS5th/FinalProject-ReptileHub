@@ -46,9 +46,9 @@ class SpecialEditViewController: UIViewController {
             }
         }
     }
-//    func fetchEditData() {
-//        
-//    }
+    func fetchEditData() {
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = specialEditView
@@ -179,7 +179,8 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                     print("업데이트 완료")
                     if let previousDetailVC = self?.previousDetailVC {
                         previousDetailVC.updateSpecialData()
-                    }
+                        print("previousVC~", previousDetailVC)
+                    } 
                     self?.navigationController?.popViewController(animated: true)
                 } 
             }
@@ -192,7 +193,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                     title: \(title)
                     text: \(text)
                     """)
-            DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text){ [weak self]
+            DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text, selectedDate: date){ [weak self]
                 error in
                     if let error = error {
                                 print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
@@ -200,6 +201,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                                 print("게시글 게시 성공")
                                 if let previousVC = self?.previousVC {
                                     previousVC.updateSpecialData()
+                                    print("EditView previousVC", previousVC)
                                 }
                                 self?.navigationController?.popViewController(animated: true)
                             }

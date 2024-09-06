@@ -36,7 +36,10 @@ class SpecialListViewController: UIViewController {
         if shouldSpecialData{
             fetchSpecialList()
             shouldSpecialData = false
-        } 
+            print("ListView 업뎃완")
+        } else {
+            print("ListView 노업뎃")
+        }
     }
     
     override func viewDidLoad() {
@@ -56,8 +59,10 @@ class SpecialListViewController: UIViewController {
             switch response{
             case .success(let specialListData):
                 self?.specialListData = specialListData
+                print("ListViewData",specialListData)
                 self?.specialListView.tableView.reloadData()
             case .failure(let error):
+                print("에러")
                 print(error.localizedDescription)
             }
             
@@ -65,6 +70,7 @@ class SpecialListViewController: UIViewController {
     }
     func updateSpecialData() {
         shouldSpecialData = true
+        print("뷰 리스트 데이터 변화")
     }
 
 }
@@ -147,7 +153,5 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
         }
         return specialPlusButtonView 
     }
-    
-    
     
 }
