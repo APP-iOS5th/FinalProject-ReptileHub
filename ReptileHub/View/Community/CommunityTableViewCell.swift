@@ -210,7 +210,7 @@ class CommunityTableViewCell: UITableViewCell {
     
     
     
-    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int, name: String, postUserId: String) {
+    func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int, name: String, postUserId: String, isInProfile: Bool) {
 
         thumbnailImageView.setImage(with: imageName)
         
@@ -226,6 +226,14 @@ class CommunityTableViewCell: UITableViewCell {
         
         
         menuButton.menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: isMine ? myMenu : otherMenu)
+        
+        if isInProfile {
+            menuButton.removeFromSuperview()
+            secondStackView.snp.remakeConstraints { make in
+                make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
+                make.bottom.equalTo(firstStackView)
+            }
+        }
     }
     
 }

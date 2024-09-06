@@ -20,7 +20,7 @@ class WritePostListViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
-        self.title = "내가 작성한 게시글"
+        self.title = "내가 쓴 게시글"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         self.view = writePostListView
@@ -59,6 +59,7 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CommunityTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
+        cell.delegate = self
         
         let data = fetchPosts[indexPath.row]
 //        cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount)
@@ -66,7 +67,7 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
         UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let userData):
-                cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID)
+                cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID, isInProfile: true)
             case .failure(let error):
                 print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
                 
@@ -83,7 +84,7 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
         
         return cell
     }
-    
+  
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = CommunityDetailViewController()
         
@@ -112,4 +113,35 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
             }
         }
     }
+}
+
+extension WritePostListViewController: CommunityTableViewCellDelegate {
+    func blockAlert(cell: CommunityTableViewCell) {
+        print("")
+    }
+    
+    
+    func deleteAlert(cell: CommunityTableViewCell) {
+        let alert = UIAlertController(title: "알림", message: "게시글을 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
+            // 선택한 셀의 indexPath
+            guard let indexPath = self.writePostListView.WritePostTableView.indexPath(for: cell) else { return }
+            
+            CommunityService.shared.deletePost(postID: self.fetchPosts[indexPath.row].postID, userID: self.fetchPosts[indexPath.row].userID) { error in
+                if let error = error {
+                    print("게시글 삭제 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    print("게시글 삭제 성공")
+                }
+            }
+            
+            self.fetchPosts.remove(at: indexPath.row)
+            
+            // 선택한 셀을 테이블 뷰에서 삭제
+            self.writePostListView.WritePostTableView.deleteRows(at: [indexPath], with: .automatic)
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+
 }

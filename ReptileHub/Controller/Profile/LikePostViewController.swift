@@ -65,7 +65,7 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
         UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let userData):
-                cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID)
+                cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID, isInProfile: true)
             case .failure(let error):
                 print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
                 
@@ -81,6 +81,21 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+          if editingStyle == .delete {
+              CommunityService.shared.toggleBookmarkPost(userID: UserService.shared.currentUserId, postID: fetchBookmarks[indexPath.row].postID) { result in
+                  switch result {
+                  case .success(let deleteBookmark):
+                      print("성공 ~ ")
+                      self.fetchBookmarks.remove(at: indexPath.row)
+                      tableView.deleteRows(at: [indexPath], with: .fade) // 셀 삭제 애니메이션 설정
+                  case .failure(let error):
+                      print("\(error.localizedDescription)")
+                  }
+              }
+          }
+      }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = CommunityDetailViewController()
