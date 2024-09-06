@@ -9,15 +9,18 @@ import UIKit
 import SnapKit
 
 class CommunityDetailViewController: UIViewController {
-
+    
     let detailView = CommunityDetailView()
     
     var fetchComments: [CommentResponse] = []
     
     var tableViewHeight: CGFloat = 0
     
-    private var menuButton: UIBarButtonItem = UIBarButtonItem()
-  
+    private var menuBarButton: UIBarButtonItem = UIBarButtonItem()
+    private var menuButton: UIButton = UIButton()
+    private var myMenu: [UIAction] = []
+    private var otherMenu: [UIAction] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +28,8 @@ class CommunityDetailViewController: UIViewController {
         self.view.backgroundColor = .white
         
         self.title = "커뮤니티"
+        
+        detailView.delegate = self
         
         setupMenuButton()
         setupDetailView()
@@ -56,23 +61,92 @@ class CommunityDetailViewController: UIViewController {
         }
     }
     
-
+    
     
     //MARK: - menu 버튼
     private func setupMenuButton() {
         let ellipsisImage = UIImage(systemName: "ellipsis")
         
         // UIButton을 생성하여 회전
-        let button = UIButton(type: .system)
-        button.setImage(ellipsisImage, for: .normal)
-        button.tintColor = .black
-        button.transform = CGAffineTransform(rotationAngle: .pi / 2) // 90도 회전
+        menuButton = UIButton(type: .system)
+        menuButton.setImage(ellipsisImage, for: .normal)
+        menuButton.tintColor = .black
+        menuButton.transform = CGAffineTransform(rotationAngle: .pi / 2) // 90도 회전
         
-        button.addTarget(self, action: #selector(actionMenuButton), for: .touchUpInside)
+        // 메뉴 버튼을 눌렀을 때 메뉴가 보이도록 설정
+        menuButton.showsMenuAsPrimaryAction = true
         
-        menuButton = UIBarButtonItem(customView: button)
+        let isMine: Bool = detailView.postUserId == UserService.shared.currentUserId
         
-        self.navigationItem.rightBarButtonItem = menuButton
+        myMenu = [
+            UIAction(title: "게시글 수정하기", image: UIImage(systemName: "square.and.pencil"), handler: { _ in
+                self.editButtonAction()
+            }),
+            UIAction(title: "게시글 삭제하기", image: UIImage(systemName: "trash"), attributes: .destructive, handler: { _ in
+                self.deleteButtonAction()
+            })
+        ]
+        
+        otherMenu = [
+            UIAction(title: "작성자 차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in
+                self.blockButtonAction()
+            }),
+            UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.bubble"), attributes: .destructive, handler: { _ in
+                self.reportButtonAction()
+            })
+        ]
+        
+        menuButton.menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: isMine ? myMenu : otherMenu)
+        
+        
+        // UIBarButtonItem에 커스텀 UIButton을 설정
+        menuBarButton = UIBarButtonItem(customView: menuButton)
+        
+        // navigationItem에 설정
+        self.navigationItem.rightBarButtonItem = menuBarButton
+    }
+    
+    private func editButtonAction() {
+        print("edit")
+    }
+    
+    private func deleteButtonAction() {
+        print("delete")
+        let alert = UIAlertController(title: "알림", message: "게시글을 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
+            CommunityService.shared.deletePost(postID: self.detailView.postID, userID: self.detailView.postUserId) { error in
+                if let error = error {
+                    print("게시글 삭제 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    print("게시글 삭제 성공")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+
+    private func blockButtonAction() {
+        print("block")
+        let alert = UIAlertController(title: "알림", message: "해당 게시글 작성자를 차단하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "차단하기", style: .destructive, handler: { _ in
+            
+            UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: self.detailView.postUserId) { error in
+                if let error = error {
+                    print("차단 실패 : \(error.localizedDescription)")
+                } else {
+                    print("차단 성공, 뒤로 가기.")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func reportButtonAction() {
+        print("report")
     }
     
     //MARK: - 커뮤니티 디테일 뷰 setup
@@ -82,28 +156,23 @@ class CommunityDetailViewController: UIViewController {
         detailView.configureTableView(scrollViewDelegate: self, tableViewDelegate: self, tableViewDatasource: self, textViewDelegate: self)
     }
     
-    @objc
-    private func actionMenuButton() {
-        print("메뉴 버튼 클릭.")
-    }
     
     func getLabelHeight(tableView: UITableView, text: String) -> CGFloat {
-            let label = UILabel(
-                frame: .init(
-                    x: .zero,
-                    y: .zero,
-                    width: tableView.frame.width - 75,
-                    height: .greatestFiniteMagnitude
-                )
+        let label = UILabel(
+            frame: .init(
+                x: .zero,
+                y: .zero,
+                width: tableView.frame.width - 75,
+                height: .greatestFiniteMagnitude
             )
-            label.text = text
-            label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 13)
-            label.sizeToFit()
-            let labelHeight = label.frame.height
-            return labelHeight
-        }
-
+        )
+        label.text = text
+        label.numberOfLines = 0
+        label.font = .systemFont(ofSize: 13)
+        label.sizeToFit()
+        let labelHeight = label.frame.height
+        return labelHeight
+    }
     
 }
 
@@ -123,13 +192,17 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
         
+        cell.delegate = self
+        
         let commentData = self.fetchComments[indexPath.row]
         
-        UserService.shared.fetchUserProfile(uid: self.fetchComments[indexPath.row].userID) { result in
+        guard let createAt = commentData.createdAt?.timefomatted else { return cell }
+        
+        UserService.shared.fetchUserProfile(uid: commentData.userID) { result in
             switch result {
             case .success(let userData):
                 print("CommunityDetailVC 유저 정보 가져오기 성공")
-                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: commentData.createdAt!.timefomatted)
+                cell.configureCell(profileURL: userData.profileImageURL, name: userData.name, content: commentData.content, createAt: createAt, commentUserId: commentData.userID)
             case .failure(let error):
                 print("CommunityDetailVC 유저 정보 가져오기 실패 : \(error.localizedDescription)")
             }
@@ -146,7 +219,7 @@ extension CommunityDetailViewController: UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         let labelHeight = getLabelHeight(tableView: tableView, text: self.fetchComments[indexPath.row].content)
-
+        
         return labelHeight + 50
     }
     
@@ -157,4 +230,109 @@ extension CommunityDetailViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         detailView.textViewChange(textView: textView)
     }
+}
+
+extension CommunityDetailViewController: CommunityDetailViewDelegate {
+    func createCommentAction(postId: String, commentText: String) {
+        CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { result in
+            switch result {
+            case .success(let latestComments):
+                self.fetchComments = latestComments
+                
+                var height: CGFloat = 50
+                
+                for comment in self.fetchComments {
+                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+                }
+                self.detailView.updateCommentTableViewHeight(height: height)
+                
+                self.detailView.commentTableView.reloadData()
+                
+                // 디테일 뷰의 댓글 카운트 1 증가
+                self.detailView.addCommentCount()
+            case .failure(let error):
+                print("영등포 차은우 : \(error.localizedDescription)")
+            }
+        }
+    }
+    
+}
+
+//error in
+//    if let error = error {
+//        print("댓글 작성 에러 : \(error.localizedDescription)")
+//    } else {
+//        print("댓글 작성 성공!")
+//        CommunityService.shared.fetchComments(forPost: postId) { result in
+//            switch result {
+//            case .success(let commentsData):
+//                self.fetchComments = commentsData
+//                
+//                var height: CGFloat = 50
+//
+//                for comment in self.fetchComments {
+//                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+//                }
+//                self.detailView.updateCommentTableViewHeight(height: height)
+//                
+//                self.detailView.commentTableView.reloadData()
+//                
+//                // 디테일 뷰의 댓글 카운트 1 증가
+//                self.detailView.addCommentCount()
+//            case .failure(let error):
+//                print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
+//            }
+//        }
+//        
+//    }
+
+extension CommunityDetailViewController: CommentTableViewCellDelegate {
+
+    func deleteCommentAction(cell: CommentTableViewCell) {
+        let alert = UIAlertController(title: "알림", message: "댓글을 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
+            // 선택한 셀의 indexPath
+            guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+            
+            CommunityService.shared.deleteComment(postID: self.detailView.postID, commentID: self.fetchComments[indexPath.row].commentID) { error in
+                if let error = error {
+                    print("댓글 삭제 중 오류 발생: \(error.localizedDescription)")
+                } else {
+                    print("댓글 삭제 성공")
+                    self.fetchComments.remove(at: indexPath.row)
+                    self.detailView.commentTableView.deleteRows(at: [indexPath], with: .none)
+                    
+                    var height: CGFloat = 50
+
+                    for comment in self.fetchComments {
+                        height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
+                    }
+                    self.detailView.updateCommentTableViewHeight(height: height)
+                    
+                    self.detailView.subtractCommentCount()
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func blockCommentAction(cell: CommentTableViewCell) {
+        let alert = UIAlertController(title: "알림", message: "해당 유저를 차단하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "차단하기", style: .destructive, handler: { _ in
+            // 선택한 셀의 indexPath
+            guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+            
+            UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: self.fetchComments[indexPath.row].userID) { error in
+                if let error = error {
+                    print("차단 실패 : \(error.localizedDescription)")
+                } else {
+                    print("댓글 작성자 차단 성공")
+                }
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
