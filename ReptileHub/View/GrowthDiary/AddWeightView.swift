@@ -107,6 +107,9 @@ class AddWeightView: UIView {
         config.baseBackgroundColor = UIColor.addBtnGraphTabbar
         config.attributedTitle?.font = UIFont.systemFont(ofSize:20)
         button.configuration = config
+        button.addAction(UIAction{ [weak self] _ in
+            self?.addButtonTapped?()
+        }, for: .touchUpInside)
         
         return button
     }()
@@ -174,6 +177,14 @@ class AddWeightView: UIView {
         weightCancelCreateButtonStackView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(addWeightContentView)
         }
+    }
+    
+    func weightData() -> Int{
+        guard let weight = self.addWeightTextField.text
+        else {
+            return 0
+        }
+        return Int(weight) ?? 0
     }
 }
 

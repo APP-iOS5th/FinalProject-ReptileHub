@@ -14,6 +14,17 @@ class WeightAddEditViewController: UIViewController {
     private let diaryID: String
     private var weightEntries: [WeightEntry] = []
     
+    //MARK: - 무게를 다시 불러와야 하는지 상태를 나타내는 변수
+    private var shouldReloadWeightData = false {
+        didSet{
+            print("업데이트")
+            if shouldReloadWeightData{
+                self.fetchWeightData()
+                shouldReloadWeightData = false
+            }
+        }
+    }
+    
     init(diaryID: String) {
         self.diaryID = diaryID
         super.init(nibName: nil, bundle: nil)
@@ -29,10 +40,14 @@ class WeightAddEditViewController: UIViewController {
         return button
     }()
     
-    override func viewIsAppearing(_ animated: Bool) {
-        super.viewIsAppearing(animated)
-        fetchWeightData()        
-    }
+//    override func viewIsAppearing(_ animated: Bool) {
+//        super.viewIsAppearing(animated)
+//        if shouldReloadWeightData{
+//            print("업데이틑 됌")
+//            self.fetchWeightData()
+//            self.shouldReloadWeightData = false
+//        }
+//    }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -51,6 +66,7 @@ class WeightAddEditViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = self.addButton
         weightAddEditView.configureWeightAddEditTablview(delegate: self, dataSouce: self)
         weightAddEditView.registerWeightAddEditTablCell(WeightAddEditViewCell.self, forCellReuseIdentifier: WeightAddEditViewCell.identifier)
+        fetchWeightData()
     }
     
     private func fetchWeightData(){
@@ -69,6 +85,8 @@ class WeightAddEditViewController: UIViewController {
     @objc
     private func moveAddWeightController(){
         let addWeightVC = WeightAddViewController()
+        addWeightVC.diaryID = diaryID
+        addWeightVC.previousVC = self
         addWeightVC.modalPresentationStyle = .automatic
         addWeightVC.sheetPresentationController?.detents = [.medium(), .large()]
         addWeightVC.sheetPresentationController?.prefersGrabberVisible = true
@@ -77,6 +95,11 @@ class WeightAddEditViewController: UIViewController {
             sheetPresentationController?.selectedDetentIdentifier = .medium
         }
         present(addWeightVC, animated: true)
+    }
+    
+    //MARK: - 업데이트 해야한다는 상태 변경 함수
+    func updateWeightData(){
+        shouldReloadWeightData = true
     }
 }
 
