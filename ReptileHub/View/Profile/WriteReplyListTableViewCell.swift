@@ -8,7 +8,13 @@
 import UIKit
 import SnapKit
 
+protocol WriteReplyListTableViewCellDelegate: AnyObject {
+    func deleteComment(cell: WriteReplyListTableViewCell)
+}
+
 class WriteReplyListTableViewCell: UITableViewCell {
+    
+    weak var delegate: WriteReplyListTableViewCellDelegate?
     
     private var commentDetail: UILabel = {
         let label = UILabel()
@@ -30,13 +36,25 @@ class WriteReplyListTableViewCell: UITableViewCell {
         return label
     }()
     
+    private var commentDeleteButton: UIButton = {
+        let button = UIButton()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .light)
+        let image = UIImage(systemName: "xmark", withConfiguration: imageConfig)
+                
+        button.backgroundColor = .white
+        button.layer.cornerRadius = CGFloat(12.5)
+        button.setImage(image, for: .normal)
+        button.tintColor = .textFieldPlaceholder
+        button.addTarget(self, action: #selector(commentDelete), for: .touchUpInside)
+        return button
+    }()
+    
     private var commentCount: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.backgroundColor = .groupProfileBG
         label.textColor = .imagePickerPlaceholder
         label.textAlignment = .center
-        
         label.layer.masksToBounds = true
         label.layer.cornerRadius = 10
         return label
@@ -57,6 +75,7 @@ class WriteReplyListTableViewCell: UITableViewCell {
         contentView.addSubview(commentDetail)
         contentView.addSubview(commentDate)
         contentView.addSubview(stackView)
+        contentView.addSubview(commentDeleteButton)
         
         commentDetail.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
@@ -68,6 +87,13 @@ class WriteReplyListTableViewCell: UITableViewCell {
             make.top.equalTo(commentDetail.snp.bottom).offset(4)
             make.leading.equalTo(commentDetail)
         }
+        
+        commentDeleteButton.snp.makeConstraints { make in
+            make.width.height.equalTo(25)
+            make.centerY.equalToSuperview()
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-20)
+        }
+        
         
         commentCount.snp.makeConstraints { make in
             make.width.equalTo(30)
@@ -85,13 +111,16 @@ class WriteReplyListTableViewCell: UITableViewCell {
     func setCommentData(commentData: CommentResponse, postData: PostDetailResponse) {
         commentDetail.text = commentData.content
         
-        // TODO: - 게시글 타이틀, 게시글의 총 댓글 개수로 수정 
         commentCount.text = String(postData.commentCount)
         postTitle.text = postData.title
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm" // 원하는 포맷으로 설정
         commentDate.text = dateFormatter.string(for: commentData.createdAt)
+    }
+    
+    @objc func commentDelete() {
+        self.delegate?.deleteComment(cell: self)
     }
     
     required init?(coder: NSCoder) {

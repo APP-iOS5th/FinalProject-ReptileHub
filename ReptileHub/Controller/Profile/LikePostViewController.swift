@@ -53,16 +53,15 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        85
+        100
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "likeCell", for: indexPath) as! CommunityTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         let data = fetchBookmarks[indexPath.row]
-//        cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount)
         
-        UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
+        UserService.shared.fetchUserProfile(uid: data.userID) { result in
             switch result {
             case .success(let userData):
                 cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID)
@@ -71,13 +70,6 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
                 
             }
         }
-//        let menuItems = [
-//            UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
-//        ]
-//        // UIMenu title 설정
-//        let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: menuItems)
-//        // 셀에 메뉴 설정
-//        cell.configure(with: menu)
         
         return cell
     }
@@ -107,11 +99,12 @@ extension LikePostViewController: UITableViewDelegate, UITableViewDataSource {
             case .success(let postDetail):
                 print("상세 게시글 가져오기 성공")
                 postDetailResponse = postDetail
-
+               
                 UserService.shared.fetchUserProfile(uid: self.fetchBookmarks[indexPath.row].userID) { result in
                     switch result {
                     case .success(let userData):
                         print("현재 유저 정보 가져오기 성공")
+                        
 
                         detailViewController.detailView.configureFetchData(postDetailData: postDetailResponse, likeCount:  self.fetchBookmarks[indexPath.row].likeCount, commentCount:  self.fetchBookmarks[indexPath.row].commentCount, profileImageName: userData.profileImageURL, name: userData.name)
                         detailViewController.hidesBottomBarWhenPushed = true
