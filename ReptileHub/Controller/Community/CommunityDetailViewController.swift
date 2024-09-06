@@ -107,7 +107,13 @@ class CommunityDetailViewController: UIViewController {
     }
     
     private func editButtonAction() {
-        print("edit")
+        print("디테일 뷰에서의 수정하기 클릭.")
+        let addPostViewController = AddPostViewController(postId: detailView.postID, editMode: true)
+        
+        addPostViewController.delegate = self
+        
+        addPostViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(addPostViewController, animated: true)
     }
     
     private func deleteButtonAction() {
@@ -259,34 +265,6 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
     
 }
 
-//error in
-//    if let error = error {
-//        print("댓글 작성 에러 : \(error.localizedDescription)")
-//    } else {
-//        print("댓글 작성 성공!")
-//        CommunityService.shared.fetchComments(forPost: postId) { result in
-//            switch result {
-//            case .success(let commentsData):
-//                self.fetchComments = commentsData
-//                
-//                var height: CGFloat = 50
-//
-//                for comment in self.fetchComments {
-//                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
-//                }
-//                self.detailView.updateCommentTableViewHeight(height: height)
-//                
-//                self.detailView.commentTableView.reloadData()
-//                
-//                // 디테일 뷰의 댓글 카운트 1 증가
-//                self.detailView.addCommentCount()
-//            case .failure(let error):
-//                print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
-//            }
-//        }
-//        
-//    }
-
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
 
     func deleteCommentAction(cell: CommentTableViewCell) {
@@ -336,4 +314,19 @@ extension CommunityDetailViewController: CommentTableViewCellDelegate {
         present(alert, animated: true, completion: nil)
     }
     
+}
+
+extension CommunityDetailViewController: AddPostViewControllerDelegate {
+    func dismissAddPost(detailPostData: PostDetailResponse) {
+                UserService.shared.fetchUserProfile(uid: self.detailView.postUserId) { result in
+                    switch result {
+                    case .success(let userData):
+                        self.detailView.configureFetchData(postDetailData: detailPostData, likeCount: Int(self.detailView.likeCount.text ?? "0") ?? 0, commentCount: Int(self.detailView.commentCount.text ?? "0") ?? 0, profileImageName: userData.profileImageURL, name: userData.name)
+                        
+                    case .failure(let error):
+                        print("에러에러에러")
+                    }
+                }
+        
+    }
 }

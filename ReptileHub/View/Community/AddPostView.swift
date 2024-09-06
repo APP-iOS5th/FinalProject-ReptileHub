@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import Kingfisher
 
 protocol AddPostViewDelegate: AnyObject {
     func didTapPostButton(imageData: [Data], title: String, content: String)
@@ -180,6 +181,33 @@ class AddPostView: UIView {
         return PHPickerViewController(configuration: config)
         
     }
+    
+    func configureEdit(configureEditData: PostDetailResponse) {
+        print("수정이다 수정!! : \(configureEditData)")
+            var images = [UIImage]()
+            for image in configureEditData.imageURLs {
+                let uiImage = UIImage()
+                KingfisherManager.shared.retrieveImage(with: URL(string: image)!) { result in
+                    
+                    switch result {
+                        case .success(let value):
+                            // 성공적으로 이미지를 다운로드했을 때
+                            let image = value.image
+                            print("Image downloaded: (image)")
+
+                            self.selectedImages.append(image)
+                        self.imagePickerCollectionView.reloadData()
+                        case .failure(let error):
+                            // 에러 처리
+                            print("Error downloading image: (error)")
+                        }
+                    }
+            }
+            titleTextField.text = configureEditData.title
+            contentTextView.text = configureEditData.content
+            textViewPlaceholder.isHidden = true
+        postButton.setTitle("수정하기", for: .normal)
+        }
     
 }
 
