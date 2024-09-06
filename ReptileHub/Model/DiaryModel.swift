@@ -100,9 +100,16 @@ struct DiaryResponse:Codable {
 }
 
 // 도마뱀 날짜별 무게
-struct WeightEntry {
+struct WeightEntry:Identifiable {
+    let id: String
     let weight: Int
     let date: Date
+    
+    init(id: String = UUID().uuidString, weight: Int, date: Date) {
+        self.id = id
+        self.weight = weight
+        self.date = date
+    }
 }
 
 // 도마뱀 월별 무게 평균

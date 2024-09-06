@@ -479,6 +479,7 @@ class CommunityDetailView: UIView {
     
     @objc
     private func sendButtonAction() {
+
         delegate?.createCommentAction(postId: self.postID, commentText: commentTextView.text)
     }
     
@@ -493,7 +494,8 @@ class CommunityDetailView: UIView {
         DispatchQueue.main.async {
                 self.commentCount.text = String((Int(self.commentCount.text ?? "0") ?? 0) - 1)
                 self.commentCount.setNeedsLayout()
-            }
+        }
+
     }
     
     

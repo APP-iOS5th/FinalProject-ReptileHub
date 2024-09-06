@@ -22,7 +22,7 @@ class ProfileViewController: UIViewController {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         UserService.shared.fetchUserProfile(uid: uid) { results in
-           print("지금 프로필 검색 uid -\(uid)") 
+            print("지금 프로필 검색 uid -\(uid)") 
             switch results {
                 
             case .success(let profile):
@@ -82,21 +82,23 @@ class ProfileViewController: UIViewController {
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")
         
-        do {
-            // Firebase에서 로그아웃 시도
-            try Auth.auth().signOut()
-            
-            // 성공적으로 로그아웃되었으면 루트 뷰 컨트롤러를 로그인 화면으로 변경
-            let loginVC = LoginViewController()
-            loginVC.modalPresentationStyle = .fullScreen
-            
-            // 윈도우의 rootViewController를 변경하여 로그인 화면을 표시
-            if let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate {
-                sceneDelegate.window?.rootViewController = loginVC
+        // AuthService의 로그아웃 메서드 호출
+        AuthService.shared.logout { success in
+            if success {
+                print("DEBUG: 로그아웃 성공")
+                
+                // 로그인 화면으로 이동
+                DispatchQueue.main.async {
+                    let loginVC = LoginViewController()
+                    loginVC.modalPresentationStyle = .fullScreen
+                    
+                    if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                        sceneDelegate.window?.rootViewController = loginVC
+                    }
+                }
+            } else {
+                print("DEBUG: 로그아웃 실패")
             }
-            
-        } catch let error {
-            print("로그아웃 실패: \(error.localizedDescription)")
         }
     }
 }
