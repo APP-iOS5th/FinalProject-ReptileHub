@@ -90,6 +90,7 @@ class AddWeightView: UIView {
         button.configuration = config
         
         button.addAction(UIAction{ [weak self] _ in
+            print("B")
             self?.cancelButtonTapped?()
         }, for: .touchUpInside)
         
@@ -120,12 +121,11 @@ class AddWeightView: UIView {
     }()
     
     
-    //MARK: - contentView
-    private lazy var addWeightContentView: UIView = {
-        let view = UIView()
-        view.addSubview(addWeightDateStackView)
-        view.addSubview(addWeightStackView)
-        view.addSubview(weightCancelCreateButtonStackView)
+    //MARK: - contentStackView
+    private lazy var addWeightContentView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [addWeightDateStackView, addWeightStackView, weightCancelCreateButtonStackView])
+        view.axis = .vertical
+        view.spacing = 20
         return view
     }()
     
@@ -155,7 +155,6 @@ class AddWeightView: UIView {
         addWeightContentView.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self).offset(-Spacing.mainSpacing)
-//            make.top.bottom.equalToSuperview()
             make.centerY.equalTo(mainView)
         }
         
@@ -165,9 +164,7 @@ class AddWeightView: UIView {
         }
 //        
         addWeightStackView.snp.makeConstraints { make in
-            make.top.equalTo(addWeightDateStackView.snp.bottom).offset(20)
             make.leading.trailing.equalTo(addWeightContentView)
-            make.centerY.equalTo(mainView)
         }
 //        
         addWeightTextField.snp.makeConstraints { make in
@@ -175,7 +172,6 @@ class AddWeightView: UIView {
         }
 //        
         weightCancelCreateButtonStackView.snp.makeConstraints { make in
-            make.top.equalTo(addWeightStackView.snp.bottom).offset(20)
             make.leading.trailing.equalTo(addWeightContentView)
         }
     }
