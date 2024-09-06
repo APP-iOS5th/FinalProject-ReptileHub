@@ -9,6 +9,10 @@ import UIKit
 
 class AddWeightView: UIView {
     
+    // TODO: 델리게이트로 수정하기
+    var cancelButtonTapped: (() -> Void)?
+    var addButtonTapped: (() -> Void)?
+    
     //MARK: - 날짜 선택 타이틀
     private lazy var addWeightDateTitle: UILabel = {
         let label = UILabel()
@@ -35,10 +39,12 @@ class AddWeightView: UIView {
         return view
     }()
     
-    //MARK: - 몸무게 입력
+    //MARK: - 몸무게 타이틀
     private lazy var addWeightTitle: UILabel = {
         let label = UILabel()
         label.text = "몸무게"
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = UIColor.textFieldTitle
         return label
     }()
     
@@ -46,23 +52,87 @@ class AddWeightView: UIView {
     private lazy var addWeightTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "몸무게를 입력해주세요."
+        textField.font = UIFont.systemFont(ofSize: 14)
+        textField.textColor = UIColor.textFieldPlaceholder
         textField.keyboardType = .numberPad //숫자만 입력 가능하게 설정
+        textField.backgroundColor = UIColor.textFieldSegmentBG
+        textField.layer.borderWidth = 1.0
+        textField.layer.borderColor = UIColor.textFieldBorderLine.cgColor
+        textField.layer.cornerRadius = 5
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 13, height: 0))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
+        
+        textField.rightView = paddingView
+        textField.rightViewMode = .always
+        
         return textField
     }()
-   
     
     //MARK: - 몸무게 추가 스택 뷰
     private lazy var addWeightStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [addWeightTextField, addWeightTextField])
+        let view = UIStackView(arrangedSubviews: [addWeightTitle, addWeightTextField])
         view.axis = .horizontal
+        view.spacing = 20
         return view
     }()
+    
+    //MARK: - 취소 버튼
+    private lazy var cancelAddWeight: UIButton = {
+        let button = UIButton()
+        
+        var config = UIButton.Configuration.filled()
+        config.title = "취소"
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = UIColor.imagePicker
+        config.attributedTitle?.font = UIFont.systemFont(ofSize:20)
+        button.configuration = config
+        
+        button.addAction(UIAction{ [weak self] _ in
+            self?.cancelButtonTapped?()
+        }, for: .touchUpInside)
+        
+        return button
+    }()
+    
+    //MARK: - 등록 버튼
+    private lazy var createAddWeight: UIButton = {
+        let button = UIButton()
+        
+        var config = UIButton.Configuration.filled()
+        config.title = "추가"
+        config.baseForegroundColor = .white
+        config.baseBackgroundColor = UIColor.addBtnGraphTabbar
+        config.attributedTitle?.font = UIFont.systemFont(ofSize:20)
+        button.configuration = config
+        
+        return button
+    }()
+    
+    //MARK: - 취소/추가 버튼 스택 뷰
+    private lazy var weightCancelCreateButtonStackView: UIStackView = {
+        let view = UIStackView(arrangedSubviews: [cancelAddWeight, createAddWeight])
+        view.axis = .horizontal
+        view.spacing = 20
+        view.distribution = .fillEqually
+        return view
+    }()
+    
     
     //MARK: - contentView
     private lazy var addWeightContentView: UIView = {
         let view = UIView()
         view.addSubview(addWeightDateStackView)
         view.addSubview(addWeightStackView)
+        view.addSubview(weightCancelCreateButtonStackView)
+        return view
+    }()
+    
+    //MARK: - mainView
+    private lazy var mainView: UIView = {
+        let view = UIView()
+        view.addSubview(addWeightContentView)
         return view
     }()
     
@@ -76,20 +146,36 @@ class AddWeightView: UIView {
     }
     
     private func setUI(){
-        self.addSubview(addWeightContentView)
+        self.addSubview(mainView)
+        
+        mainView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         addWeightContentView.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self).offset(-Spacing.mainSpacing)
-            make.centerY.equalTo(self)
+//            make.top.bottom.equalToSuperview()
+            make.centerY.equalTo(mainView)
         }
         
         addWeightDateStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(addWeightContentView)
+            make.leading.equalTo(addWeightContentView)
+            make.trailing.equalTo(addWeightContentView)
         }
-        
+//        
         addWeightStackView.snp.makeConstraints { make in
             make.top.equalTo(addWeightDateStackView.snp.bottom).offset(20)
+            make.leading.trailing.equalTo(addWeightContentView)
+            make.centerY.equalTo(mainView)
+        }
+//        
+        addWeightTextField.snp.makeConstraints { make in
+            make.height.equalTo(35)
+        }
+//        
+        weightCancelCreateButtonStackView.snp.makeConstraints { make in
+            make.top.equalTo(addWeightStackView.snp.bottom).offset(20)
             make.leading.trailing.equalTo(addWeightContentView)
         }
     }

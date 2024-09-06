@@ -67,12 +67,13 @@
 		79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1AE492C6A088D00D5711B /* TabbarViewController.swift */; };
 		79A5CA8D2C8873E900E0D9B3 /* AddWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A5CA8C2C8873E900E0D9B3 /* AddWeightView.swift */; };
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
+		79B577D52C8A0DBF000C62DD /* WeightAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B577D42C8A0DBF000C62DD /* WeightAddViewController.swift */; };
 		79BCE2722C72DB01002F630C /* AddGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */; };
 		79BCE2742C72F775002F630C /* FontWeightLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BCE2732C72F775002F630C /* FontWeightLabel.swift */; };
 		79CDB5F62C8648BF001A3926 /* WeightLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F52C8648BF001A3926 /* WeightLineChartView.swift */; };
 		79CDB5F82C86D2B0001A3926 /* WeightAddEditListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F72C86D2B0001A3926 /* WeightAddEditListView.swift */; };
 		79CDB5FA2C86E08A001A3926 /* WeightAddEditViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5F92C86E08A001A3926 /* WeightAddEditViewCell.swift */; };
-		79CDB5FC2C8760B1001A3926 /* weightAddEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5FB2C8760B1001A3926 /* weightAddEditViewController.swift */; };
+		79CDB5FC2C8760B1001A3926 /* WeightAddEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CDB5FB2C8760B1001A3926 /* WeightAddEditViewController.swift */; };
 		79D4F1322C84AC2A00EFC064 /* DetailGrowthDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */; };
 		79D4F1342C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */; };
 		79FB0EA02C8340A6009ACD94 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 79FB0E9F2C8340A6009ACD94 /* Kingfisher */; };
@@ -165,12 +166,13 @@
 		79A1AE492C6A088D00D5711B /* TabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		79A5CA8C2C8873E900E0D9B3 /* AddWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWeightView.swift; sourceTree = "<group>"; };
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
+		79B577D42C8A0DBF000C62DD /* WeightAddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAddViewController.swift; sourceTree = "<group>"; };
 		79BCE2712C72DB01002F630C /* AddGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddGrowthDiaryView.swift; sourceTree = "<group>"; };
 		79BCE2732C72F775002F630C /* FontWeightLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontWeightLabel.swift; sourceTree = "<group>"; };
 		79CDB5F52C8648BF001A3926 /* WeightLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightLineChartView.swift; sourceTree = "<group>"; };
 		79CDB5F72C86D2B0001A3926 /* WeightAddEditListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAddEditListView.swift; sourceTree = "<group>"; };
 		79CDB5F92C86E08A001A3926 /* WeightAddEditViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAddEditViewCell.swift; sourceTree = "<group>"; };
-		79CDB5FB2C8760B1001A3926 /* weightAddEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weightAddEditViewController.swift; sourceTree = "<group>"; };
+		79CDB5FB2C8760B1001A3926 /* WeightAddEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightAddEditViewController.swift; sourceTree = "<group>"; };
 		79D4F1312C84AC2A00EFC064 /* DetailGrowthDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailGrowthDiaryView.swift; sourceTree = "<group>"; };
 		79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailGrowthDiaryViewController.swift; sourceTree = "<group>"; };
 		9F2BD4332C75C4B5006FDD69 /* SpecialPlusButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialPlusButtonView.swift; sourceTree = "<group>"; };
@@ -286,7 +288,8 @@
 				589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */,
 				793E9CE42C7DD19000DB4B30 /* AddGrowthDiaryViewController.swift */,
 				79D4F1332C84AC3C00EFC064 /* DetailGrowthDiaryViewController.swift */,
-				79CDB5FB2C8760B1001A3926 /* weightAddEditViewController.swift */,
+				79CDB5FB2C8760B1001A3926 /* WeightAddEditViewController.swift */,
+				79B577D42C8A0DBF000C62DD /* WeightAddViewController.swift */,
 			);
 			path = GrowthDiary;
 			sourceTree = "<group>";
@@ -560,7 +563,7 @@
 				7968449C2C6AEC7100765A80 /* Spacing.swift in Sources */,
 				9F2BD4362C75C4EC006FDD69 /* SpecialListViewCell.swift in Sources */,
 				9F2BD43A2C75C555006FDD69 /* SpecialDetailViewController.swift in Sources */,
-				79CDB5FC2C8760B1001A3926 /* weightAddEditViewController.swift in Sources */,
+				79CDB5FC2C8760B1001A3926 /* WeightAddEditViewController.swift in Sources */,
 				469B44382C62F3BC00B1C49B /* SocialLoginButton.swift in Sources */,
 				79CDB5F62C8648BF001A3926 /* WeightLineChartView.swift in Sources */,
 				C154FA1C2C7C11B500624AA3 /* WriteReplyListView.swift in Sources */,
@@ -615,6 +618,7 @@
 				9F2BD43C2C75C577006FDD69 /* SpecialEditViewController.swift in Sources */,
 				589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */,
 				C14FF36C2C75DB2800089C6D /* BlockUserTableViewCell.swift in Sources */,
+				79B577D52C8A0DBF000C62DD /* WeightAddViewController.swift in Sources */,
 				469B443A2C62FDCA00B1C49B /* LoginViewController.swift in Sources */,
 				C14FF3712C75DB2800089C6D /* WriteReplyListTableViewCell.swift in Sources */,
 				C14FF3702C75DB2800089C6D /* LikePostViewController.swift in Sources */,

@@ -14,6 +14,7 @@ class UserService {
     static let shared = UserService()
 
     var currentUserId: String
+
     
     private init() {
         currentUserId = Auth.auth().currentUser?.uid ?? "nil"

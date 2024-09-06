@@ -7,7 +7,7 @@
 
 import UIKit
 
-class weightAddEditViewController: UIViewController {
+class WeightAddEditViewController: UIViewController {
 
     private lazy var weightAddEditView = WeightAddEditListView()
     
@@ -25,7 +25,7 @@ class weightAddEditViewController: UIViewController {
     
     
     private lazy var addButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
+        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(moveAddWeightController))
         return button
     }()
     
@@ -66,12 +66,21 @@ class weightAddEditViewController: UIViewController {
     }
     
     //무게 추가하는 뷰 컨트롤러로 이동 액션
+    @objc
     private func moveAddWeightController(){
-        
+        let addWeightVC = WeightAddViewController()
+        addWeightVC.modalPresentationStyle = .automatic
+        addWeightVC.sheetPresentationController?.detents = [.medium(), .large()]
+        addWeightVC.sheetPresentationController?.prefersGrabberVisible = true
+        addWeightVC.sheetPresentationController?.preferredCornerRadius = 10
+        addWeightVC.sheetPresentationController?.animateChanges {
+            sheetPresentationController?.selectedDetentIdentifier = .medium
+        }
+        present(addWeightVC, animated: true)
     }
 }
 
-extension weightAddEditViewController: UITableViewDelegate, UITableViewDataSource{
+extension WeightAddEditViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         weightEntries.count
     }
