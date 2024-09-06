@@ -55,7 +55,6 @@
 		589CCFFF2C608FFF00812D17 /* CommunityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CCFFE2C608FFF00812D17 /* CommunityViewController.swift */; };
 		589CD0012C60901500812D17 /* GrowthDiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589CD0002C60901500812D17 /* GrowthDiaryViewController.swift */; };
 		58C61A042C7A530F00E1FD3A /* KeyboardDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C61A032C7A530F00E1FD3A /* KeyboardDelegate.swift */; };
-		58CD8FC52C8232ED0009CE9C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 58CD8FC42C8232ED0009CE9C /* Kingfisher */; };
 		58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F63F2C772E6B00FDABD1 /* CommunityDetailView.swift */; };
 		58F3F6422C781DF500FDABD1 /* AddPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F6412C781DF500FDABD1 /* AddPostViewController.swift */; };
 		58F3F6442C781F1400FDABD1 /* AddPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F3F6432C781F1400FDABD1 /* AddPostView.swift */; };
@@ -739,7 +738,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = P95R3MRRWK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = NSPhotoLibraryUsageDescription;
@@ -769,7 +768,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = P95R3MRRWK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = NSPhotoLibraryUsageDescription;

@@ -184,6 +184,8 @@ class AddPostView: UIView {
 }
 
 
+
+
 extension AddPostView: KeyboardNotificationDelegate {
     func keyboardWillShow(keyboardSize: CGRect) {
         print("keyboard Show")
@@ -227,3 +229,4 @@ extension AddPostView: KeyboardNotificationDelegate {
         return false
     }
 }
+

@@ -17,8 +17,15 @@ class CommunityService {
     private let storageRef = Storage.storage().reference()
 
     //MARK: - 커뮤니티 게시글 작성 후 등록 함수
-    func createPost(userID: String, title: String, content: String, images: [Data], completion: @escaping (Error?) -> Void) {
-        uploadImages(images: images) { urls, errors in
+    func createPost(userID: String, title: String, content: String, images: [Data]?, completion: @escaping (Error?) -> Void) {
+        // 이미지가 없는 경우 바로 Firestore에 저장
+        if images == nil || images!.isEmpty {
+            savePostData(userID: userID, title: title, content: content, imageURLs: [], completion: completion)
+            return
+        }
+        
+        // 이미지가 있는 경우 업로드
+        uploadImages(images: images!) { urls, errors in
             if let errors = errors, !errors.isEmpty {
                 completion(errors.first)
                 return
@@ -29,62 +36,68 @@ class CommunityService {
                 return
             }
             
-            let postID = UUID().uuidString
-            let previewContent = String(content.prefix(40))
-            
-            let db = Firestore.firestore()
-            let userRef = db.collection("users").document(userID)
-            
-            db.runTransaction({ (transaction, errorPointer) -> Any? in
-                do {
-                    // 유저의 문서를 가져옴
-                    let userDocument = try transaction.getDocument(userRef)
-                    
-                    // 현재 게시글 개수를 가져와서 1을 추가
-                    let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
-                    transaction.updateData(["postCount": currentPostCount + 1], forDocument: userRef)
-                    
-                    // 썸네일 정보 저장
-                    let thumbnailData: [String: Any] = [
-                        "postID": postID,
-                        "userID": userID,
-                        "thumbnail": urls.first ?? "", // 첫 번째 이미지를 썸네일로 사용
-                        "title": title,
-                        "previewContent": previewContent,
-                        "createdAt": FieldValue.serverTimestamp(),
-                        "likeCount": 0,
-                        "commentCount": 0
-                    ]
-                    
-                    let postRef = db.collection("posts").document(postID)
-                    transaction.setData(thumbnailData, forDocument: postRef)
-                    
-                    // 상세 정보 저장
-                    let postData: [String: Any] = [
-                        "postID": postID,
-                        "userID": userID,
-                        "title": title,
-                        "content": content,
-                        "imageURLs": urls,
-                        "createdAt": FieldValue.serverTimestamp(),
-                        "likeCount": 0,
-                        "commentCount": 0
-                    ]
-                    
-                    let detailRef = postRef.collection("post_details").document(postID)
-                    transaction.setData(postData, forDocument: detailRef)
-                    
-                    return nil
-                } catch {
-                    errorPointer?.pointee = error as NSError
-                    return nil
-                }
-            }) { (result, error) in
-                if let error = error {
-                    completion(error)
-                } else {
-                    completion(nil)
-                }
+            // Firestore에 저장
+            self.savePostData(userID: userID, title: title, content: content, imageURLs: urls, completion: completion)
+        }
+    }
+    
+    // Firestore에 게시글 데이터를 저장하는 함수
+    private func savePostData(userID: String, title: String, content: String, imageURLs: [String], completion: @escaping (Error?) -> Void) {
+        let postID = UUID().uuidString
+        let previewContent = String(content.prefix(40))
+        
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(userID)
+        
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            do {
+                // 유저의 문서를 가져옴
+                let userDocument = try transaction.getDocument(userRef)
+                
+                // 현재 게시글 개수를 가져와서 1을 추가
+                let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
+                transaction.updateData(["postCount": currentPostCount + 1], forDocument: userRef)
+                
+                // 썸네일 정보 저장
+                let thumbnailData: [String: Any] = [
+                    "postID": postID,
+                    "userID": userID,
+                    "thumbnail": imageURLs.first ?? "", // 첫 번째 이미지를 썸네일로 사용 (없으면 빈 문자열)
+                    "title": title,
+                    "previewContent": previewContent,
+                    "createdAt": FieldValue.serverTimestamp(),
+                    "likeCount": 0,
+                    "commentCount": 0
+                ]
+                
+                let postRef = db.collection("posts").document(postID)
+                transaction.setData(thumbnailData, forDocument: postRef)
+                
+                // 상세 정보 저장
+                let postData: [String: Any] = [
+                    "postID": postID,
+                    "userID": userID,
+                    "title": title,
+                    "content": content,
+                    "imageURLs": imageURLs,
+                    "createdAt": FieldValue.serverTimestamp(),
+                    "likeCount": 0,
+                    "commentCount": 0
+                ]
+                
+                let detailRef = postRef.collection("post_details").document(postID)
+                transaction.setData(postData, forDocument: detailRef)
+                
+                return nil
+            } catch {
+                errorPointer?.pointee = error as NSError
+                return nil
+            }
+        }) { (result, error) in
+            if let error = error {
+                completion(error)
+            } else {
+                completion(nil)
             }
         }
     }
@@ -150,8 +163,17 @@ class CommunityService {
                     )
                     thumbnails.append(thumbnailResponse)
                 }
-                
             }
+            
+            // createdAt 기준으로 내림차순 정렬
+           
+            thumbnails.sort {
+                guard let date1 = $0.createdAt, let date2 = $1.createdAt else {
+                    return false
+                }
+                return date1 > date2
+            }
+            
             // completion으로 전송
             completion(.success(thumbnails))
             
@@ -353,13 +375,16 @@ class CommunityService {
         }
     }
 
+
+    
     //MARK: - 댓글 작성 함수
-    func addComment(postID: String, userID: String, content: String, completion: @escaping (Error?) -> Void) {
+    func addComment(postID: String, userID: String, content: String, completion: @escaping (Result<[CommentResponse], Error>) -> Void) {
         let db = Firestore.firestore()
         let commentID = UUID().uuidString
         let createdAt = FieldValue.serverTimestamp()
         let postRef = db.collection("posts").document(postID)
-        
+        let detailRef = postRef.collection("post_details").document(postID) // post_details 문서 참조
+
         let commentData: [String: Any] = [
             "commentID": commentID,
             "postID": postID,
@@ -368,36 +393,47 @@ class CommunityService {
             "createdAt": createdAt,
             "likeCount": 0
         ]
-        
+
         db.runTransaction({ (transaction, errorPointer) -> Any? in
-            // 현재 게시글을 가져옴
+            // 모든 읽기 작업을 먼저 수행
             let postDocument: DocumentSnapshot
+            let detailDocument: DocumentSnapshot
+
             do {
                 postDocument = try transaction.getDocument(postRef)
+                detailDocument = try transaction.getDocument(detailRef)
             } catch let fetchError as NSError {
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            
+
             // 댓글 수를 가져와 1을 추가
             let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
             transaction.updateData(["commentCount": currentCommentCount + 1], forDocument: postRef)
-            
+
+            // post_details의 댓글 수를 가져와 1을 추가
+            let currentDetailCommentCount = detailDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": currentDetailCommentCount + 1], forDocument: detailRef)
+
             // 댓글 추가
             let commentRef = postRef.collection("comments").document(commentID)
             transaction.setData(commentData, forDocument: commentRef)
-            
+
             return nil
         }) { (result, error) in
             if let error = error {
                 print("Failed to add comment: \(error.localizedDescription)")
-                completion(error)
+                completion(.failure(error))
             } else {
                 print("댓글 추가 완료!!")
-                completion(nil)
+                // 댓글 추가 완료 후, 해당 포스트의 모든 댓글을 가져옴
+                self.fetchComments(forPost: postID, completion: completion)
             }
         }
     }
+    
+    
+    
     //MARK: - 댓글 불러오기 함수
     func fetchComments(forPost postID:String, completion: @escaping(Result<[CommentResponse],Error>) -> Void) {
         let db = Firestore.firestore()
@@ -443,25 +479,33 @@ class CommunityService {
     func deleteComment(postID: String, commentID: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let postRef = db.collection("posts").document(postID)
+        let detailRef = postRef.collection("post_details").document(postID) // post_details 문서 참조
         let commentRef = postRef.collection("comments").document(commentID)
-        
+
         db.runTransaction({ (transaction, errorPointer) -> Any? in
-            // 현재 게시글을 가져옴
+            // 모든 읽기 작업을 먼저 수행
             let postDocument: DocumentSnapshot
+            let detailDocument: DocumentSnapshot
+            
             do {
                 postDocument = try transaction.getDocument(postRef)
+                detailDocument = try transaction.getDocument(detailRef)
             } catch let fetchError as NSError {
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            
+
             // 댓글 수를 가져와 1을 감소
             let currentCommentCount = postDocument.data()?["commentCount"] as? Int ?? 0
             transaction.updateData(["commentCount": max(currentCommentCount - 1, 0)], forDocument: postRef)
-            
+
+            // post_details의 댓글 수를 가져와 1을 감소
+            let currentDetailCommentCount = detailDocument.data()?["commentCount"] as? Int ?? 0
+            transaction.updateData(["commentCount": max(currentDetailCommentCount - 1, 0)], forDocument: detailRef)
+
             // 댓글 삭제
             transaction.deleteDocument(commentRef)
-            
+
             return nil
         }) { (result, error) in
             if let error = error {
