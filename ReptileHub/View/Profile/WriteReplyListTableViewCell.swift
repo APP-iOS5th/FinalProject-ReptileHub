@@ -10,26 +10,14 @@ import SnapKit
 
 class WriteReplyListTableViewCell: UITableViewCell {
     
-//    let posts: [ThumbnailPostResponse] = [
-//        ThumbnailPostResponse(
-//            postID: "123", title: "잠 온다 !", userID: "1001", thumbnailURL: "profile", previewContent: "들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ 들을엉 쿨쿨ㄹ 들을ㅇ엉~ ʕ-ധก̀ʔ..zzZ ", likeCount: 150, commentCount: 25, createdAt: Date()
-//        )]
-//    
-//    let comments: [CommentResponse] = [
-//        CommentResponse(
-//            commentID: "123", postID: "456", userID: "789", content: "토비는 자러갈거야 (๑'ᵕ'๑)⸝*", createdAt: Date(), likeCount: 42
-//        )]
-    
     private var commentDetail: UILabel = {
         let label = UILabel()
-//        label.text = "우왕"
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         return label
     }()
     
     private var commentDate: UILabel = {
         let label = UILabel()
-//        label.text = "2024.08.21. 03:03"
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .lightGray
         return label
@@ -37,7 +25,6 @@ class WriteReplyListTableViewCell: UITableViewCell {
     
     private var postTitle: UILabel = {
         let label = UILabel()
-//        label.text = "먉옹 먀아아옭 므야얅옭"
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .black
         return label
@@ -45,7 +32,6 @@ class WriteReplyListTableViewCell: UITableViewCell {
     
     private var commentCount: UILabel = {
         let label = UILabel()
-//        label.text = "99"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.backgroundColor = .groupProfileBG
         label.textColor = .imagePickerPlaceholder
@@ -91,7 +77,6 @@ class WriteReplyListTableViewCell: UITableViewCell {
         stackView.snp.makeConstraints { make in
             make.top.equalTo(commentDate.snp.bottom).offset(4)
             make.leading.equalTo(commentDetail)
-//            make.trailing.equalTo(commentDetail)
             make.width.greaterThanOrEqualTo(80)
             make.bottom.equalToSuperview().offset(-10)
         }
