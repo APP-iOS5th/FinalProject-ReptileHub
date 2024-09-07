@@ -14,6 +14,7 @@ class DetailGrowthDiaryView: UIView {
     // TODO: delegate를 사용하기
     var detailShowSpecialNoteButtonTapped: (() -> Void)?
     var detailShowWeightInfoButtonTapped: (() -> Void)?
+    var deleteButtonTapped: (() -> Void)?
     
     var detailTableViewHeightContaint: Constraint?
     
@@ -342,9 +343,39 @@ class DetailGrowthDiaryView: UIView {
         return view
     }()
     
+    //MARK: - 성장일지 삭제버튼
+    private lazy var deleteGrowthDiaryButton: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 5
+        button.layer.masksToBounds = true
+        
+        var config = UIButton.Configuration.filled()
+        
+        //AttributedString 설정
+        var buttonText = AttributedString("삭제하기") //텍스트 정의
+        
+        //AttributeContainer 생성 및 폰트, 색상 설정
+        var attributes = AttributeContainer()
+        attributes.font = UIFont.systemFont(ofSize: 18, weight: .semibold) //폰트크기 설정
+        
+        //AttributedString에 속성 적용
+        buttonText.mergeAttributes(attributes)
+        
+        config.attributedTitle = buttonText
+        config.baseBackgroundColor = UIColor(red: 188/255, green: 38/255, blue: 38/255, alpha: 1.0)
+        config.baseForegroundColor = .white
+        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
+        button.configuration = config
+        
+        button.addAction(UIAction{ [weak self] _ in
+            self?.deleteButtonTapped?() //클로저가 실행된다.
+        }, for: .touchUpInside)
+        return button
+    }()
+    
     //MARK: - 디테일 스택 뷰
     private lazy var detailStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView, detailPreviewsSpecialNoteStackView/*, detailPreviewsSpecialNoteStackView*/])
+        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView, detailPreviewsSpecialNoteStackView, deleteGrowthDiaryButton/*, detailPreviewsSpecialNoteStackView*/])
         view.axis = .vertical
         view.spacing = 30
         return view

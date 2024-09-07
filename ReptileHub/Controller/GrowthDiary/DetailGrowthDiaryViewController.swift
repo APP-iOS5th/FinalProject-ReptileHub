@@ -71,6 +71,9 @@ class DetailGrowthDiaryViewController: UIViewController {
         detailGrowthDiaryView.detailShowWeightInfoButtonTapped = { [weak self] in
             self?.showNavigationWeightInfo()
         }
+        detailGrowthDiaryView.deleteButtonTapped = { [weak self] in
+            self?.deleteGrowthDiaryView()
+        }
     }
     
     private func fetchDetailData(){
@@ -108,6 +111,43 @@ class DetailGrowthDiaryViewController: UIViewController {
                 print("Error: \(error.localizedDescription)")
             }
         }
+    }
+    
+    //MARK: - 삭제 버튼 클릭 시 alert창 띄우기
+    private func deleteAlertGrowthDiaryView(){
+        let title = "성장일지 삭제"
+        
+        let attributedTitle = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : UIColor.red])
+        let alert = UIAlertController(title: "", message: "해당 성장일지를 정말 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.setValue(attributedTitle, forKey: "attributedTitle")
+        
+        let action = UIAlertAction(title: "삭제", style: .destructive, handler: nil)
+        let cancel = UIAlertAction(title: "취소", style: .cancel){ [weak self] action in
+            self?.cancelGrowthDiaryView()
+        }
+        alert.addAction(cancel)
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK: - 삭제를 눌렀을 때
+    private func deleteGrowthDiaryView(){
+        DiaryPostService.shared.deleteGrowthDiary(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] error in
+            if let error = error{
+                print("ERROR: \(error.localizedDescription)")
+            }else{
+                if let previousVC = self?.previousVC{
+                    previousVC.updateImage()
+                }
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
+    
+    //MARK: - 취소를 눌렀을 떄
+    private func cancelGrowthDiaryView(){
+        self.dismiss(animated: true)
     }
     
     func updateDetailDate(){
