@@ -576,13 +576,17 @@ class DetailGrowthDiaryView: UIView {
         
 
         guard let fatherData = detailData.parentInfo?.father, 
-                let motherData = detailData.parentInfo?.mother else { return }
+                let motherData = detailData.parentInfo?.mother else {
+            detailParentStackView.isHidden = true
+            return
+        }
+      
+        detailParentStackView.isHidden = false
         
         if let fatherImageView = detailFatherInfoView.viewWithTag(1) as? UIImageView,
            let fatherName = detailFatherInfoView.viewWithTag(2) as? UILabel,
            let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(3) as? UILabel
         {
-            
             // TODO: 지금은 무조건 있다고 가정
             fatherImageView.setImage(with: fatherData.imageURL!)
             fatherName.text = fatherData.name

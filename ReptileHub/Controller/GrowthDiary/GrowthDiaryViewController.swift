@@ -99,7 +99,8 @@ extension GrowthDiaryViewController{
             return UICollectionViewCell()
         }
         
-        cell.configure(imageName: thumbnailData[indexPath.item].thumbnail, title: thumbnailData[indexPath.item].name, date: thumbnailData[indexPath.item].diary_id)
+        // TODO: 여기 생성할때 넘기 날짜가 오게 해야함
+        cell.configure(imageName: thumbnailData[indexPath.item].thumbnail, title: thumbnailData[indexPath.item].name, date: Date().formatted)
         return cell
     }
     

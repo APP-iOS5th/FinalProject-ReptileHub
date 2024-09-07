@@ -59,7 +59,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     
     private func uploadGrowthDiary(){
         let result = addGrowthDiaryView.growthDiaryRequestData()
-        print("asdfdsfsaf", result.0)
+        print("asdfdsfsaf", result)
         if editMode{
             //editMode가 true일떄 수정하기 활성화
             guard let diaryID = diaryID else { return }

@@ -78,6 +78,7 @@ class DetailGrowthDiaryViewController: UIViewController {
             switch response{
             case .success(let responseData):
                 print("성공")
+                print(responseData)
                 self?.detailGrowthDiaryView.configureDetailGrowthDiaryData(detailData: responseData)
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
