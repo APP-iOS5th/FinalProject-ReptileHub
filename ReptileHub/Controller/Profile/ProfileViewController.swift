@@ -27,7 +27,7 @@ class ProfileViewController: UIViewController {
     
     private var list = ["내가 작성한 댓글", "북마크한 게시글", "내가 차단한 사용자"]
     
-    private let profileView = ProfileView()
+    let profileView = ProfileView()
     
     override func loadView() {
         super.viewDidLoad()
