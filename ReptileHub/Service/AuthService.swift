@@ -26,7 +26,6 @@ class AuthService: NSObject {
     // MARK: - Google OAuth 로그인
     func loginWithGoogle(presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
         guard let clientID = FirebaseApp.app()?.options.clientID else {
-            print("구글 로그인 클라이언트 아이디 없음")
             completion(false)
             return
         }
