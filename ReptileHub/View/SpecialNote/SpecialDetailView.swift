@@ -211,29 +211,22 @@ class SpecialDetailView: UIView {
     }
     //MARK: - SpecialDetialView 데이터 보내주는 함수
     func writeSpecialDetail(data: DiaryResponse, lizardName: String) {
-//        specialImages = []
-//        imageViews = []
-//        imageStackView = UIStackView()
         for view in imageStackView.arrangedSubviews {
             imageStackView.removeArrangedSubview(view)
             view.removeFromSuperview() // 스택 뷰에서 제거 후 뷰도 슈퍼뷰에서 제거
         }
-        print("이미지 개수1",specialImages.count)
         specialImages = []
         for url in data.imageURLs {
         let imageView = UIImageView()
             imageView.setImage(with: url)
         specialImages.append(imageView)
         }
-        print("이미지 개수2",specialImages.count)
         specialTitle.text = data.title
         specialLizardName.text = lizardName
         dateLabel.text = data.selectedDate?.formatted
         specialText.text = data.content
-//        print(data.image ?? UIImage(systemName: "person")!)
         setupImageScrollView()
         setupImagePageCountLabel()
-        print(data.selectedDate)
     }
     //TODO: 
 }

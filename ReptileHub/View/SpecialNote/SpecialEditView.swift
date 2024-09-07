@@ -264,6 +264,7 @@ class SpecialEditView: UIView {
         return PHPickerViewController(configuration: config)
         
     }
+    // 데이터 보내는 함수
     func configureEdit(configureEditData: DiaryResponse) {
         var images = [UIImage]()
         for image in configureEditData.imageURLs {

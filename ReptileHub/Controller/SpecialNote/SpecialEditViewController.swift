@@ -170,7 +170,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
         guard let userID = Auth.auth().getUserID() else {
             return
         }
-        if editMode {
+        if editMode { // SpecialEditView 수정 모드일 때
             guard let editEntry = self.editEntry else { return }
             DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs, newSelectedDate: date) { [weak self] error in
                 if let error = error {
@@ -187,7 +187,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                 } 
             }
         }
-        else {
+        else { // SpecialEditView 등록 모드일 때
             print("""
                     [현재 등록할 게시글 내용]
                     imageData: \(imageData)
