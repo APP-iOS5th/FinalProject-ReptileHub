@@ -17,11 +17,13 @@ class BlockUserViewController: UIViewController {
         
         self.view.backgroundColor = .white
         self.title = "내가 차단한 사용자"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         self.view = blockUserView
         blockUserView.configureBlockUserTableView(delegate: self, datasource: self)
     }
     
+    // MARK: - 차단 유저 불러오기
     override func viewIsAppearing(_ animated: Bool) {
         UserService.shared.fetchBlockUsers(currentUserID: UserService.shared.currentUserId) { result in
             switch result {
@@ -37,7 +39,7 @@ class BlockUserViewController: UIViewController {
 }
 
 extension BlockUserViewController: UITableViewDelegate, UITableViewDataSource {
-    // 테이블 뷰의 셀 수
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return blockUsers.count
     }
@@ -46,7 +48,6 @@ extension BlockUserViewController: UITableViewDelegate, UITableViewDataSource {
         return 68
     }
     
-    // 각 테이블 뷰의 셀 구성
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! BlockUserTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
@@ -54,13 +55,9 @@ extension BlockUserViewController: UITableViewDelegate, UITableViewDataSource {
         cell.delegate = self
         return cell
     }
-    
-    // 테이블 뷰의 셀 선택 시 처리 (선택 사항)
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected User Row: \(indexPath.row + 1)")
-    }
 }
 
+// MARK: - 차단 해제 기능
 extension BlockUserViewController: BlockUserTableViewCellDelegate {
     func deleteBlockAction(cell: BlockUserTableViewCell) {
         guard let indexPath = self.blockUserView.blockUserTableView.indexPath(for: cell) else {return}

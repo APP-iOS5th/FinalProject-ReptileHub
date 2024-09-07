@@ -102,6 +102,10 @@ extension GrowthDiaryViewController{
         cell.configure(imageName: thumbnailData[indexPath.item].thumbnail, title: thumbnailData[indexPath.item].name, date: thumbnailData[indexPath.item].diary_id)
         return cell
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailGrowthDiaryVicontroller = SpecialListViewController(diaryID: thumbnailData[indexPath.item].diary_id, lizardName: "초바")
+            self.navigationController?.pushViewController(detailGrowthDiaryVicontroller, animated: true)
+        }
 }
 
 #if DEBUG

@@ -96,8 +96,6 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! CommunityTableViewCell
         
-//        cell.delegate = self
-        
         let fetchData = self.fetchTestData[indexPath.row]
         
         UserService.shared.fetchUserProfile(uid: fetchData.userID) { result in
@@ -168,4 +166,4 @@ extension CommunityViewController: UISearchResultsUpdating {
         self.communityListView.communityTableView.reloadData()
     }
 }
-
+<<<<<<< HEAD

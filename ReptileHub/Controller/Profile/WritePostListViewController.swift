@@ -12,7 +12,6 @@ class WritePostListViewController: UIViewController {
     
     var fetchUserData: UserProfile?
     private let communityListView = CommunityListView()
-    
     private let writePostListView = WritePostListView()
     var fetchPosts: [ThumbnailPostResponse] = []
     
@@ -20,7 +19,8 @@ class WritePostListViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = .white
-        self.title = "내가 작성한 게시글"
+        self.title = "내가 쓴 게시글"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         self.view = writePostListView
         
@@ -34,12 +34,12 @@ class WritePostListViewController: UIViewController {
         UserService.shared.fetchUserPostsThumbnails(userID: fetchUserUid) { result in
             switch result {
             case .success(let userPosts):
-                print("해당 게시글의 모든 댓글 가져오기 성공")
+                print("내가 쓴 게시글 가져오기 성공")
                 self.fetchPosts = userPosts
                 self.writePostListView.WritePostTableView.reloadData()
-                print("가져온 북마크 개수(\(self.fetchPosts.count)개) : \(self.fetchPosts)")
+                print("내가 쓴 가져온 게시글 개수(\(self.fetchPosts.count)개) : \(self.fetchPosts)")
             case .failure(let error):
-                print("해당 게시글의 모든 북마크 가져오기 실패 : \(error.localizedDescription)")
+                print("내가 쓴 게시글 가져오기 실패 : \(error.localizedDescription)")
             }
         }
     }
@@ -52,7 +52,7 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        85
+        100
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,7 +60,6 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         
         let data = fetchPosts[indexPath.row]
-//        cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount)
         
         UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
             switch result {
@@ -68,26 +67,17 @@ extension WritePostListViewController: UITableViewDelegate, UITableViewDataSourc
                 cell.configure(imageName: data.thumbnailURL, title: data.title, content: data.previewContent, createAt: data.createdAt!.timefomatted, commentCount: data.commentCount, likeCount: data.likeCount, name: userData.name, postUserId: data.userID)
             case .failure(let error):
                 print("현재 유저 정보 가져오기 실패 : \(error.localizedDescription)")
-                
             }
         }
-        
-//        let menuItems = [
-//            UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in}),
-//        ]
-//        // UIMenu title 설정
-//        let menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: menuItems)
-//        // 셀에 메뉴 설정
-//        cell.configure(with: menu)
-        
         return cell
     }
-    
+  
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailViewController = CommunityDetailViewController()
         
         var postDetailResponse: PostDetailResponse = PostDetailResponse(postID: "", userID: "", title: "", content: "", imageURLs: [], likeCount: 0, commentCount: 0, createdAt: Date(), isLiked: false, isBookmarked: false)
         
+        // MARK: - 로그인 한 사용자가 작성한 게시글 디테일 뷰
         CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: self.fetchPosts[indexPath.row].postID) { result in
             switch result {
             case .success(let postDetail):

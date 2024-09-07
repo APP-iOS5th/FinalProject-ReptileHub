@@ -199,23 +199,23 @@ class DiaryEditViewController: UIViewController, PHPickerViewControllerDelegate,
         let updatedTitle = titleTextField.text ?? ""
         let updatedContent = contentTextView.text ?? ""
         
-        DiaryPostService.shared.updateDiary(
-            userID: userID,
-            diaryID: diaryID,
-            entryID: entryID,
-            newTitle: updatedTitle,
-            newContent: updatedContent,
-            newImages: newImagesData, // 새로 추가된 이미지 데이터를 전달
-            existingImageURLs: originalImageURLs, // 기존 이미지 URL 배열을 전달
-            removedImageURLs: removedImageURLs // 삭제된 이미지 URL 배열을 전달
-        ) { error in
-            if let error = error {
-                print("Failed to update diary entry: \(error.localizedDescription)")
-            } else {
-                print("Diary entry updated successfully")
-                self.dismiss(animated: true) // 또는 navigation pop
-            }
-        }
+//        DiaryPostService.shared.updateDiary(
+//            userID: userID,
+//            diaryID: diaryID,
+//            entryID: entryID,
+//            newTitle: updatedTitle,
+//            newContent: updatedContent,
+//            newImages: newImagesData, // 새로 추가된 이미지 데이터를 전달
+//            existingImageURLs: originalImageURLs, // 기존 이미지 URL 배열을 전달
+//            removedImageURLs: removedImageURLs // 삭제된 이미지 URL 배열을 전달
+//        ) { error in
+//            if let error = error {
+//                print("Failed to update diary entry: \(error.localizedDescription)")
+//            } else {
+//                print("Diary entry updated successfully")
+//                self.dismiss(animated: true) // 또는 navigation pop
+//            }
+//        }
     }
     
     @objc private func addImageButtonTapped() {

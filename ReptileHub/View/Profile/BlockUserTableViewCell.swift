@@ -13,8 +13,11 @@ protocol BlockUserTableViewCellDelegate: AnyObject {
 }
 
 class BlockUserTableViewCell: UITableViewCell {
+    
     weak var delegate: BlockUserTableViewCellDelegate?
     
+    // MARK: - 차단 유저 셀 구성요소
+    // 차단 유저 프로필 이미지
     private let BlockUserImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -24,7 +27,7 @@ class BlockUserTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    // 블러 효과 뷰
+    // 블러 효과 뷰 -> 차단 유저 프로필 이미지 블러
     private let blurEffectView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .regular)
         let blurView = UIVisualEffectView(effect: blurEffect)
@@ -43,6 +46,7 @@ class BlockUserTableViewCell: UITableViewCell {
         return imageView
     }()
     
+    // 차단 유저 이름
     private let BlockUserName: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
@@ -50,6 +54,7 @@ class BlockUserTableViewCell: UITableViewCell {
         return label
     }()
     
+    // 차단해제 버튼
     private let BlockCancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("차단해제", for: .normal)
@@ -60,6 +65,7 @@ class BlockUserTableViewCell: UITableViewCell {
         return button
     }()
     
+    // 차단유저 프로필 + 차단버튼 스택뷰
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [BlockUserImage, BlockUserName, BlockCancelButton])
         stackView.axis = .horizontal
@@ -75,7 +81,6 @@ class BlockUserTableViewCell: UITableViewCell {
         BlockUserImage.addSubview(blurEffectView)
         BlockUserImage.addSubview(eyeSlashImageView)
         
-        // SnapKit을 사용한 오토레이아웃 설정
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: 8, left: 30, bottom: 8, right: 30))
         }
@@ -90,21 +95,21 @@ class BlockUserTableViewCell: UITableViewCell {
         }
         
         blurEffectView.snp.makeConstraints { make in
-            make.edges.equalToSuperview() // 블러 뷰를 이미지 뷰에 완전히 맞춤
+            make.edges.equalToSuperview()
         }
         
         eyeSlashImageView.snp.makeConstraints { make in
-            make.center.equalToSuperview() // 이미지 뷰의 중앙에 위치시킴
-            make.width.height.equalTo(20) // 아이콘의 크기를 설정
+            make.center.equalToSuperview()
+            make.width.height.equalTo(20)
         }
         
-        // 이미지 뷰에 제스처 추가
+        // MARK: - 블러처리 텝 제스처
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleBlurEffect))
         BlockUserImage.addGestureRecognizer(tapGesture)
     }
     
-    
-   func setBlockUserData(blockUserData: BlockUserProfile) {
+    // MARK: - 차단 유저 데이터
+    func setBlockUserData(blockUserData: BlockUserProfile) {
         BlockUserImage.setImage(with: blockUserData.profileImageURL)
         BlockUserName.text = blockUserData.name
     }
@@ -114,9 +119,9 @@ class BlockUserTableViewCell: UITableViewCell {
         eyeSlashImageView.isHidden.toggle()
     }
     
+    
     @objc private func selectBlockCancel() {
         print("차단 해제 버튼 ~")
-        
         self.delegate?.deleteBlockAction(cell: self)
     }
     
