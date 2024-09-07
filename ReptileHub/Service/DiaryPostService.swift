@@ -88,7 +88,9 @@ class DiaryPostService {
                     
                     // 무게 기록 저장
                     let initialWeight = diary.lizardInfo.weight
+                    let weightID = UUID().uuidString
                     let weightData: [String: Any] = [
+                        "id": weightID,
                         "date": Timestamp(date: Date()),
                         "weight": initialWeight
                     ]
@@ -502,6 +504,50 @@ extension DiaryPostService {
         }
     }
     
+    //MARK: - 특정 성장 일지 속 일기 불러오기 함수
+    func fetchDiaryEntry(userID: String, diaryID: String, entryID: String, completion: @escaping (Result<DiaryResponse, Error>) -> Void) {
+        let db = Firestore.firestore()
+        
+        let entryRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("diary_entries").document(entryID)
+        
+        entryRef.getDocument { (document, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let document = document, document.exists, let data = document.data() else {
+                let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data found for entryID \(entryID)"])
+                completion(.failure(noDataError))
+                return
+            }
+            
+            // 일기 데이터를 DiaryResponse로 변환
+            if let entryID = data["entryID"] as? String,
+               let title = data["title"] as? String,
+               let content = data["content"] as? String,
+               let imageURLs = data["imageURLs"] as? [String],
+               let selectedDate = data["selectedDate"] as? Timestamp {
+                let diaryEntry = DiaryResponse(
+                    entryID: entryID,
+                    title: title,
+                    content: content,
+                    imageURLs: imageURLs,
+                    createdAt: selectedDate.dateValue(),
+                    selectedDate: selectedDate.dateValue()
+                )
+                completion(.success(diaryEntry))
+            } else {
+                let parseError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse document data for entryID \(entryID)"])
+                completion(.failure(parseError))
+            }
+        }
+    }
+    
+    
+    
     //MARK: - 성장 일지 속 일기 삭제 함수
     func deleteDiaryEntry(userID: String, diaryID: String, entryID: String, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -645,17 +691,20 @@ extension DiaryPostService {
 }
 
 extension DiaryPostService {
-    //MARK: - 도마뱀 몸무게 변화 추가 함수
+     //MARK: - 도마뱀 몸무게 변화 추가 함수
     func addWeightEntry(userID: String, diaryID: String, weight: Int, date: Date = Date(), completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
+        let weightID = UUID().uuidString
         let weightData: [String: Any] = [
+            "id": weightID,
             "date": Timestamp(date: date),
             "weight": weight
         ]
         
         db.collection("users").document(userID)
             .collection("growth_diaries_details").document(diaryID)
-            .collection("weight_history").addDocument(data: weightData) { error in
+            .collection("weight_history").document(weightID)
+            .setData(weightData) { error in
                 completion(error)
             }
     }
@@ -692,8 +741,9 @@ extension DiaryPostService {
                 var weightEntries: [WeightEntry] = []
                 for document in querySnapshot?.documents ?? [] {
                     if let weight = document.data()["weight"] as? Int,
-                       let timestamp = document.data()["date"] as? Timestamp {
-                        let weightEntry = WeightEntry(weight: weight, date: timestamp.dateValue())
+                       let timestamp = document.data()["date"] as? Timestamp,
+                       let id = document.data()["id"] as? String {
+                        let weightEntry = WeightEntry(id:id,weight: weight, date: timestamp.dateValue())
                         weightEntries.append(weightEntry)
                     }
                 }
@@ -709,6 +759,7 @@ extension DiaryPostService {
         
         var weightAverages: [MonthWeightAverage] = []
         let dispatchGroup = DispatchGroup()
+        var fetchError: Error? = nil
         
         for month in 1...12 {
             dispatchGroup.enter()
@@ -729,7 +780,8 @@ extension DiaryPostService {
                 .whereField("date", isLessThanOrEqualTo: Timestamp(date: endDate))
                 .getDocuments { querySnapshot, error in
                     if let error = error {
-                        completion(.failure(error))
+                        fetchError = error // 오류를 저장하고
+                        dispatchGroup.leave() // 그룹 나가기
                         return
                     }
                     
@@ -752,7 +804,46 @@ extension DiaryPostService {
         }
         
         dispatchGroup.notify(queue: .main) {
-            completion(.success(weightAverages))
+            if let error = fetchError {
+                completion(.failure(error))
+            } else {
+                completion(.success(weightAverages))
+            }
+        }
+    }
+    //MARK: -  몸무게 기록 수정하기
+    func updateWeightEntry(userID: String, diaryID: String, weightID: String, newWeight: Int? = nil, newDate: Date? = nil, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+            
+        // 수정할 데이터가 없는 경우
+        guard newWeight != nil || newDate != nil else {
+            completion(nil) // 수정할 것이 없으면 오류 없이 반환
+            return
+        }
+        
+        // 수정할 데이터 준비
+        var updateData: [String: Any] = [:]
+        
+        if let newWeight = newWeight {
+            updateData["weight"] = newWeight
+        }
+        
+        if let newDate = newDate {
+            updateData["date"] = Timestamp(date: newDate)
+        }
+        
+        // 해당 문서 참조
+        let entryRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+            .collection("weight_history").document(weightID)
+        
+        // Firestore 업데이트
+        entryRef.updateData(updateData) { error in
+            if let error = error {
+                completion(error)
+            } else {
+                completion(nil)
+            }
         }
     }
     
