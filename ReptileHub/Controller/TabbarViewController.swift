@@ -18,7 +18,7 @@ class TabbarViewController: UITabBarController {
         super.viewDidLoad()
         
         if let user = Auth.auth().currentUser {
-            print("currentUser -----  \(user.uid)")
+            print("currentUser ----------------------  \(user.uid)")
         }
 
     
