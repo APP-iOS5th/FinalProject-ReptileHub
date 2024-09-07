@@ -117,8 +117,10 @@ class ProfileViewController: UIViewController {
 
     // 내 도마뱀 탭바 이동
     @objc func myReptileButtonTouch() {
-        if let tabBarController = self.tabBarController {
-            tabBarController.selectedIndex = 1
+        if self.isMyProfile ?? true {
+            if let tabBarController = self.tabBarController {
+                tabBarController.selectedIndex = 1
+            }
         }
     }
 
