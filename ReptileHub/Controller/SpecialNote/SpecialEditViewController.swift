@@ -172,7 +172,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
         }
         if editMode {
             guard let editEntry = self.editEntry else { return }
-            DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs) { [weak self] error in
+            DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs, newSelectedDate: date) { [weak self] error in
                 if let error = error {
                     print(error.localizedDescription)
                 } else {

@@ -228,7 +228,7 @@ class SpecialDetailView: UIView {
         print("이미지 개수2",specialImages.count)
         specialTitle.text = data.title
         specialLizardName.text = lizardName
-        dateLabel.text = data.selectedDate!.formatted
+        dateLabel.text = data.selectedDate?.formatted
         specialText.text = data.content
 //        print(data.image ?? UIImage(systemName: "person")!)
         setupImageScrollView()

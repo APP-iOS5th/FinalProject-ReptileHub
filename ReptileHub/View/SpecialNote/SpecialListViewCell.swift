@@ -131,7 +131,7 @@ class SpecialListViewCell: UITableViewCell {
     //MARK: - 셀 데이터 받아오는 함수
     func configureCell(specialEntry: DiaryResponse) {
         specialImageView.setImage(with: specialEntry.imageURLs.first!)
-        dateLabel.text = specialEntry.createdAt?.formatted
+        dateLabel.text = specialEntry.selectedDate?.formatted
         specialTitle.text = specialEntry.title
         specialText.text = specialEntry.content
     }
