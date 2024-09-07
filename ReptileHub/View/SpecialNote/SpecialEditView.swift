@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import Kingfisher
 
 protocol SpecialEditViewDelegate: AnyObject {
     func didTapPostButton(imageData: [Data], date: Date, title: String, text: String)
@@ -139,7 +140,7 @@ class SpecialEditView: UIView {
     
     
     //MARK: - 설명 글자 수 카운트 및 제한 표시
-    private lazy var countTextLabel: UILabel = {
+    private(set) lazy var countTextLabel: UILabel = {
         let countTextLabel = UILabel()
         countTextLabel.text = "0/1000"
         countTextLabel.font = .systemFont(ofSize: 10)
@@ -173,7 +174,7 @@ class SpecialEditView: UIView {
         self.addSubview(descriptionLabel)
         self.addSubview(descriptionTextView)
         self.addSubview(textViewPlaceholder)
-        self.addSubview(countTextLabel)
+//        self.addSubview(countTextLabel)
         self.addSubview(saveButton)
         
         //MARK: -- UI AutoLayout
@@ -215,11 +216,6 @@ class SpecialEditView: UIView {
             make.leading.equalTo(descriptionTextView.snp.leading).offset(14)
         }
         
-        countTextLabel.snp.makeConstraints{(make) in
-            make.trailing.equalTo(descriptionTextView.snp.trailingMargin)
-            make.bottom.equalTo(descriptionTextView.snp.bottomMargin)
-        }
-        
         saveButton.snp.makeConstraints{(make) in
             make.centerX.equalTo(self)
             make.height.equalTo(50)
@@ -251,7 +247,7 @@ class SpecialEditView: UIView {
     //MARK: - saveButton 액션 함수
     @objc
     private func saveButtonAction() {
-        delegate?.didTapPostButton(imageData: imageData, date: Date(), title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil")
+        delegate?.didTapPostButton(imageData: imageData, date: datePicker.date, title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil")
     }
     //MARK: - Delegate
     func configureSpecialEditView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, textViewDelegate: UITextViewDelegate) {
@@ -267,6 +263,35 @@ class SpecialEditView: UIView {
         
         return PHPickerViewController(configuration: config)
         
+    }
+    // 데이터 보내는 함수
+    func configureEdit(configureEditData: DiaryResponse) {
+        var images = [UIImage]()
+        for image in configureEditData.imageURLs {
+            let uiImage = UIImage()
+            KingfisherManager.shared.retrieveImage(with: URL(string: image)!) { result in
+                
+                switch result {
+                    case .success(let value):
+                        // 성공적으로 이미지를 다운로드했을 때
+                        let image = value.image
+                        print("Image downloaded: (image)")
+
+                        // 다운로드한 UIImage를 사용
+//                           self.useDownloadedImage(image)
+                            
+                        self.selectedImages.append(image)
+
+                    case .failure(let error):
+                        // 에러 처리
+                        print("Error downloading image: (error)")
+                    }
+                }
+        }
+        datePicker.date = configureEditData.createdAt!
+        specialTitle.text = configureEditData.title
+        descriptionTextView.text = configureEditData.content
+        textViewPlaceholder.isHidden = true
     }
 
 }

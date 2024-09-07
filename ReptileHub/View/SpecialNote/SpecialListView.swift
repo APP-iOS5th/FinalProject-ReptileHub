@@ -11,7 +11,7 @@ import SnapKit
 class SpecialListView: UIView {
 
     // 테이블 뷰 정의
-    private let tableView: UITableView = {
+    private(set) var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SpecialCell")
         tableView.register(SpecialPlusButtonView.self, forHeaderFooterViewReuseIdentifier: SpecialPlusButtonView.identifier)
