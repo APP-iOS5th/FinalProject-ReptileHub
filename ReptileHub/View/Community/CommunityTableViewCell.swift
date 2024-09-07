@@ -11,16 +11,7 @@ import Kingfisher
 
 let imageCache = NSCache<NSString, UIImage>()
 
-protocol CommunityTableViewCellDelegate: AnyObject {
-    func deleteAlert(cell: CommunityTableViewCell)
-    
-    func blockAlert(cell: CommunityTableViewCell)
-}
-
 class CommunityTableViewCell: UITableViewCell {
-    
-    weak var delegate: CommunityTableViewCellDelegate?
-    
 
     lazy var thumbnailImageView: UIImageView = UIImageView()
     
@@ -38,17 +29,10 @@ class CommunityTableViewCell: UITableViewCell {
     private let timestampLabel: UILabel = UILabel()
     private let secondStackView: UIStackView = UIStackView()
     
-    private let menuButton: UIButton = UIButton()
-    private var myMenu: [UIAction] = []
-    private var otherMenu: [UIAction] = []
-    
-
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupThumbnail()
-        setupMenuButton()
         setupMainInfoStackView()
         setupSubInfoStackView()
     }
@@ -103,7 +87,7 @@ class CommunityTableViewCell: UITableViewCell {
         mainInfoStackView.snp.makeConstraints { make in
             make.top.equalTo(thumbnailImageView.snp.top)
             make.leading.equalTo(thumbnailImageView.snp.trailing).offset(7)
-            make.trailing.equalTo(menuButton.snp.leading)
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
             make.height.greaterThanOrEqualTo(55)
         }
         
@@ -167,48 +151,10 @@ class CommunityTableViewCell: UITableViewCell {
         }
         
         secondStackView.snp.makeConstraints { make in
-            make.trailing.equalTo(menuButton.snp.centerX)
+            make.trailing.equalTo(self.contentView.snp.trailing).offset(-10)
             make.bottom.equalTo(firstStackView)
         }
     }
-    
-    //MARK: - menu 버튼
-    private func setupMenuButton() {
-        myMenu = [ UIAction(title: "게시글 수정하기", image: UIImage(systemName: "square.and.pencil"), handler: { _ in self.editButtonAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteButtonAction() }) ]
-        otherMenu = [ UIAction(title: "작성자 차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in self.blockButtonAction() }), UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.bubble"),attributes: .destructive,handler: { _ in self.reportButtonAction() }) ]
-        
-        menuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-        menuButton.contentMode = .scaleAspectFit
-        menuButton.transform = CGAffineTransform(rotationAngle: .pi * 0.5)
-        menuButton.showsMenuAsPrimaryAction = true
-        
-        self.contentView.addSubview(menuButton)
-        
-        menuButton.snp.makeConstraints { make in
-            make.top.equalTo(self.contentView).offset(5)
-            make.trailing.equalTo(self.contentView.snp.trailing).offset(-5)
-        }
-    }
-    
-    private func editButtonAction() {
-        print("CommunityTableViewCell edit")
-    }
-    
-    private func deleteButtonAction() {
-        print("CommunityTableViewCell delete")
-        delegate?.deleteAlert(cell: self)
-    }
-
-    private func blockButtonAction() {
-        print("CommunityTableViewCell block")
-        delegate?.blockAlert(cell: self)
-    }
-    
-    private func reportButtonAction() {
-        print("CommunityTableViewCell report")
-    }
-    
-    
     
     func configure(imageName: String, title: String, content: String, createAt: String, commentCount: Int, likeCount: Int, name: String, postUserId: String) {
 
@@ -221,12 +167,8 @@ class CommunityTableViewCell: UITableViewCell {
         bookmarkCountLabel.text = "\(likeCount)"
         nicknameLabel.text = name
         
-        let isMine: Bool = postUserId == UserService.shared.currentUserId
         
         
-        
-        menuButton.menu = UIMenu(title: "", image: nil, identifier: nil, options: [], children: isMine ? myMenu : otherMenu)
     }
-    
 }
 

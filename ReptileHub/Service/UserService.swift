@@ -13,11 +13,10 @@ import FirebaseAuth
 class UserService {
     static let shared = UserService()
 
-    var currentUserId: String
-
-    
-    private init() {
-        currentUserId = Auth.auth().currentUser?.uid ?? "nil"
+    var currentUserId: String{
+        get{
+            return Auth.auth().currentUser?.uid ?? "nil"
+        }
     }
     
     //MARK: - 유저 차단 기능

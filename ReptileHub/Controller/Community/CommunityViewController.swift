@@ -30,7 +30,7 @@ class CommunityViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         self.view = communityListView
         
         communityListView.delegate = self
@@ -39,7 +39,6 @@ class CommunityViewController: UIViewController {
         title = "커뮤니티"
         
         setupSearchButton()
-
     }
     
     override func viewIsAppearing(_ animated: Bool) {
@@ -56,7 +55,6 @@ class CommunityViewController: UIViewController {
             }
         }
     }
-
     
     //MARK: - rightBarButtonItem 적용
     private func setupSearchButton() {
@@ -97,8 +95,6 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! CommunityTableViewCell
-        
-        cell.delegate = self
         
         let fetchData = self.fetchTestData[indexPath.row]
         
@@ -169,59 +165,4 @@ extension CommunityViewController: UISearchResultsUpdating {
         
         self.communityListView.communityTableView.reloadData()
     }
-}
-
-
-extension CommunityViewController: CommunityTableViewCellDelegate {
-    
-    func deleteAlert(cell: CommunityTableViewCell) {
-        let alert = UIAlertController(title: "알림", message: "게시글을 삭제하시겠습니까?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { _ in
-            // 선택한 셀의 indexPath
-            guard let indexPath = self.communityListView.communityTableView.indexPath(for: cell) else { return }
-            
-            CommunityService.shared.deletePost(postID: self.fetchTestData[indexPath.row].postID, userID: self.fetchTestData[indexPath.row].userID) { error in
-                if let error = error {
-                    print("게시글 삭제 중 오류 발생: \(error.localizedDescription)")
-                } else {
-                    print("게시글 삭제 성공")
-                }
-            }
-            
-            self.fetchTestData.remove(at: indexPath.row)
-            
-            // 선택한 셀을 테이블 뷰에서 삭제
-            self.communityListView.communityTableView.deleteRows(at: [indexPath], with: .automatic)
-        }))
-        present(alert, animated: true, completion: nil)
-    }
-    
-    func blockAlert(cell: CommunityTableViewCell) {
-        let alert = UIAlertController(title: "알림", message: "해당 유저를 차단하시겠습니까?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "차단하기", style: .destructive, handler: { _ in
-            // 선택한 셀의 indexPath
-            guard let indexPath = self.communityListView.communityTableView.indexPath(for: cell) else { return }
-            
-            UserService.shared.blockUser(currentUserID: UserService.shared.currentUserId, blockUserID: self.fetchTestData[indexPath.row].userID) { error in
-                if let error = error {
-                    print("차단 실패 : \(error.localizedDescription)")
-                } else {
-                    print("차단 성공, 게시글 리로드")
-                    CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
-                        switch result {
-                        case .success(let afterBlockPosts):
-                            self.fetchTestData = afterBlockPosts
-                            self.communityListView.communityTableView.reloadData()
-                        case .failure(let error):
-                            print("차단 후 게시글 리로드 실패 : \(error.localizedDescription)")
-                        }
-                    }
-                }
-            }
-        }))
-        present(alert, animated: true, completion: nil)
-    }
-
 }

@@ -608,7 +608,7 @@ extension DiaryPostService {
     }
     
     //MARK: - 성장 일지 속 일기 수정 함수
-    func updateDiary(userID: String, diaryID: String, entryID: String, newTitle: String?, newContent: String?, newImages: [Data]?, existingImageURLs: [String]?, removedImageURLs: [String]?, completion: @escaping (Error?) -> Void) {
+    func updateDiary(userID: String, diaryID: String, entryID: String, newTitle: String?, newContent: String?, newImages: [Data]?, existingImageURLs: [String]?, removedImageURLs: [String]?, newSelectedDate: Date?,        completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let entryRef = db.collection("users").document(userID)
             .collection("growth_diaries_details").document(diaryID)
@@ -678,6 +678,10 @@ extension DiaryPostService {
             if let newContent = newContent {
                 updatedData["content"] = newContent
             }
+            if let newSelectedDate = newSelectedDate {
+                       updatedData["selectedDate"] = Timestamp(date: newSelectedDate)
+                   }
+            
             updatedData["imageURLs"] = updatedImageURLs
             updatedData["updatedAt"] = FieldValue.serverTimestamp()
             
