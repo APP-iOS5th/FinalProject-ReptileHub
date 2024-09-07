@@ -54,16 +54,6 @@ class AuthService: NSObject {
                 } else {
                     self.navigateToTermsAgreementView(user: googleUser, presentingViewController: presentingViewController, completion: completion)
                 }
-=======
-            let googleUser = GoogleAuthUser(user: user)
-
-            self.checkIfUserExists(providerUID: googleUser.providerUID, loginType: googleUser.loginType) { exists in
-                if exists {
-                    self.signInToFirebase(user: googleUser, completion: completion)
-                } else {
-                    self.navigateToTermsAgreementView(user: googleUser, presentingViewController: presentingViewController, completion: completion)
->>>>>>> 5496eb2ed61264948706a7d846b5e2ced3fbf97c
-                }
             }
         }
     }

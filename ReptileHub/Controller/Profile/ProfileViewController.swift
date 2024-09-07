@@ -141,7 +141,7 @@ class ProfileViewController: UIViewController {
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")
         
-        // AuthService의 로그아웃 메서드 호출
+        // AuthService의 로그아웃 메서드 호출)
         AuthService.shared.logout { success in
             if success {
                 print("DEBUG: 로그아웃 성공")
