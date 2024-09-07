@@ -59,8 +59,8 @@ import Charts
 struct WeightLineChartView: View {
     var weightData: [MonthWeightAverage]?
     var body: some View {
-        GroupBox{
-            if let weightData = weightData{
+        if let weightData = weightData{
+            GroupBox{
                 Chart(weightData.sorted(by: { $0.month < $1.month}), id: \.self) { weight in
                     LineMark(x: .value("Month", "\(weight.month)월"),
                              y: .value("Weight", weight.averageWeight)
@@ -101,10 +101,10 @@ struct WeightLineChartView: View {
                                 .foregroundColor(Color.textFieldLine), alignment: .bottom)
                 })
                 .padding(.bottom, 20)
-            }else{
-                Text("데이터가 존재하지 않습니다.")
-            }
-        }//: GROUPBOX
+            }//: GROUPBOX
+        }else{
+            Text("데이터가 존재하지 않습니다.")
+        }
     }
     
     func formatDate(_ date: Date) -> String{
