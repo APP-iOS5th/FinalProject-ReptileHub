@@ -47,6 +47,7 @@ class DetailGrowthDiaryViewController: UIViewController {
             shouldReloadDetailData = false
         }
         fetchSpecialNotesData()
+        fetchMonthWeightData()
     }
     
     override func viewDidLoad() {
@@ -60,6 +61,7 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = self.detailEitButton
         fetchDetailData()
+        fetchMonthWeightData()
         detailGrowthDiaryView.configureDetailPreviewTableView(delegate: self, dataSource: self)
         detailGrowthDiaryView.registerDetailPreviewTableCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
 
@@ -79,6 +81,18 @@ class DetailGrowthDiaryViewController: UIViewController {
                 self?.detailGrowthDiaryView.configureDetailGrowthDiaryData(detailData: responseData)
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func fetchMonthWeightData(){
+        DiaryPostService.shared.fetchMonthlyWeightAverages(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
+            switch response{
+            case .success(let responseData):
+                print("성공")
+                self?.detailGrowthDiaryView.detailWeightChartData(data: responseData)
+            case .failure(let error):
+                print("ERROR: \(error.localizedDescription)")
             }
         }
     }

@@ -36,10 +36,9 @@ class WeightAddViewController: UIViewController {
     
     //MARK: - 추가 버튼 클릭 함수
     private func AddWeightEntry(){
-        let weight = addWeightView.weightData()
+        let request = addWeightView.addWeightRequest()
         guard let diaryID = diaryID else { return}
-        // TODO: 날짜는 안보내도 되는건지
-        DiaryPostService.shared.addWeightEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, weight: weight) { [weak self] error in
+        DiaryPostService.shared.addWeightEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, weight: request.0, date: request.1) { [weak self] error in
             if let error = error{
                 print("ERROR: \(error.localizedDescription)")
             }else{

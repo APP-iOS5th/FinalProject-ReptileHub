@@ -179,12 +179,13 @@ class AddWeightView: UIView {
         }
     }
     
-    func weightData() -> Int{
-        guard let weight = self.addWeightTextField.text
+    func addWeightRequest() -> (Int, Date){
+        guard let weightText = self.addWeightTextField.text,
+              let weight = Int(weightText)
         else {
-            return 0
+            return (0, self.addWeightDatePicker.date)
         }
-        return Int(weight) ?? 0
+        return (weight, self.addWeightDatePicker.date)
     }
 }
 

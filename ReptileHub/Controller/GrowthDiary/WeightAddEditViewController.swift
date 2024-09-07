@@ -40,7 +40,7 @@ class WeightAddEditViewController: UIViewController {
         return button
     }()
     
-//    override func viewIsAppearing(_ animated: Bool) {
+//    override func vieAppearing(_ animated: Bool) {
 //        super.viewIsAppearing(animated)
 //        if shouldReloadWeightData{
 //            print("업데이틑 됌")
@@ -64,15 +64,17 @@ class WeightAddEditViewController: UIViewController {
         self.view = weightAddEditView
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = self.addButton
+        fetchWeightData()
         weightAddEditView.configureWeightAddEditTablview(delegate: self, dataSouce: self)
         weightAddEditView.registerWeightAddEditTablCell(WeightAddEditViewCell.self, forCellReuseIdentifier: WeightAddEditViewCell.identifier)
-        fetchWeightData()
     }
     
     private func fetchWeightData(){
         DiaryPostService.shared.fetchDailyWeightEntries(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let responseData):
+                print("여기가 데이터 입니다.")
+                print(responseData)
                 self?.weightEntries = responseData
                 self?.weightAddEditView.reloadWeightAddEditListView()
             case .failure(let error):

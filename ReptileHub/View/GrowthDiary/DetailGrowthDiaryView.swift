@@ -231,27 +231,13 @@ class DetailGrowthDiaryView: UIView {
         return view
     }()
     private lazy var detailWeightLineChartView: UIHostingController<WeightLineChartView> = {
-        let hostingController = UIHostingController(rootView: WeightLineChartView(
-            // TODO: 데이터 넘겨받는걸로 수정해야함
-            weightData: [
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -1186400), gender: "남성", weight: 3, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -3186400), gender: "남성", weight: 1, feedMethod: "자율", tailexistence: true),
-//                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -5536400), gender: "남성", weight: 2, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -7586400), gender: "남성", weight: 3, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -9586400), gender: "남성", weight: 4, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -11586400), gender: "남성", weight: 5, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays:Date(timeIntervalSinceNow: -13586400), gender: "남성", weight: 6, feedMethod: "자율", tailexistence: true),
-//                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -15586400), gender: "남성", weight: 7, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -17586400), gender: "남성", weight: 8, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: -20586400), gender: "남성", weight: 8, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(), gender: "남성", weight: 8, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: 3086400), gender: "남성", weight: 11, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: 5586400), gender: "남성", weight: 12, feedMethod: "자율", tailexistence: true),
-                LizardInfoResponse(name: "이름", species: "종", hatchDays: Date(timeIntervalSinceNow: 8086400), gender: "남성", weight: 13, feedMethod: "자율", tailexistence: true),
-            ]
-        ))
+        let hostingController = UIHostingController(rootView: WeightLineChartView())
         return hostingController
     }()
+    
+    func detailWeightChartData(data: [MonthWeightAverage]){
+        self.detailWeightLineChartView.rootView.weightData = data
+    }
     
     //MARK: - 무게 추이 타이틀 + 그래프 스택 뷰
     private lazy var detailWeightStackView: UIStackView = {
