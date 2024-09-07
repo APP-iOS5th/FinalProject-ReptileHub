@@ -132,8 +132,8 @@ class CommentTableViewCell: UITableViewCell {
         menuButton.tintColor = .gray
         menuButton.transform = CGAffineTransform(rotationAngle: .pi / 2) // 90도 회전
         
-        myMenu = [ UIAction(title: "텍스트 복사하기", image: UIImage(systemName: "doc.on.doc"), handler: { _ in self.copyCommentAction() }), UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteCommentAction() }) ]
-        otherMenu = [ UIAction(title: "텍스트 복사하기", image: UIImage(systemName: "doc.on.doc"), handler: { _ in self.copyCommentAction() }), UIAction(title: "작성자 차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in
+        myMenu = [ UIAction(title: "삭제하기", image: UIImage(systemName: "trash"),attributes: .destructive,handler: { _ in self.deleteCommentAction() }) ]
+        otherMenu = [ UIAction(title: "작성자 차단하기", image: UIImage(systemName: "hand.raised"), handler: { _ in
             self.blockCommentAction()
         }),
         UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.bubble"), attributes: .destructive, handler: { _ in
