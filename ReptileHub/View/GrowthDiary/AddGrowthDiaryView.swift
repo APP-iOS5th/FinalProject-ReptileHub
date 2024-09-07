@@ -646,6 +646,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         let lizardInfo = configureData.lizardInfo
         //자식 이미지
         if let lizardImageName = lizardInfo.imageURL{
+            thumbnailImageView.contentMode = .scaleAspectFill
             thumbnailImageView.setImage(with: lizardImageName)
         }
         nameTextField.text = lizardInfo.name
@@ -671,6 +672,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         }
        
         if let fatherImageName = parentInfo.father.imageURL{
+            fatherImageView.contentMode = .scaleAspectFill
             fatherImageView.setImage(with: fatherImageName)
         }
         
@@ -681,6 +683,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         }
         
         if let motherImageName = parentInfo.father.imageURL{
+            motherImageView.contentMode = .scaleAspectFill
             motherImageView.setImage(with: motherImageName)
         }
         
