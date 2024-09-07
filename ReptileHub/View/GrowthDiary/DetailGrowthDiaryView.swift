@@ -583,7 +583,7 @@ class DetailGrowthDiaryView: UIView {
         }
         print("a")
         detailLiazardNameLabel.text = lizardData.name
-        detailLizardSepciesMorphInfoLabel.text = "lizardData.species, 모프\(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
+        detailLizardSepciesMorphInfoLabel.text = "lizardData.species, 모프 \(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
         detailHatchDaysLabel.text = lizardData.hatchDays.formatted
         detailFeedMethodLabel.text = lizardData.feedMethod
         detailTailLabel.text = lizardData.tailexistence ? "있음" : "없음"

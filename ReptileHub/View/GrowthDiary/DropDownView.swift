@@ -12,7 +12,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private let title: String
     var isOpen = false
     
-    private(set) var selectedOption: String? {
+    var selectedOption: String? {
         didSet {
             titleButton.setTitle(selectedOption ?? title, for: .normal)
             titleButton.setTitleColor(UIColor.textFieldTitle, for: .normal)

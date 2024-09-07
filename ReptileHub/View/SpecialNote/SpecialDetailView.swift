@@ -127,6 +127,17 @@ class SpecialDetailView: UIView {
     
     //MARK: -  이미지 스크롤 뷰 레이아웃
     private func setupImageScrollView() {
+        
+//        private var specialImages: [UIImageView] = [
+//    //        UIImageView(image: UIImage(named: "tempImage")),
+//    //        UIImageView(image: UIImage(named: "tempImage")),
+//    //        UIImageView(image: UIImage(named: "tempImage")),
+//            ]
+//        // 특이사항 상세 뷰 이미지 뷰
+//        private var imageViews: [UIView] = []
+//        private let imageStackView: UIStackView = UIStackView()
+//        private let imageScrollView: UIScrollView = UIScrollView()
+        
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fill
         imageStackView.alignment = .center
@@ -206,6 +217,7 @@ class SpecialDetailView: UIView {
         print("안되면 울거야",specialImages)
         specialImages.append(contentsOf: data.image.map{ UIImageView(image: $0)})
         print("제발 되게 해주세요.",specialImages)
+        
         specialTitle.text = data.specialTitle
         dateLabel.text = data.date.toString()
         specialText.text = data.specialText

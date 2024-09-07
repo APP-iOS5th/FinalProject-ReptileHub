@@ -107,29 +107,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         title: "꼬리",
         buttonTitles: ("있음", "없음")
     )
-    //    private lazy var hatchDaysDatePicker: UIDatePicker = {
-    //        let picker = UIDatePicker()
-    //        picker.preferredDatePickerStyle = .wheels
-    //        picker.datePickerMode = .date
-    //        picker.addTarget(self, action: #selector(dateChange), for: .valueChanged)
-    //        return picker
-    //    }()
-    //
-    //    //해칭일 날짜 textField
-    //    private lazy var hatchDaysTextFiled: UITextField = {
-    //        let textField = createTextField(text: Date().toString())
-    //        textField.inputView = hatchDaysDatePicker
-    //        return textField
-    //    }()
     
-    
-    // 텍스트 필드에 들어갈 텍스트를 DateFormatter 변환
-    //    private func dateFormat(date: Date) -> String {
-    //        let formatter = DateFormatter()
-    //        formatter.dateFormat = "yyyy / MM / dd"
-    //
-    //        return formatter.string(from: date)
-    //    }
     //MARK: - 아빠 정보
     //아빠 이미지
     private(set) lazy var fatherImageView: UIImageView = createImageVIew()
@@ -658,6 +636,60 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         if textField == hatchDaysTextField && textField.text?.isEmpty ?? true{
             let datePicker = textField.inputView as? UIDatePicker
             textField.text = datePicker?.date.formatted
+        }
+    }
+    
+    func configureEditGrowthDiary(configureData: GrowthDiaryResponse){
+        print("여기얌~~", configureData)
+        let lizardInfo = configureData.lizardInfo
+        //자식 이미지
+        if let lizardImageName = lizardInfo.imageURL{
+            thumbnailImageView.setImage(with: lizardImageName)
+        }
+        nameTextField.text = lizardInfo.name
+        speciesTextField.text = lizardInfo.species
+        
+        if let morph = lizardInfo.morph{
+            morphTextField.text = morph
+        }
+        
+        hatchDaysTextField.text = lizardInfo.hatchDays.formatted
+        
+        genderDropdownView.selectedOption = lizardInfo.gender
+        
+        weightTextField.text = String(lizardInfo.weight)
+        
+        feedMethodDropdownView.selectedOption = lizardInfo.feedMethod
+        
+        tailSelected = lizardInfo.tailexistence
+        
+        guard let parentInfo = configureData.parentInfo else {
+            return
+        }
+       
+        if let fatherImageName = parentInfo.father.imageURL{
+            fatherImageView.setImage(with: fatherImageName)
+        }
+        
+        fatherNameTextField.text = parentInfo.father.name
+        
+        if let fatherMorph = parentInfo.father.morph{
+            fatherMorphTextField.text = fatherMorph
+        }
+        
+        if let motherImageName = parentInfo.father.imageURL{
+            motherImageView.setImage(with: motherImageName)
+        }
+        
+        motherNameTextField.text = parentInfo.father.name
+        
+        if let motherMorph = parentInfo.father.morph{
+            motherMorphTextField.text = motherMorph
+        }
+        
+        if var config = uploadGrowthDiaryButton.configuration{
+            config.title = "수정하기"
+            uploadGrowthDiaryButton.configuration = config
         }
     }
 }

@@ -13,6 +13,11 @@ class DetailGrowthDiaryViewController: UIViewController {
     private lazy var emptyView: EmptyView = {
         return EmptyView()
     }()
+    private lazy var detailEitButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(naviagtionEditDetailVC))
+        return button
+    }()
+    
     
     private var previewSpecialNotesData: [DiaryResponse] = []
     let diaryID: String
@@ -49,6 +54,7 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.title = "반려 도마뱀 프로필"
         self.view = detailGrowthDiaryView
         self.view.backgroundColor = .white
+        self.navigationItem.rightBarButtonItem = self.detailEitButton
         detailGrowthDiaryView.configureDetailPreviewTableView(delegate: self, dataSource: self)
         detailGrowthDiaryView.registerDetailPreviewTableCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
         //        detailGrowthDiaryView.updateTableViewHeight()
@@ -94,6 +100,13 @@ class DetailGrowthDiaryViewController: UIViewController {
     private func showNavigationWeightInfo(){
         let showGrowthDiaryToWeightInfo = WeightAddEditViewController(diaryID: diaryID)
         self.navigationController?.pushViewController(showGrowthDiaryToWeightInfo, animated: true)
+    }
+    
+    @objc
+    private func naviagtionEditDetailVC(){
+        let editDetailVC = AddGrowthDiaryViewController(editMode: true)
+        editDetailVC.diaryID = self.diaryID
+        self.navigationController?.pushViewController(editDetailVC, animated: true)
     }
     
     // TODO: menu는 성장일지에서 필요가 없으므로 옵셔널로 처리 요청
