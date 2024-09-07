@@ -166,4 +166,3 @@ extension CommunityViewController: UISearchResultsUpdating {
         self.communityListView.communityTableView.reloadData()
     }
 }
-<<<<<<< HEAD
