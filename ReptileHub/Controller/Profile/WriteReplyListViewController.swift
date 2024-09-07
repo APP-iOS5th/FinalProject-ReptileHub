@@ -9,7 +9,7 @@ import UIKit
 
 class WriteReplyListViewController: UIViewController {
     
-    private var fetchUserProfile: UserProfile?
+    var fetchUserData: UserProfile?
     private let communityListView = CommunityListView()
     
     private let writeReplyView = WriteReplyListView()
@@ -30,8 +30,8 @@ class WriteReplyListViewController: UIViewController {
 
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
-        
-        UserService.shared.fetchAllUserComments(userID: UserService.shared.currentUserId) { result in
+        guard let fetchUid = fetchUserData?.uid else { return }
+        UserService.shared.fetchAllUserComments(userID: fetchUid) { result in
             switch result {
             case .success(let comments):
                 print("해당 게시글의 모든 댓글 가져오기 성공")

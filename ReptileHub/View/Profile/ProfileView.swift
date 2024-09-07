@@ -122,7 +122,7 @@ class ProfileView: UIView {
         return button
     }()
     
-    private let centerLabel: UILabel = {
+    let centerLabel: UILabel = {
         let label = UILabel()
         label.text = "|"
         label.font = UIFont.systemFont(ofSize: 15)
@@ -221,6 +221,7 @@ class ProfileView: UIView {
         profileImage.setImage(with: userData.profileImageURL) // 
         profileName.text = userData.name
         firstButton.setTitle(String(userData.lizardCount), for: .normal)
+        print("포스트 카운트 : \(userData.postCount)")
         secondButton.setTitle(String(userData.postCount), for: .normal)
         thirdImage.image = UIImage(named: userData.loginType)
     }

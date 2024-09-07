@@ -10,6 +10,8 @@ import SnapKit
 
 protocol CommunityDetailViewDelegate: AnyObject {
     func createCommentAction(postId: String, commentText: String)
+    
+    func onTapProfileImage(postUserId: String)
 }
 
 class CommunityDetailView: UIView {
@@ -157,27 +159,14 @@ class CommunityDetailView: UIView {
         profileImage.layer.cornerRadius = 30
         profileImage.clipsToBounds = true
         
-//        profileImage.isUserInteractionEnabled = true
-//        let profileTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapProfile))
+        profileImage.isUserInteractionEnabled = true
+        let profileTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapProfile))
+        profileImage.addGestureRecognizer(profileTapGesture)
     }
     
-//    private func onTapProfile(postUserID: String) {
-//        let profileVC = ProfileViewController()
-//        UserService.shared.fetchUserProfile(uid: postUserID) { result in
-//            switch result {
-//            case .success(let userData):
-//                // 해당유저가 탈퇴된 계정인지 확인
-////                if !userData.isValid {
-//                    profileVC.profileView.setProfileData(userData: userData)
-////                } else {
-////                    // 탈퇴한 계정이라는 alert 필요
-////                }
-//            case .failure(let error):
-//                print("클릭한 유저의 프로필 가져오기 실패 : \(error.localizedDescription)")
-//            }
-//        }
-//
-//    }
+    @objc private func onTapProfile() {
+        delegate?.onTapProfileImage(postUserId: postUserId)
+    }
     
  
     //MARK: - 제목, 닉네임, 시간 StackView(elementStackView)

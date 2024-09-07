@@ -239,6 +239,28 @@ extension CommunityDetailViewController: UITextViewDelegate {
 }
 
 extension CommunityDetailViewController: CommunityDetailViewDelegate {
+    func onTapProfileImage(postUserId: String) {
+
+        UserService.shared.fetchUserProfile(uid: postUserId) { result in
+            switch result {
+            case .success(let userData):
+                // 해당유저가 탈퇴된 계정인지 확인
+//                if !userData.isValid {
+                let profileVC = ProfileViewController()
+                    profileVC.profileView.setProfileData(userData: userData)
+                profileVC.currentUserProfile = userData
+                profileVC.isMyProfile = false
+                self.navigationController?.pushViewController(profileVC, animated: true)
+//                } else {
+//                    // 탈퇴한 계정이라는 alert 필요
+//                }
+            case .failure(let error):
+                print("클릭한 유저의 프로필 가져오기 실패 : \(error.localizedDescription)")
+            }
+        }
+
+    }
+    
     func createCommentAction(postId: String, commentText: String) {
         CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { result in
             switch result {
@@ -268,6 +290,27 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
 }
 
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
+    func onTapCommentProfile(cell: CommentTableViewCell) {
+        guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+        
+        UserService.shared.fetchUserProfile(uid: self.fetchComments[indexPath.row].userID) { result in
+            switch result {
+            case .success(let userData):
+                // 해당 유저가 탈퇴계정인지 확인
+                //                if userData.isValid {
+                let profileVC = ProfileViewController()
+                profileVC.profileView.setProfileData(userData: userData)
+                profileVC.currentUserProfile = userData
+                profileVC.isMyProfile = false
+                self.navigationController?.pushViewController(profileVC, animated: true)
+                //                } else {
+                //
+                //                }
+            case .failure(let error):
+                print("끄아아아아아아앙!!: \(error.localizedDescription)")
+            }
+        }
+    }
 
     func deleteCommentAction(cell: CommentTableViewCell) {
         let alert = UIAlertController(title: "알림", message: "댓글을 삭제하시겠습니까?", preferredStyle: .alert)

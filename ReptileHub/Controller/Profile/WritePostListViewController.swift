@@ -10,7 +10,7 @@ import UIKit
 class WritePostListViewController: UIViewController {
     
     
-    private var fetchUserProfile: UserProfile?
+    var fetchUserData: UserProfile?
     private let communityListView = CommunityListView()
     
     private let writePostListView = WritePostListView()
@@ -30,8 +30,8 @@ class WritePostListViewController: UIViewController {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
-      
-        UserService.shared.fetchUserPostsThumbnails(userID: UserService.shared.currentUserId) { result in
+        guard let fetchUserUid = fetchUserData?.uid else { return }
+        UserService.shared.fetchUserPostsThumbnails(userID: fetchUserUid) { result in
             switch result {
             case .success(let userPosts):
                 print("해당 게시글의 모든 댓글 가져오기 성공")

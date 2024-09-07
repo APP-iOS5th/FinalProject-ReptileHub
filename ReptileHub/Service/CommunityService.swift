@@ -55,8 +55,8 @@ class CommunityService {
                 let userDocument = try transaction.getDocument(userRef)
                 
                 // 현재 게시글 개수를 가져와서 1을 추가
-//                let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
-//                transaction.updateData(["postCount": currentPostCount + 1], forDocument: userRef)
+                let currentPostCount = userDocument.data()?["postCount"] as? Int ?? 0
+                transaction.updateData(["postCount": currentPostCount + 1], forDocument: userRef)
                 
                 // 썸네일 정보 저장
                 let thumbnailData: [String: Any] = [

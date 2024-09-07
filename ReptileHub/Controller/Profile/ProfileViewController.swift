@@ -11,13 +11,17 @@ import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
+    var currentUserProfile: UserProfile?
+    
+    var isMyProfile: Bool?
+    
     var userProfileData = [String]()
     private var shouldReloadImage = false {
         didSet {
             print("모몽가\(shouldReloadImage)")
 
             if shouldReloadImage {
-                self.loadData()
+//                self.loadData()
                 print("고양이")
                 editUserInfo()
                 shouldReloadImage = false
@@ -32,21 +36,14 @@ class ProfileViewController: UIViewController {
     override func loadView() {
         super.viewDidLoad()
         
-        
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        
-        UserService.shared.fetchUserProfile(uid: uid) { results in
-            print("지금 프로필 검색 uid -\(uid)") 
-            switch results {
-                
-            case .success(let profile):
-                print("porfile \(profile)")
+        UserService.shared.fetchUserProfile(uid: currentUserProfile?.uid ?? "nil") { result in
+            switch result {
+            case .success(let userData):
+                self.profileView.setProfileData(userData: userData)
             case .failure(let error):
-                print("error \(error.localizedDescription)")
+                print("으아아아악!! : \(error.localizedDescription)")
             }
         }
-        
-        
         
         self.navigationItem.title = "프로필"
         print("쿠키런 조아")
@@ -59,11 +56,17 @@ class ProfileViewController: UIViewController {
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), style: .plain, target: self, action: #selector(editUserInfo))
         barButtonItem.tintColor = .gray
         self.navigationItem.rightBarButtonItem = barButtonItem
+        barButtonItem.isHidden = !(self.isMyProfile ?? false)
         
         profileView.firstButton.addTarget(self, action: #selector(myReptileButtonTouch), for: .touchUpInside)
         profileView.secondButton.addTarget(self, action: #selector(writePostButtonTouch), for: .touchUpInside)
         profileView.withdrawalButton.addTarget(self, action: #selector(withdrawalButtonTouch), for: .touchUpInside)
         profileView.logoutButton.addTarget(self, action: #selector(logoutButtonTouch), for: .touchUpInside)
+        if !(self.isMyProfile ?? true) {
+            profileView.withdrawalButton.isHidden = true
+            profileView.logoutButton.isHidden = true
+            profileView.centerLabel.isHidden = true
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -90,7 +93,6 @@ class ProfileViewController: UIViewController {
         UserService.shared.fetchUserProfile(uid: Auth.auth().currentUser?.uid ?? "nil") { result in
             switch result {
             case .success(let userData):
-                self.profileView.setProfileData(userData: userData)
                 self.userProfileData.removeAll()
                 self.userProfileData.append(contentsOf: [userData.name, userData.profileImageURL])
 
@@ -131,6 +133,7 @@ class ProfileViewController: UIViewController {
 
     @objc func writePostButtonTouch() {
         let writePostController = WritePostListViewController()
+        writePostController.fetchUserData = self.currentUserProfile
         self.navigationController?.pushViewController(writePostController, animated: true)
     }
 
@@ -180,26 +183,31 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         let symbol = UIImageView(image: UIImage(systemName: "chevron.right"))
         symbol.tintColor = .black
         cell.accessoryView = symbol
-        
+        if !(self.isMyProfile ?? true) && indexPath.row == 2 {
+            cell.isHidden = true
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        let viewController: UIViewController
+    
         switch indexPath.row {
         case 0:
-            viewController = WriteReplyListViewController()
+            let writeReplyVC = WriteReplyListViewController()
+            writeReplyVC.fetchUserData = self.currentUserProfile
+            self.navigationController?.pushViewController(writeReplyVC, animated: true)
         case 1:
-            viewController = LikePostViewController()
+            let likePostVC = LikePostViewController()
+            likePostVC.fetchUserData = self.currentUserProfile
+            self.navigationController?.pushViewController(likePostVC, animated: true)
         case 2:
-            viewController = BlockUserViewController()
+            let blockUserVC = BlockUserViewController()
+            self.navigationController?.pushViewController(blockUserVC, animated: true)
         default:
             return
         }
-        
-        self.navigationController?.pushViewController(viewController, animated: true)
+    
     }
     
 }

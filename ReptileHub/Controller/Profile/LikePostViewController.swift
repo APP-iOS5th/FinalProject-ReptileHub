@@ -9,7 +9,7 @@ import UIKit
 
 class LikePostViewController: UIViewController {
     
-    private var fetchUserProfile: UserProfile?
+    var fetchUserData: UserProfile?
     private let communityListView = CommunityListView()
     
     private let likePostView = LikePostView()
@@ -29,11 +29,11 @@ class LikePostViewController: UIViewController {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
-    
-        UserService.shared.fetchBookmarkedPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
+        guard let fetchUesrUid = fetchUserData?.uid else { return }
+        UserService.shared.fetchBookmarkedPostThumbnails(forCurrentUser: fetchUesrUid) { result in
             switch result {
             case .success(let bookmarks):
-                print("해당 게시글의 모든 댓글 가져오기 성공")
+                print("내 북마크들 가져오기 성공 : \(bookmarks)")
                 self.fetchBookmarks = bookmarks
                 self.likePostView.likePostTableView.reloadData()
                 print("가져온 북마크 개수(\(self.fetchBookmarks.count)개) : \(self.fetchBookmarks)")

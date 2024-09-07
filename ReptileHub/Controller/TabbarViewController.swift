@@ -21,7 +21,16 @@ class TabbarViewController: UITabBarController {
             print("currentUser ----------------------  \(user.uid)")
         }
 
-    
+        UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
+            switch result {
+            case .success(let userData):
+                self.profileVC.profileView.setProfileData(userData: userData)
+                self.profileVC.currentUserProfile = userData
+                self.profileVC.isMyProfile = true
+            case .failure(let error):
+                print("끄아아아아아아악!!! : \(error.localizedDescription)")
+            }
+        }
 
         let firstNavigationController = UINavigationController(rootViewController: communityVC)
         let secondNavigationController = UINavigationController(rootViewController: diaryVC)

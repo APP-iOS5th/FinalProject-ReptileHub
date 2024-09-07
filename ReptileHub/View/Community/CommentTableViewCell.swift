@@ -11,6 +11,8 @@ protocol CommentTableViewCellDelegate: AnyObject {
     func deleteCommentAction(cell: CommentTableViewCell)
     
     func blockCommentAction(cell: CommentTableViewCell)
+    
+    func onTapCommentProfile(cell: CommentTableViewCell)
 }
 
 class CommentTableViewCell: UITableViewCell {
@@ -52,6 +54,10 @@ class CommentTableViewCell: UITableViewCell {
         profileImage.layer.cornerRadius = 20
         profileImage.clipsToBounds = true
         
+        profileImage.isUserInteractionEnabled = true
+        let profileTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapProfile))
+        profileImage.addGestureRecognizer(profileTapGesture)
+
         self.contentView.addSubview(profileImage)
         
         profileImage.snp.makeConstraints { make in
@@ -60,6 +66,11 @@ class CommentTableViewCell: UITableViewCell {
             make.leading.equalTo(self.contentView.snp.leading).offset(2)
         }
     }
+    
+    @objc private func onTapProfile() {
+        delegate?.onTapCommentProfile(cell: self)
+    }
+        
     
     //MARK: - 제목, 닉네임, 시간 StackView(elementStackView)
     private func setupElementStackView() {
