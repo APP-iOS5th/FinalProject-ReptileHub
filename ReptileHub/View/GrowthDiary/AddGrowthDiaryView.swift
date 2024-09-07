@@ -492,6 +492,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     func growthDiaryRequestData() -> request{
         let lizardInfo = LizardInfo(name: nameTextField.text ?? "이름 없음", species: speciesTextField.text ?? "종 없음", morph: morphTextField.text, hatchDays: hatchDaysDatePicker.date, gender: Gender(rawValue: genderDropdownView.selectedOption!)!, weight: Int(weightTextField.text ?? "0")!, feedMethod: feedMethodDropdownView.selectedOption!, tailexistence: tailSelected)
         var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
+        print("여기가 포인트", parentSelected)
         if parentSelected{
             let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
             imageData.append(motherImageView.image == nil ? nil : motherImageView.image?.pngData())
@@ -562,6 +563,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
                 self.morphSelected = false
             }else{
                 self.parentSelected = false
+                print(parentSelected)
             }
             
             UIView.animate(withDuration: 0.2) {
@@ -664,6 +666,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         tailSelected = lizardInfo.tailexistence
         
         guard let parentInfo = configureData.parentInfo else {
+            print("여기서 걸려야한는데")
             return
         }
        

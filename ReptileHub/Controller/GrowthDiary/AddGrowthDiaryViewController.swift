@@ -11,7 +11,7 @@ import FirebaseAuth
 
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var previousViewController: GrowthDiaryViewController?
-
+    weak var previousDetailVC: DetailGrowthDiaryViewController?
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
     private var selectedImageView: UIImageView?
     let editMode: Bool
@@ -49,7 +49,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         addGrowthDiaryView.configureImageViewActions(target: self, action: #selector(imageViewTapped(_:)))
         
         if self.editMode{
-            fetchGrowthDiaryData()   
+            fetchGrowthDiaryData()
         }
 
         addGrowthDiaryView.buttonTapped = { [weak self] in
@@ -58,28 +58,44 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     }
     
     private func uploadGrowthDiary(){
-        guard let userId = Auth.auth().getUserID() else {
-            return
-        }
         let result = addGrowthDiaryView.growthDiaryRequestData()
-        print(result.1)
-        DiaryPostService.shared.registerGrowthDiary(userID: userId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
-            if let error = error{
-                print("error", error.localizedDescription)
-            }else{
-                print("Success")
-                if let previousVC = self?.previousViewController{
-                    print("privousVC", previousVC)
-                    previousVC.updateImage()
+        print("asdfdsfsaf", result.0)
+        if editMode{
+            //editMode가 true일떄 수정하기 활성화
+            guard let diaryID = diaryID else { return }
+            DiaryPostService.shared.updateGrowthDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, updatedDiary: result.0, newSelfImageData: result.1[0], newMotherImageData: result.1[1], newFatherImageData: result.1[2]) { [weak self] error in
+                if let error = error{
+                    print("ERROR: \(error.localizedDescription)")
+                }else{
+                    print("수정 성공")
+                    if let previousVC = self?.previousViewController,
+                    let previousDetailVC = self?.previousDetailVC{
+                        previousVC.updateImage()
+                        previousDetailVC.updateDetailDate()
+                    }
+                    self?.navigationController?.popViewController(animated: true)
+                    
                 }
-                self?.navigationController?.popViewController(animated: true)
+            }
+        }else{
+            //editMode가 false일때 등록하기 활성화
+            DiaryPostService.shared.registerGrowthDiary(userID: UserService.shared.currentUserId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
+                if let error = error{
+                    print("error", error.localizedDescription)
+                }else{
+                    print("Success")
+                    if let previousVC = self?.previousViewController{
+                        print("privousVC", previousVC)
+                        previousVC.updateImage()
+                    }
+                    self?.navigationController?.popViewController(animated: true)
+                }
             }
         }
     }
     
     //MARK: - 수정 일떄는 데이터를 불러와야함
     private func fetchGrowthDiaryData(){
-        print("!@#!@##!@@")
         guard let diaryID = diaryID else { return }
         DiaryPostService.shared.fetchGrowthDiaryDetails(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{

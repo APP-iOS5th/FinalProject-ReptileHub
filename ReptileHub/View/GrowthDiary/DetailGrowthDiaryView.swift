@@ -57,6 +57,7 @@ class DetailGrowthDiaryView: UIView {
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = UIColor.textFieldPlaceholder
         label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
     
@@ -575,7 +576,6 @@ class DetailGrowthDiaryView: UIView {
         print(detailData)
         let lizardData = detailData.lizardInfo
         
-        // TODO: 이미지 없을 때 처리 해주기
         if let imageURL = lizardData.imageURL{
             detailThumbnailImageView.setImage(with: imageURL)
         }else{
@@ -583,12 +583,12 @@ class DetailGrowthDiaryView: UIView {
         }
         print("a")
         detailLiazardNameLabel.text = lizardData.name
-        detailLizardSepciesMorphInfoLabel.text = "lizardData.species, 모프 \(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
+        detailLizardSepciesMorphInfoLabel.text = "\(lizardData.species) · 모프 \(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
         detailHatchDaysLabel.text = lizardData.hatchDays.formatted
         detailFeedMethodLabel.text = lizardData.feedMethod
         detailTailLabel.text = lizardData.tailexistence ? "있음" : "없음"
         
-        // TODO: 부모뷰도 넣어주기
+
         guard let fatherData = detailData.parentInfo?.father, 
                 let motherData = detailData.parentInfo?.mother else { return }
         

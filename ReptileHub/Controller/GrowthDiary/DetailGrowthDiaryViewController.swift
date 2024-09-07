@@ -9,6 +9,9 @@ import UIKit
 import FirebaseAuth
 
 class DetailGrowthDiaryViewController: UIViewController {
+    
+    private var shouldReloadDetailData = false
+    weak var previousVC: GrowthDiaryViewController?
     private lazy var detailGrowthDiaryView = DetailGrowthDiaryView()
     private lazy var emptyView: EmptyView = {
         return EmptyView()
@@ -17,7 +20,6 @@ class DetailGrowthDiaryViewController: UIViewController {
         let button = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(naviagtionEditDetailVC))
         return button
     }()
-    
     
     private var previewSpecialNotesData: [DiaryResponse] = []
     let diaryID: String
@@ -33,7 +35,6 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     let tempData: [Int] = [1,2,3]
     
-    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         detailGrowthDiaryView.updateTableViewHeight()
@@ -41,13 +42,16 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
+        if shouldReloadDetailData{
+            fetchDetailData()
+            shouldReloadDetailData = false
+        }
         fetchSpecialNotesData()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUP()
-        fetchDetailData()
     }
     
     private func setUP(){
@@ -55,11 +59,10 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.view = detailGrowthDiaryView
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = self.detailEitButton
+        fetchDetailData()
         detailGrowthDiaryView.configureDetailPreviewTableView(delegate: self, dataSource: self)
         detailGrowthDiaryView.registerDetailPreviewTableCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
-        //        detailGrowthDiaryView.updateTableViewHeight()
-        //        loadData()
-        
+
         detailGrowthDiaryView.detailShowSpecialNoteButtonTapped = { [weak self] in
             self?.showNavigaionSpecialNotes()
         }
@@ -92,6 +95,10 @@ class DetailGrowthDiaryViewController: UIViewController {
         }
     }
     
+    func updateDetailDate(){
+        self.shouldReloadDetailData = true
+    }
+    
     private func showNavigaionSpecialNotes(){
         let showGrowthDiaryToSpeicialNotes = SpecialListViewController()
         self.navigationController?.pushViewController(showGrowthDiaryToSpeicialNotes, animated: true)
@@ -105,6 +112,8 @@ class DetailGrowthDiaryViewController: UIViewController {
     @objc
     private func naviagtionEditDetailVC(){
         let editDetailVC = AddGrowthDiaryViewController(editMode: true)
+        editDetailVC.previousViewController = previousVC
+        editDetailVC.previousDetailVC = self
         editDetailVC.diaryID = self.diaryID
         self.navigationController?.pushViewController(editDetailVC, animated: true)
     }
