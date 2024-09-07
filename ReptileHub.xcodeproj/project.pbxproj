@@ -441,8 +441,8 @@
 			children = (
 				C12FC0EE2C790D19000BB52E /* ProfileView.swift */,
 				C154FA212C7C4D9F00624AA3 /* EditUserInfoView.swift */,
-				C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */,
 				C14FF3622C75DB2800089C6D /* WritePostListTableViewCell.swift */,
+				C154FA1D2C7C15D600624AA3 /* WritePostListView.swift */,
 				C154FA1B2C7C11B500624AA3 /* WriteReplyListView.swift */,
 				C14FF3682C75DB2800089C6D /* WriteReplyListTableViewCell.swift */,
 				C154FA192C7C0F2C00624AA3 /* LikePostView.swift */,
