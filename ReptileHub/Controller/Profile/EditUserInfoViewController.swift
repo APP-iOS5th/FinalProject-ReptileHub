@@ -8,11 +8,15 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import FirebaseAuth
 
 class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
-    private let editUserInfoView = EditUserInfoView()
     
-    private var isImageChanged = false  // 이미지가 변경되었는지 확인하는 플래그
+    var editUserInfoData : (String, String)?
+    var previousViewController: ProfileViewController?
+    private let editUserInfoView = EditUserInfoView()
+    private let profileView = ProfileViewController()
+    private var isImageChanged = false  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +32,16 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
         editUserInfoView.UserInfoSaveButton.addTarget(self, action: #selector(saveButtonTouch), for: .touchUpInside)
     }
     
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        editUserInfoView.setProfileImageEdit(imageName: editUserInfoData!.1, name: editUserInfoData!.0)
+    }
+    
+    // MARK: - PHPicker
     @objc func selectImage() {
         var configuration = PHPickerConfiguration()
-        configuration.filter = .images  // 이미지 필터링 설정
-        configuration.selectionLimit = 1  // 한 번에 하나의 이미지 선택
+        configuration.filter = .images 
+        configuration.selectionLimit = 1
 
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
@@ -39,6 +49,7 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
         present(picker, animated: true, completion: nil)
     }
     
+    // MARK: - 내용 변동이 있을 시 저장버튼 활성화
     @objc func textFieldDidChange(_ textField: UITextField) {
         updateSaveButtonState()
     }
@@ -55,16 +66,31 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    // MARK: - 프로필 수정 저장 기능
     @objc func saveButtonTouch() {
-        print("저장 ~")
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        UserService.shared.updateUserProfile(uid: uid, newName: editUserInfoView.ProfileNameEdit.text, newProfileImage: editUserInfoView.ProfileImageEdit.image) { [weak self] error in
+            if let error = error {
+                print("프로필 저장 실패: \(error.localizedDescription)")
+            } else {
+                print("프로필 저장 성공")
+                if let previousVC = self?.previousViewController{
+                                    print("privousVC", previousVC)
+                                    previousVC.updateImage()
+                                }
+                self?.dismiss(animated: true)
+                self?.editUserInfoData = nil
+            }
+        }
     }
     
+    // MARK: - 프로필 수정 취소
     @objc func cancelButtonTouch() {
-        print("취소 ~")
         dismiss(animated: true)
     }
 }
 
+// MARK: - PHPicker Delegate
 extension EditUserInfoViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
@@ -81,7 +107,7 @@ extension EditUserInfoViewController: PHPickerViewControllerDelegate {
                 if let image = image as? UIImage {
                     DispatchQueue.main.async {
                         self.editUserInfoView.ProfileImageEdit.image = image
-                        self.isImageChanged = true  // 이미지가 변경되었음을 표시
+                        self.isImageChanged = true
                         self.updateSaveButtonState()
                     }
                 }

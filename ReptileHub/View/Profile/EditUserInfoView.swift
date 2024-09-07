@@ -11,12 +11,9 @@ import SnapKit
 class EditUserInfoView: UIView {
     
     let keyboardManager = KeyboardManager()
-    
-    // UserProfile 더미 데이터
-    let users: [UserProfile] = [
-        UserProfile(uid: "1001", providerUID: "123", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
-    ]
 
+    // MARK: - 프로필 수정 뷰 구성요소
+    // 수정 전/후 이미지 뷰
     var ProfileImageEdit: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 50
@@ -24,6 +21,7 @@ class EditUserInfoView: UIView {
         return imageView
     }()
     
+    // 프로필 이미지 수정 버튼 (PHPicker 버튼)
     var imagePickerButton: UIButton = {
         let button = UIButton()
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .bold)
@@ -31,14 +29,12 @@ class EditUserInfoView: UIView {
                 
         button.backgroundColor = .imagePicker
         button.layer.cornerRadius = CGFloat(15)
-//        button.layer.borderColor = UIColor(.imagePicker).cgColor
-//        button.layer.borderWidth = CGFloat(2)
         button.setImage(image, for: .normal)
         button.tintColor = .imagePickerPlaceholder
-        
         return button
     }()
     
+    // 프로필 이름 수정
     var ProfileNameEdit: UITextField = {
        let textField = UITextField()
        textField.placeholder = "변경할 이름을 적어주세요."
@@ -46,6 +42,7 @@ class EditUserInfoView: UIView {
        return textField
     }()
     
+    // 취소 버튼
     var UserInfoCancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("취소", for: .normal)
@@ -54,16 +51,18 @@ class EditUserInfoView: UIView {
         return button
     }()
     
+    // 저장 버튼
     var UserInfoSaveButton: UIButton = {
         let button = UIButton()
         button.setTitle("저장", for: .normal)
         button.backgroundColor = .addBtnGraphTabbar
         button.layer.cornerRadius = 8
-        button.isEnabled = false  // 초기에는 비활성화
-        button.alpha = 0.5  // 비활성화 상태를 시각적으로 표시
+        button.isEnabled = false
+        button.alpha = 0.5
         return button
     }()
     
+    // 취소, 저장 버튼 스택뷰
     private lazy var buttonStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [UserInfoCancelButton, UserInfoSaveButton])
         stackView.axis = .horizontal
@@ -81,23 +80,20 @@ class EditUserInfoView: UIView {
         keyboardManager.hideNoti()
         
         setupView()
-        setProfileImageEdit()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - 뷰 구성 메소드
     private func setupView() {
-        
         self.backgroundColor = .white
+        
         self.addSubview(ProfileImageEdit)
         self.addSubview(imagePickerButton)
         self.addSubview(ProfileNameEdit)
         self.addSubview(buttonStackView)
-//        self.addSubview(UserInfoCancelButton)
-//        self.addSubview(UserInfoSaveButton)
-        
         
         ProfileImageEdit.snp.makeConstraints { make in
             make.topMargin.equalTo(40)
@@ -124,23 +120,20 @@ class EditUserInfoView: UIView {
         }
         
         UserInfoSaveButton.snp.makeConstraints { make in
-//            make.top.equalTo(ProfileNameEdit.snp.bottom).offset(20)
-//            make.trailing.equalToSuperview().offset(-40)
-            
             make.width.lessThanOrEqualTo(150)
             make.height.equalTo(50)
         }
     
         UserInfoCancelButton.snp.makeConstraints { make in
-//            make.top.equalTo(ProfileNameEdit.snp.bottom).offset(20)
-//            make.leading.equalToSuperview().offset(40)
             make.width.lessThanOrEqualTo(150)
             make.height.equalTo(50)
         }
     }
-    
-    private func setProfileImageEdit() {
-        ProfileImageEdit.image = UIImage(named: users[0].profileImageURL)
+   
+    // MARK: - 기존 프로필 이미지, 이름 데이터
+    func setProfileImageEdit(imageName: String?, name: String?) {
+        ProfileImageEdit.setImage(with: imageName!)
+        ProfileNameEdit.text = name
     }
 }
 
@@ -153,7 +146,6 @@ extension EditUserInfoView: KeyboardNotificationDelegate {
             make.centerX.equalToSuperview()
             make.width.height.equalTo(100)
         }
-//        self.frame.origin.y += 9999
         self.layoutIfNeeded()
     }
     
@@ -166,6 +158,5 @@ extension EditUserInfoView: KeyboardNotificationDelegate {
             make.width.height.equalTo(100)
         }
         self.layoutIfNeeded()
-
     }
 }
