@@ -17,7 +17,6 @@ class WeightAddEditViewController: UIViewController {
     //MARK: - 무게를 다시 불러와야 하는지 상태를 나타내는 변수
     private var shouldReloadWeightData = false {
         didSet{
-            print("업데이트")
             if shouldReloadWeightData{
                 self.fetchWeightData()
                 shouldReloadWeightData = false
@@ -64,9 +63,9 @@ class WeightAddEditViewController: UIViewController {
         self.view = weightAddEditView
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = self.addButton
-        fetchWeightData()
         weightAddEditView.configureWeightAddEditTablview(delegate: self, dataSouce: self)
         weightAddEditView.registerWeightAddEditTablCell(WeightAddEditViewCell.self, forCellReuseIdentifier: WeightAddEditViewCell.identifier)
+        fetchWeightData()
     }
     
     private func fetchWeightData(){
@@ -86,8 +85,7 @@ class WeightAddEditViewController: UIViewController {
     //무게 추가하는 뷰 컨트롤러로 이동 액션
     @objc
     private func moveAddWeightController(){
-        let addWeightVC = WeightAddViewController()
-        addWeightVC.diaryID = diaryID
+        let addWeightVC = WeightAddViewController(diaryID: diaryID, editMode: false)
         addWeightVC.previousVC = self
         addWeightVC.modalPresentationStyle = .automatic
         addWeightVC.sheetPresentationController?.detents = [.medium(), .large()]
@@ -116,6 +114,20 @@ extension WeightAddEditViewController: UITableViewDelegate, UITableViewDataSourc
             }
         cell.selectionStyle = .none
         cell.configureWeightCell(weightEntry: weightEntries[indexPath.row])
+        cell.editWeightButtonTapped = { [weak self] in
+            guard let diaryID = self?.diaryID else { return }
+            let editWeightVC = WeightAddViewController(diaryID: diaryID, editMode: true)
+            editWeightVC.previousVC = self
+            editWeightVC.weightData = self?.weightEntries[indexPath.row]
+            editWeightVC.modalPresentationStyle = .automatic
+            editWeightVC.sheetPresentationController?.detents = [.medium(), .large()]
+            editWeightVC.sheetPresentationController?.prefersGrabberVisible = true
+            editWeightVC.sheetPresentationController?.preferredCornerRadius = 10
+            editWeightVC.sheetPresentationController?.animateChanges {
+                self?.sheetPresentationController?.selectedDetentIdentifier = .medium
+            }
+            self?.present(editWeightVC, animated: true)
+        }
         return cell
     }
     

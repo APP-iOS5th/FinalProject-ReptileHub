@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddWeightView: UIView {
+class AddEditWeightView: UIView {
     
     // TODO: 델리게이트로 수정하기
     var cancelButtonTapped: (() -> Void)?
@@ -187,6 +187,16 @@ class AddWeightView: UIView {
         }
         return (weight, self.addWeightDatePicker.date)
     }
+    
+    func configureAddEditWeightView(weightData: WeightEntry){
+        addWeightDatePicker.date = weightData.date
+        addWeightTextField.text = String(weightData.weight)
+        
+        if var config = createAddWeight.configuration{
+            config.title = "변경"
+            createAddWeight.configuration = config
+        }
+    }
 }
 
 
@@ -194,11 +204,11 @@ class AddWeightView: UIView {
 import SwiftUI
 
 struct AddWeightViewRepresentable: UIViewRepresentable{
-    func makeUIView(context: Context) -> AddWeightView {
-        return AddWeightView()
+    func makeUIView(context: Context) -> AddEditWeightView {
+        return AddEditWeightView()
     }
     
-    func updateUIView(_ uiView: AddWeightView, context: Context) {
+    func updateUIView(_ uiView: AddEditWeightView, context: Context) {
         uiView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }

@@ -11,6 +11,8 @@ class WeightAddEditViewCell: UITableViewCell {
     
     static let identifier = "WeightAddEditListCell"
     
+    var editWeightButtonTapped: (() -> Void)?
+    
     //MARK: - 무게 값 라벨
     private lazy var  weightAddEditViewCellWeightLabel: UILabel = {
         let label = UILabel()
@@ -42,6 +44,9 @@ class WeightAddEditViewCell: UITableViewCell {
         
         button.configuration = config
         button.contentHorizontalAlignment = .trailing
+        button.addAction(UIAction{ [weak self] _ in
+            self?.editWeightButtonTapped?()
+        }, for: .touchUpInside)
         
         return button
     }()
