@@ -9,6 +9,7 @@ import UIKit
 
 class WriteReplyListView: UIView {
     
+    // 내가 쓴 댓글 테이블 뷰
     var replyListTableView: UITableView = {
        let tableView = UITableView()
         tableView.register(WriteReplyListTableViewCell.self, forCellReuseIdentifier: "replyCell")
@@ -17,7 +18,6 @@ class WriteReplyListView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupView()
     }
     
@@ -26,7 +26,6 @@ class WriteReplyListView: UIView {
     }
     
     private func setupView() {
-        
         self.addSubview(replyListTableView)
         
         replyListTableView.snp.makeConstraints { make in

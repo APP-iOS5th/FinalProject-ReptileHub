@@ -11,9 +11,7 @@ class WriteReplyListViewController: UIViewController {
     
     private var fetchUserProfile: UserProfile?
     private let communityListView = CommunityListView()
-    
     let writeReplyView = WriteReplyListView()
-    
     let detailView = CommunityDetailView()
     var fetchComments: [CommentResponse] = []
     
@@ -32,15 +30,16 @@ class WriteReplyListViewController: UIViewController {
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
         
+        // MARK: - 댓글 불러오기
         UserService.shared.fetchAllUserComments(userID: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let comments):
-                print("해당 게시글의 모든 댓글 가져오기 성공")
+                print("댓글 가져오기 성공")
                 self.fetchComments = comments
                 self.writeReplyView.replyListTableView.reloadData()
                 print("가져온 댓글 개수(\(self.fetchComments.count)개) : \(self.fetchComments)")
             case .failure(let error):
-                print("해당 게시글의 모든 댓글 가져오기 실패 : \(error.localizedDescription)")
+                print("댓글 가져오기 실패 : \(error.localizedDescription)")
             }
         }
     }
@@ -57,7 +56,6 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
         87
     }
     
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "replyCell", for: indexPath) as! WriteReplyListTableViewCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
@@ -69,10 +67,8 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
                 cell.setCommentData(commentData: self.fetchComments[indexPath.row], postData: fetchCommentPost)
             case .failure(let error):
                 print("\(error.localizedDescription)")
-                
             }
         }
-        
         return cell
     }
     
@@ -81,6 +77,7 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
         
         var postDetailResponse: PostDetailResponse = PostDetailResponse(postID: "", userID: "", title: "", content: "", imageURLs: [], likeCount: 0, commentCount: 0, createdAt: Date(), isLiked: false, isBookmarked: false)
         
+        // MARK: - (댓글 단) 게시글 디테일 뷰
         CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: self.fetchComments[indexPath.row].postID) { result in
             switch result {
             case .success(let postDetail):
@@ -106,6 +103,7 @@ extension WriteReplyListViewController: UITableViewDelegate, UITableViewDataSour
     }
 }
 
+// MARK: - 댓글 삭제 기능
 extension WriteReplyListViewController: WriteReplyListTableViewCellDelegate {
     func deleteComment(cell: WriteReplyListTableViewCell) {
         guard let indexPath = self.writeReplyView.replyListTableView.indexPath(for: cell) else { return }

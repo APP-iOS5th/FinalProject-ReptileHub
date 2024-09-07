@@ -9,12 +9,11 @@ import UIKit
 
 class LikePostView: UIView {
     
+    // 북마크한 게시글 테이블 뷰
     private (set) var likePostTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "likeCell")
-        
         return tableView
-        
     }()
     
     override init(frame: CGRect) {
@@ -27,7 +26,6 @@ class LikePostView: UIView {
     }
     
     private func setupView() {
-        
         self.addSubview(likePostTableView)
         
         likePostTableView.snp.makeConstraints { make in

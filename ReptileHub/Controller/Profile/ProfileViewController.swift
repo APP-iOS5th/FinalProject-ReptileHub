@@ -14,11 +14,8 @@ class ProfileViewController: UIViewController {
     var userProfileData = [String]()
     private var shouldReloadImage = false {
         didSet {
-            print("모몽가\(shouldReloadImage)")
-
             if shouldReloadImage {
                 self.loadData()
-                print("고양이")
                 editUserInfo()
                 shouldReloadImage = false
             }
@@ -26,32 +23,25 @@ class ProfileViewController: UIViewController {
     }
     
     private var list = ["내가 작성한 댓글", "북마크한 게시글", "내가 차단한 사용자"]
-    
     private let profileView = ProfileView()
     
     override func loadView() {
         super.viewDidLoad()
-        // 네비게이션 뒤로가기 버튼 
+    
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "back", style: .plain, target: nil, action: nil)
 
-        
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         UserService.shared.fetchUserProfile(uid: uid) { results in
-           print("지금 프로필 검색 uid -\(uid)") 
             switch results {
-                
             case .success(let profile):
-                print("porfile \(profile)")
+                print("porfile: \(profile)")
             case .failure(let error):
-                print("error \(error.localizedDescription)")
+                print("error: \(error.localizedDescription)")
             }
         }
         
-        
-        
         self.navigationItem.title = "프로필"
-        print("쿠키런 조아")
         
         loadData()
         
@@ -75,20 +65,12 @@ class ProfileViewController: UIViewController {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
-        
         loadData()
-    }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        print("배고파요")
-      
     }
     
     func loadData(){ 
         
+        // MARK: - 프로필 수정
         UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let userData):
@@ -107,10 +89,11 @@ class ProfileViewController: UIViewController {
     func updateImage() {
         // 다른 뷰 컨트롤러에서 돌아왔을 때 이미지를 다시 로드해야 하는 경우
         shouldReloadImage = true
-        print("강아지")
     }
     
-    @objc func editUserInfo() { 
+    // MARK: - 각 버튼 기능
+    // 프로필 수정 뷰 모달로 띄우기
+    @objc func editUserInfo() {
         let editController = EditUserInfoViewController()
         editController.editUserInfoData = (userProfileData[0], userProfileData[1])
         if let sheet = editController.sheetPresentationController {
@@ -121,24 +104,25 @@ class ProfileViewController: UIViewController {
         self.present(editController, animated: true, completion: nil)
     }
 
+    // 내 도마뱀 탭바 이동
     @objc func myReptileButtonTouch() {
-//        let myReptileController = GrowthDiaryViewController()
-//        self.navigationController?.pushViewController(myReptileController, animated: true)
-        
         if let tabBarController = self.tabBarController {
             tabBarController.selectedIndex = 1
         }
     }
 
+    // 내가 쓴 게시글 뷰
     @objc func writePostButtonTouch() {
         let writePostController = WritePostListViewController()
         self.navigationController?.pushViewController(writePostController, animated: true)
     }
 
+    // 회원탈퇴 (버튼)
     @objc func withdrawalButtonTouch() {
         print("회원탈퇴 버튼 터치")
     }
 
+    // 로그아웃 (버튼)
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")
         
@@ -179,7 +163,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         let symbol = UIImageView(image: UIImage(systemName: "chevron.right"))
         symbol.tintColor = .black
         cell.accessoryView = symbol
-        
         return cell
     }
     
@@ -197,8 +180,6 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         default:
             return
         }
-        
         self.navigationController?.pushViewController(viewController, animated: true)
     }
-    
 }

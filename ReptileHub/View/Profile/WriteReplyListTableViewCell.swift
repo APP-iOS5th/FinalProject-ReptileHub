@@ -16,12 +16,15 @@ class WriteReplyListTableViewCell: UITableViewCell {
     
     weak var delegate: WriteReplyListTableViewCellDelegate?
     
+    // MARK: - 댓글 테이블 뷰 셀 구성요소
+    // 댓글 내용
     private var commentDetail: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         return label
     }()
     
+    // 댓글 단 날짜
     private var commentDate: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
@@ -29,6 +32,7 @@ class WriteReplyListTableViewCell: UITableViewCell {
         return label
     }()
     
+    // 댓글 단 게시글 제목
     private var postTitle: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
@@ -36,6 +40,7 @@ class WriteReplyListTableViewCell: UITableViewCell {
         return label
     }()
     
+    // 댓글 삭제 버튼
     private var commentDeleteButton: UIButton = {
         let button = UIButton()
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .light)
@@ -49,6 +54,7 @@ class WriteReplyListTableViewCell: UITableViewCell {
         return button
     }()
     
+    // 댓글 단 게시글의 총 댓글 수
     private var commentCount: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -60,6 +66,7 @@ class WriteReplyListTableViewCell: UITableViewCell {
         return label
     }()
     
+    // 게시글 제목 + 총 댓글 수 스택뷰
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [postTitle, commentCount])
         stackView.axis = .horizontal
@@ -94,7 +101,6 @@ class WriteReplyListTableViewCell: UITableViewCell {
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-20)
         }
         
-        
         commentCount.snp.makeConstraints { make in
             make.width.equalTo(30)
             make.height.equalTo(22)
@@ -108,14 +114,14 @@ class WriteReplyListTableViewCell: UITableViewCell {
         }
     }
     
+    // MARK: - 댓글 데이터
     func setCommentData(commentData: CommentResponse, postData: PostDetailResponse) {
         commentDetail.text = commentData.content
-        
         commentCount.text = String(postData.commentCount)
         postTitle.text = postData.title
 
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm" // 원하는 포맷으로 설정
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         commentDate.text = dateFormatter.string(for: commentData.createdAt)
     }
     
