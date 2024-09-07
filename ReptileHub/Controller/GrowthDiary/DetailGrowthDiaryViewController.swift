@@ -23,9 +23,11 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     private var previewSpecialNotesData: [DiaryResponse] = []
     let diaryID: String
+    let lizardName: String
     
-    init(diaryID: String) {
+    init(diaryID: String, lizardName: String) {
         self.diaryID = diaryID
+        self.lizardName = lizardName
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -61,6 +63,7 @@ class DetailGrowthDiaryViewController: UIViewController {
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = self.detailEitButton
         fetchDetailData()
+        fetchSpecialNotesData()
         fetchMonthWeightData()
         detailGrowthDiaryView.configureDetailPreviewTableView(delegate: self, dataSource: self)
         detailGrowthDiaryView.registerDetailPreviewTableCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
@@ -106,7 +109,10 @@ class DetailGrowthDiaryViewController: UIViewController {
         DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: diaryID, limit: 3) { [weak self] response in
             switch response{
             case .success(let responseData):
+                print("특이사항 limit불러오기 ", responseData)
                 self?.previewSpecialNotesData = responseData
+                self?.detailGrowthDiaryView.detailPreviesSpecialNoteTableView.reloadData()
+//                print("여기는 반영", self?.previewSpecialNotesData)
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
             }
@@ -155,7 +161,7 @@ class DetailGrowthDiaryViewController: UIViewController {
     }
     
     private func showNavigaionSpecialNotes(){
-        let showGrowthDiaryToSpeicialNotes = SpecialListViewController()
+        let showGrowthDiaryToSpeicialNotes = SpecialListViewController(diaryID: diaryID, lizardName: lizardName)
         self.navigationController?.pushViewController(showGrowthDiaryToSpeicialNotes, animated: true)
     }
     
@@ -177,8 +183,9 @@ class DetailGrowthDiaryViewController: UIViewController {
     // TODO: 테이블 cell의 데이터를 넣는 함수 요청
 }
 
-extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataSource{
+extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataSource, SpecialDetailViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("과연 프리뷰의 개수는", previewSpecialNotesData.count)
         if previewSpecialNotesData.count == 0{
             detailGrowthDiaryView.detailPreviesSpecialNoteTableView.isHidden = true
             detailGrowthDiaryView.emptyview.isHidden = false
@@ -186,7 +193,7 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
             detailGrowthDiaryView.detailPreviesSpecialNoteTableView.isHidden = false
             detailGrowthDiaryView.emptyview.isHidden = true
         }
-        return tempData.count
+        return previewSpecialNotesData.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -199,13 +206,26 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
         }
         // TODO: cell 대입함수 사용하기
         cell.selectionStyle = .none
+        cell.configureCell(specialEntry: previewSpecialNotesData[indexPath.item])
+        cell.deleteButton.isHidden = true
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // TODO: 해당 cell에 맞는 디테일 뷰로 넘어가게 수정하기
-        self.showNavigaionSpecialNotes()
+        let specialNotesDetailVC = SpecialDetailViewController(saverEntries: previewSpecialNotesData[indexPath.item], diaryID: diaryID, lizardName: lizardName)
+        specialNotesDetailVC.delegate = self
+        self.navigationController?.pushViewController(specialNotesDetailVC, animated: true)
     }
     
+    func deleteSpecialNoteButtonTapped(data: DiaryResponse) {
+        DiaryPostService.shared.deleteDiaryEntry(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: data.entryID) { [weak self] error in
+            if let error = error {
+                print("ERROR: \(error.localizedDescription)")
+            }else{
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
     
 }

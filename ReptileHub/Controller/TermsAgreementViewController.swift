@@ -51,10 +51,7 @@ class TermsAgreementViewController: UIViewController {
             declineButton.setTitleColor(.black, for: .normal)
             agreeButton.setTitle("Agree", for: .normal) 
             declineButton.setTitle("Decline", for: .normal)
-            
         }
-        
-        
     }
         
     @objc private func agreeButtonTapped() {
@@ -65,6 +62,5 @@ class TermsAgreementViewController: UIViewController {
     @objc private func declineButtonTapped() {
         onAgreementDeclined?()
         self.dismiss(animated: true, completion: nil)
-
     }
 }
