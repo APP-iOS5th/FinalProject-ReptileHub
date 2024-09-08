@@ -12,6 +12,8 @@ protocol CommentTableViewCellDelegate: AnyObject {
     
     func blockCommentAction(cell: CommentTableViewCell)
     
+    func reportCommentAction(cell: CommentTableViewCell)
+    
     func onTapCommentProfile(cell: CommentTableViewCell)
 }
 
@@ -162,6 +164,11 @@ class CommentTableViewCell: UITableViewCell {
     private func blockCommentAction() {
         print("댓글 작성자 차단하기 클릭.")
         self.delegate?.blockCommentAction(cell: self)
+    }
+    
+    private func reportCommentAction() {
+        print("댓글 작성자 신고하기 클릭.")
+        self.delegate?.reportCommentAction(cell: self)
     }
 
     //MARK: - configure cell
