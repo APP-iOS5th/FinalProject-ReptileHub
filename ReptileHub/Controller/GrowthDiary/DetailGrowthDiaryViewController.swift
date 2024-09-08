@@ -75,7 +75,7 @@ class DetailGrowthDiaryViewController: UIViewController {
             self?.showNavigationWeightInfo()
         }
         detailGrowthDiaryView.deleteButtonTapped = { [weak self] in
-            self?.deleteGrowthDiaryView()
+            self?.deleteAlertGrowthDiaryView()
         }
     }
     
@@ -115,16 +115,17 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     //MARK: - 삭제 버튼 클릭 시 alert창 띄우기
     private func deleteAlertGrowthDiaryView(){
+        print("이거 실행돼?")
         let title = "성장일지 삭제"
         
         let attributedTitle = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : UIColor.red])
         let alert = UIAlertController(title: "", message: "해당 성장일지를 정말 삭제하시겠습니까?", preferredStyle: .alert)
         alert.setValue(attributedTitle, forKey: "attributedTitle")
         
-        let action = UIAlertAction(title: "삭제", style: .destructive, handler: nil)
-        let cancel = UIAlertAction(title: "취소", style: .cancel){ [weak self] action in
-            self?.cancelGrowthDiaryView()
+        let action = UIAlertAction(title: "삭제", style: .destructive){ [weak self] action in
+            self?.deleteGrowthDiaryView()
         }
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         alert.addAction(cancel)
         alert.addAction(action)
         
@@ -143,11 +144,6 @@ class DetailGrowthDiaryViewController: UIViewController {
                 self?.navigationController?.popViewController(animated: true)
             }
         }
-    }
-    
-    //MARK: - 취소를 눌렀을 떄
-    private func cancelGrowthDiaryView(){
-        self.dismiss(animated: true)
     }
     
     func updateDetailDate(){
