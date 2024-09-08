@@ -67,7 +67,7 @@ class DetailGrowthDiaryViewController: UIViewController {
         fetchMonthWeightData()
         detailGrowthDiaryView.configureDetailPreviewTableView(delegate: self, dataSource: self)
         detailGrowthDiaryView.registerDetailPreviewTableCell(SpecialListViewCell.self, forCellReuseIdentifier: SpecialListViewCell.identifier)
-
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .parentInfoShow, object: nil)
         detailGrowthDiaryView.detailShowSpecialNoteButtonTapped = { [weak self] in
             self?.showNavigaionSpecialNotes()
         }
@@ -77,6 +77,22 @@ class DetailGrowthDiaryViewController: UIViewController {
         detailGrowthDiaryView.deleteButtonTapped = { [weak self] in
             self?.deleteAlertGrowthDiaryView()
         }
+    }
+    
+    @objc func handleNotification(_ notification: Notification) {
+
+//        self.detailGrowthDiaryView.detailParentStackView.isHidden = true
+        if let userInfo = notification.userInfo, let showStatus = userInfo["parentShow"] as? Bool{
+            if showStatus{
+                self.detailGrowthDiaryView.detailParentStackView.isHidden = false
+            }else{
+                self.detailGrowthDiaryView.detailParentStackView.isHidden = true
+            }
+        }
+    }
+
+    deinit{
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.parentInfoShow, object: nil)
     }
     
     private func fetchDetailData(){
@@ -115,7 +131,6 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     //MARK: - 삭제 버튼 클릭 시 alert창 띄우기
     private func deleteAlertGrowthDiaryView(){
-        print("이거 실행돼?")
         let title = "성장일지 삭제"
         
         let attributedTitle = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : UIColor.red])

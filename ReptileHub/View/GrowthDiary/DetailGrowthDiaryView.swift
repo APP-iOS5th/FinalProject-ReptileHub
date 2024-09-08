@@ -273,7 +273,7 @@ class DetailGrowthDiaryView: UIView {
     }()
     
     //MARK: - 부모 도마뱀 스택 뷰 타이틀 + 부모 도마뱀 정보 스택 뷰
-    private lazy var detailParentStackView: UIStackView = {
+    private (set) lazy var detailParentStackView: UIStackView = {
         let view = UIStackView(arrangedSubviews: [detailParentLizardTitle, detailParentInfoStackView])
         view.axis = .vertical
         view.spacing = 10
@@ -563,8 +563,6 @@ class DetailGrowthDiaryView: UIView {
             detailParentStackView.isHidden = true
             return
         }
-      
-        detailParentStackView.isHidden = false
         
         if let fatherImageView = detailFatherInfoView.viewWithTag(1) as? UIImageView,
            let fatherName = detailFatherInfoView.viewWithTag(2) as? UILabel,

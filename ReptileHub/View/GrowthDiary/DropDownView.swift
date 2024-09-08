@@ -228,7 +228,3 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         closeDropdown()
     }
 }
-
-extension Notification.Name {
-    static let dropdownDidOpen = Notification.Name("dropdownDidOpen")
-}

@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate, KeyboardNotificationDelegate {
-
-    typealias request = (GrowthDiaryRequest, [Data?])
+    
+    typealias request = (GrowthDiaryRequest, [Data?], Bool)
     
     var buttonTapped: (()->Void)?
     let keyboardManager = KeyboardManager()
@@ -219,7 +219,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         keyboardManager.showNoti()
         keyboardManager.hideNoti()
         keyboardManager.delegate = self
-//        registerForKeyboardNotifications()
+        //        registerForKeyboardNotifications()
     }
     
     required init?(coder: NSCoder) {
@@ -492,19 +492,16 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     func growthDiaryRequestData() -> request{
         let lizardInfo = LizardInfo(name: nameTextField.text ?? "이름 없음", species: speciesTextField.text ?? "종 없음", morph: morphTextField.text, hatchDays: hatchDaysDatePicker.date, gender: Gender(rawValue: genderDropdownView.selectedOption!)!, weight: Int(weightTextField.text ?? "0")!, feedMethod: feedMethodDropdownView.selectedOption!, tailexistence: tailSelected)
         var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
-        print("여기는 성장일지 작성   부분에서 입니다", type(of:  Int(weightTextField.text ?? "0")!), Int(weightTextField.text ?? "0")!)
         if parentSelected{
             let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
             imageData.append(motherImageView.image == nil ? nil : motherImageView.image?.pngData())
             let father = ParentInfo(name: fatherNameTextField.text ?? "이름 없음", morph: fatherMorphTextField.text)
             imageData.append(fatherImageView.image == nil ? nil : fatherImageView.image?.pngData())
             let parent = Parents(mother: mother, father: father)
-            print("혹시 여기인가요~~~~~~~~~~~~~~~~")
-            return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData)
+            return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData, parentSelected)
         }
         imageData.append(contentsOf: [nil, nil])
-        print("여기입니까~~~~~~~~~~~~~~~~~~~~~~~~~~~~~₩")
-        return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData)
+        return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData, parentSelected)
     }
     
     //MARK: - Action
@@ -601,7 +598,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         textField.resignFirstResponder() // 키보드를 닫음
         return true
     }
-
+    
     private func findFirstResponder(in view: UIView) -> UIView? {
         for subview in view.subviews {
             if subview.isFirstResponder {
@@ -667,7 +664,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         guard let parentInfo = configureData.parentInfo else {
             return
         }
-       
+        
         if let fatherImageName = parentInfo.father.imageURL{
             fatherImageView.contentMode = .scaleAspectFill
             fatherImageView.setImage(with: fatherImageName)

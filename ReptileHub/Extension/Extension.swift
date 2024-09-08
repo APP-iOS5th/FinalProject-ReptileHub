@@ -72,3 +72,10 @@ extension UIImageView{
         }
     }
 }
+
+
+//MARK: - extension Notification.name
+extension Notification.Name {
+    static let dropdownDidOpen = Notification.Name("dropdownDidOpen")
+    static let parentInfoShow = Notification.Name("parentInfoShow")
+}

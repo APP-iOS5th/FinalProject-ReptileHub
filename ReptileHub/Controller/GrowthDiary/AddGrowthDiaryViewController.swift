@@ -9,6 +9,7 @@ import UIKit
 import PhotosUI
 import FirebaseAuth
 
+
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var previousViewController: GrowthDiaryViewController?
     weak var previousDetailVC: DetailGrowthDiaryViewController?
@@ -65,8 +66,8 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                         previousVC.updateImage()
                         previousDetailVC.updateDetailDate()
                     }
+                    NotificationCenter.default.post(name: .parentInfoShow, object: nil, userInfo: ["parentShow": result.2])
                     self?.navigationController?.popViewController(animated: true)
-                    
                 }
             }
         }else{
