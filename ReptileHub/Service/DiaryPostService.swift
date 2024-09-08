@@ -326,6 +326,42 @@ class DiaryPostService {
         }
     }
     
+    //MARK: - 해당 유저 전체 성장일지 일괄 삭제 - 회원탈퇴시 사용
+    func deleteAllGrowthDiaries(forUser userID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let growthDiariesRef = db.collection("users").document(userID).collection("growth_diaries_details")
+        
+        growthDiariesRef.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            let group = DispatchGroup()
+            var errors: [Error] = []
+            
+            for document in querySnapshot?.documents ?? [] {
+                let diaryID = document.documentID
+                group.enter()
+                
+                self.deleteGrowthDiary(userID: userID, diaryID: diaryID) { error in
+                    if let error = error {
+                        errors.append(error)
+                    }
+                    group.leave()
+                }
+            }
+            
+            group.notify(queue: .main) {
+                if errors.isEmpty {
+                    completion(nil)
+                } else {
+                    completion(errors.first)
+                }
+            }
+        }
+    }
+    
     
     //MARK: - 성장일지 수정 - 이미지,이름 등등 바뀐 도미뱀 정보를 담아서 전송하면 저장되있는 정보 업데이트
     func updateGrowthDiary(userID: String, diaryID: String, updatedDiary: GrowthDiaryRequest, newSelfImageData: Data?, newMotherImageData: Data?, newFatherImageData: Data?, completion: @escaping (Error?) -> Void) {
