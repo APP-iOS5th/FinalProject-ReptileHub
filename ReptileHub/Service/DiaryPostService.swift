@@ -95,7 +95,7 @@ class DiaryPostService {
                         "weight": initialWeight
                     ]
                     
-                    let weightHistoryRef = detailRef.collection("weight_history").document()
+                    let weightHistoryRef = detailRef.collection("weight_history").document(weightID)
                     transaction.setData(weightData, forDocument: weightHistoryRef)
                     
                     return nil
@@ -815,35 +815,46 @@ extension DiaryPostService {
     //MARK: -  몸무게 기록 수정하기
     func updateWeightEntry(userID: String, diaryID: String, weightID: String, newWeight: Int? = nil, newDate: Date? = nil, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
-        
+
         // 수정할 데이터가 없는 경우
         guard newWeight != nil || newDate != nil else {
             completion(nil) // 수정할 것이 없으면 오류 없이 반환
             return
         }
-        
+
         // 수정할 데이터 준비
         var updateData: [String: Any] = [:]
-        
+
         if let newWeight = newWeight {
             updateData["weight"] = newWeight
         }
-        
+
         if let newDate = newDate {
             updateData["date"] = Timestamp(date: newDate)
         }
-        
-        // 해당 문서 참조
+
+        // weight_history 컬렉션의 해당 문서 참조
         let entryRef = db.collection("users").document(userID)
             .collection("growth_diaries_details").document(diaryID)
             .collection("weight_history").document(weightID)
-        
+
+        // growth_diaries_details 컬렉션의 해당 문서 참조
+        let detailRef = db.collection("users").document(userID)
+            .collection("growth_diaries_details").document(diaryID)
+
         // Firestore 업데이트
         entryRef.updateData(updateData) { error in
             if let error = error {
                 completion(error)
             } else {
-                completion(nil)
+                // weight_history 업데이트 후 details 문서의 몸무게 업데이트
+                if let newWeight = newWeight {
+                    detailRef.updateData(["lizardInfo.weight": newWeight]) { error in
+                        completion(error)
+                    }
+                } else {
+                    completion(nil)
+                }
             }
         }
     }
