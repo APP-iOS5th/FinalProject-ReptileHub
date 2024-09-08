@@ -26,6 +26,7 @@ class TabbarViewController: UITabBarController {
             case .success(let userData):
                 self.profileVC.profileView.setProfileData(userData: userData)
                 self.profileVC.currentUserProfile = userData
+                self.profileVC.profileView.secondButton.setTitle(String(userData.postCount), for: .normal)
                 self.profileVC.isMyProfile = true
             case .failure(let error):
                 print("끄아아아아아아악!!! : \(error.localizedDescription)")

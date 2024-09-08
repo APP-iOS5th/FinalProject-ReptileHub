@@ -87,7 +87,8 @@ class ProfileViewController: UIViewController {
             case .success(let userData):
                 self.userProfileData.removeAll()
                 self.userProfileData.append(contentsOf: [userData.name, userData.profileImageURL])
-
+                self.profileView.firstButton.setTitle(String(userData.lizardCount), for: .normal)
+                self.profileView.secondButton.setTitle(String(userData.postCount), for: .normal)
                 self.profileView.postList.reloadData()
                 print("userData: \(userData)")
                 print("불러오기 성공: \(self.userProfileData)")
@@ -106,6 +107,7 @@ class ProfileViewController: UIViewController {
     // 프로필 수정 뷰 모달로 띄우기
     @objc func editUserInfo() {
         let editController = EditUserInfoViewController()
+        editController.delegate = self
         editController.editUserInfoData = (userProfileData[0], userProfileData[1])
         if let sheet = editController.sheetPresentationController {
             sheet.detents = [.medium()]
@@ -205,4 +207,34 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         }
     
     }
+}
+
+
+extension ProfileViewController: EditUserInfoViewControllerDelegate {
+    func tapSaveEditButton(newName: String, newProfileImage: UIImage) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        UserService.shared.updateUserProfile(uid: uid, newName: newName, newProfileImage: newProfileImage) { [weak self] error in
+            if let error = error {
+                print("프로필 저장 실패: \(error.localizedDescription)")
+            } else {
+                print("프로필 저장 성공")
+//                if let previousVC = self?.previousViewController{
+//                                    print("privousVC", previousVC)
+//                                    previousVC.updateImage()
+//                                }
+                UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
+                    switch result {
+                    case .success(let userData):
+                        self?.profileView.setProfileData(userData: userData)
+                    case .failure(let error):
+                        print("error~! : \(error)")
+                    }
+                }
+                self?.dismiss(animated: true)
+//                self?.editUserInfoData = nil
+            }
+        }
+    }
+    
+    
 }
