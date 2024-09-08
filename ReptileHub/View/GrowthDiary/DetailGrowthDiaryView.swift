@@ -536,9 +536,6 @@ class DetailGrowthDiaryView: UIView {
     
     func updateTableViewHeight(){
         detailPreviesSpecialNoteTableView.layoutIfNeeded()
-        //        let height = min(detailPreviesSpecialNoteTableView.contentSize.height, 300)
-        //        detailTableViewHeightContaint?.update(offset: height)
-        
         let numberOfRows = detailPreviesSpecialNoteTableView.numberOfRows(inSection: 0)
         let rowHeight = 100 // UITableView 델리겟의 row 높이와 맞춰줌
         let newHeight = CGFloat(numberOfRows * rowHeight)

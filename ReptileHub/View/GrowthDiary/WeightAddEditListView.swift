@@ -12,7 +12,7 @@ class WeightAddEditListView: UIView {
     var categoryButtonTapped: ((String) -> Void)?
     
     //MARK: - 무게 추이 테이블 뷰
-    private lazy var weightAddEditTableView: UITableView = {
+    private (set) lazy var weightAddEditTableView: UITableView = {
         let view = UITableView()
         return view
     }()

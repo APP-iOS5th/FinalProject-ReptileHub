@@ -492,15 +492,18 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     func growthDiaryRequestData() -> request{
         let lizardInfo = LizardInfo(name: nameTextField.text ?? "이름 없음", species: speciesTextField.text ?? "종 없음", morph: morphTextField.text, hatchDays: hatchDaysDatePicker.date, gender: Gender(rawValue: genderDropdownView.selectedOption!)!, weight: Int(weightTextField.text ?? "0")!, feedMethod: feedMethodDropdownView.selectedOption!, tailexistence: tailSelected)
         var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
+        print("여기는 성장일지 작성   부분에서 입니다", type(of:  Int(weightTextField.text ?? "0")!), Int(weightTextField.text ?? "0")!)
         if parentSelected{
             let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
             imageData.append(motherImageView.image == nil ? nil : motherImageView.image?.pngData())
             let father = ParentInfo(name: fatherNameTextField.text ?? "이름 없음", morph: fatherMorphTextField.text)
             imageData.append(fatherImageView.image == nil ? nil : fatherImageView.image?.pngData())
             let parent = Parents(mother: mother, father: father)
+            print("혹시 여기인가요~~~~~~~~~~~~~~~~")
             return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData)
         }
         imageData.append(contentsOf: [nil, nil])
+        print("여기입니까~~~~~~~~~~~~~~~~~~~~~~~~~~~~~₩")
         return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData)
     }
     
@@ -676,14 +679,14 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             fatherMorphTextField.text = fatherMorph
         }
         
-        if let motherImageName = parentInfo.father.imageURL{
+        if let motherImageName = parentInfo.mother.imageURL{
             motherImageView.contentMode = .scaleAspectFill
             motherImageView.setImage(with: motherImageName)
         }
         
-        motherNameTextField.text = parentInfo.father.name
+        motherNameTextField.text = parentInfo.mother.name
         
-        if let motherMorph = parentInfo.father.morph{
+        if let motherMorph = parentInfo.mother.morph{
             motherMorphTextField.text = motherMorph
         }
         

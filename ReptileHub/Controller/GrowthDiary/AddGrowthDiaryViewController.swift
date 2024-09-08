@@ -26,12 +26,6 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewIsAppearing(_ animated: Bool) {
-        super.viewIsAppearing(true)
-        if editMode{
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUP()

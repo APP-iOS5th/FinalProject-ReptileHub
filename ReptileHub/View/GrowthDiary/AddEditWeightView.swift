@@ -183,6 +183,7 @@ class AddEditWeightView: UIView {
         else {
             return (0, self.addWeightDatePicker.date)
         }
+        print("여기는 무게 추가 부분에서 입니다", type(of: weight), weight)
         return (weight, self.addWeightDatePicker.date)
     }
     
