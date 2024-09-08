@@ -194,9 +194,9 @@ class DiaryPostService {
         let profileRef = db.collection("users").document(userID)
         let thumbnailRef = profileRef.collection("growth_diaries_thumbnails").document(diaryID)
         let detailRef = profileRef.collection("growth_diaries_details").document(diaryID)
-        let storageRef = Storage.storage().reference()
+        let weightHistoryRef = detailRef.collection("weight_history")
         
-        // 1. 하위 컬렉션인 diaryEntries 삭제
+        // 1. 하위 컬렉션인 diary_entries 삭제
         let entriesRef = detailRef.collection("diary_entries")
         entriesRef.getDocuments { (querySnapshot, error) in
             if let error = error {
@@ -228,83 +228,96 @@ class DiaryPostService {
                 batch.deleteDocument(document.reference)
             }
             
-            // 2. 썸네일 이미지 삭제
-            thumbnailRef.getDocument { (document, error) in
-                if let data = document?.data(),
-                   let thumbnailURL = data["thumbnail"] as? String {
-                    print("Attempting to delete thumbnail image from URL: \(thumbnailURL)")
-                    self.deleteImage(from: thumbnailURL) { error in
-                        if let error = error {
-                            print("Error deleting thumbnail: \(error.localizedDescription)")
-                        } else {
-                            print("Successfully deleted thumbnail image: \(thumbnailURL)")
-                        }
-                    }
-                }
-            }
-            
-            // 3. 부모 문서와 관련된 썸네일 및 상세 정보 문서 삭제
-            detailRef.getDocument { (document, error) in
-                if let data = document?.data() {
-                    // 부모 정보에 저장된 이미지 URL 삭제
-                    if let parentInfo = data["parentInfo"] as? [String: Any] {
-                        if let motherInfo = parentInfo["mother"] as? [String: Any],
-                           let motherImageURL = motherInfo["imageURL"] as? String {
-                            print("Attempting to delete mother image from URL: \(motherImageURL)")
-                            self.deleteImage(from: motherImageURL) { error in
-                                if let error = error {
-                                    print("Error deleting mother image: \(error.localizedDescription)")
-                                } else {
-                                    print("Successfully deleted mother image: \(motherImageURL)")
-                                }
-                            }
-                        }
-                        
-                        if let fatherInfo = parentInfo["father"] as? [String: Any],
-                           let fatherImageURL = fatherInfo["imageURL"] as? String {
-                            print("Attempting to delete father image from URL: \(fatherImageURL)")
-                            self.deleteImage(from: fatherImageURL) { error in
-                                if let error = error {
-                                    print("Error deleting father image: \(error.localizedDescription)")
-                                } else {
-                                    print("Successfully deleted father image: \(fatherImageURL)")
-                                }
-                            }
-                        }
-                    }
+            // 2. weight_history 컬렉션 삭제
+            weightHistoryRef.getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    print("Error fetching weight history: \(error.localizedDescription)")
+                    completion(error)
+                    return
                 }
                 
-                batch.deleteDocument(thumbnailRef)
-                batch.deleteDocument(detailRef)
+                for document in querySnapshot?.documents ?? [] {
+                    batch.deleteDocument(document.reference)
+                }
                 
-                // 4. 배치 작업 커밋
-                batch.commit { error in
-                    if let error = error {
-                        print("Error committing batch delete: \(error.localizedDescription)")
-                        completion(error)
-                    } else {
-                        // 5. 도마뱀 개수 감소 트랜잭션
-                        db.runTransaction({ (transaction, errorPointer) -> Any? in
-                            do {
-                                let profileDocument = try transaction.getDocument(profileRef)
-                                let currentLizardCount = profileDocument.data()?["lizardCount"] as? Int ?? 0
-                                
-                                if currentLizardCount > 0 {
-                                    transaction.updateData(["lizardCount": currentLizardCount - 1], forDocument: profileRef)
-                                }
-                                
-                                return nil
-                            } catch {
-                                errorPointer?.pointee = error as NSError
-                                return nil
-                            }
-                        }) { (result, error) in
+                // 3. 썸네일 이미지 삭제
+                thumbnailRef.getDocument { (document, error) in
+                    if let data = document?.data(),
+                       let thumbnailURL = data["thumbnail"] as? String {
+                        print("Attempting to delete thumbnail image from URL: \(thumbnailURL)")
+                        self.deleteImage(from: thumbnailURL) { error in
                             if let error = error {
-                                print("Error in lizard count transaction: \(error.localizedDescription)")
-                                completion(error)
+                                print("Error deleting thumbnail: \(error.localizedDescription)")
                             } else {
-                                print("Successfully deleted growth diary and updated lizard count")
-                                completion(nil)
+                                print("Successfully deleted thumbnail image: \(thumbnailURL)")
+                            }
+                        }
+                    }
+                }
+                
+                // 4. 부모 문서와 관련된 썸네일 및 상세 정보 문서 삭제
+                detailRef.getDocument { (document, error) in
+                    if let data = document?.data() {
+                        // 부모 정보에 저장된 이미지 URL 삭제
+                        if let parentInfo = data["parentInfo"] as? [String: Any] {
+                            if let motherInfo = parentInfo["mother"] as? [String: Any],
+                               let motherImageURL = motherInfo["imageURL"] as? String {
+                                print("Attempting to delete mother image from URL: \(motherImageURL)")
+                                self.deleteImage(from: motherImageURL) { error in
+                                    if let error = error {
+                                        print("Error deleting mother image: \(error.localizedDescription)")
+                                    } else {
+                                        print("Successfully deleted mother image: \(motherImageURL)")
+                                    }
+                                }
+                            }
+                            
+                            if let fatherInfo = parentInfo["father"] as? [String: Any],
+                               let fatherImageURL = fatherInfo["imageURL"] as? String {
+                                print("Attempting to delete father image from URL: \(fatherImageURL)")
+                                self.deleteImage(from: fatherImageURL) { error in
+                                    if let error = error {
+                                        print("Error deleting father image: \(error.localizedDescription)")
+                                    } else {
+                                        print("Successfully deleted father image: \(fatherImageURL)")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    batch.deleteDocument(thumbnailRef)
+                    batch.deleteDocument(detailRef)
+                    
+                    // 5. 배치 작업 커밋
+                    batch.commit { error in
+                        if let error = error {
+                            print("Error committing batch delete: \(error.localizedDescription)")
+                            completion(error)
+                        } else {
+                            // 6. 도마뱀 개수 감소 트랜잭션
+                            db.runTransaction({ (transaction, errorPointer) -> Any? in
+                                do {
+                                    let profileDocument = try transaction.getDocument(profileRef)
+                                    let currentLizardCount = profileDocument.data()?["lizardCount"] as? Int ?? 0
+                                    
+                                    if currentLizardCount > 0 {
+                                        transaction.updateData(["lizardCount": currentLizardCount - 1], forDocument: profileRef)
+                                    }
+                                    
+                                    return nil
+                                } catch {
+                                    errorPointer?.pointee = error as NSError
+                                    return nil
+                                }
+                            }) { (result, error) in
+                                if let error = error {
+                                    print("Error in lizard count transaction: \(error.localizedDescription)")
+                                    completion(error)
+                                } else {
+                                    print("Successfully deleted growth diary and updated lizard count")
+                                    completion(nil)
+                                }
                             }
                         }
                     }
@@ -312,6 +325,8 @@ class DiaryPostService {
             }
         }
     }
+    
+    
     //MARK: - 성장일지 수정 - 이미지,이름 등등 바뀐 도미뱀 정보를 담아서 전송하면 저장되있는 정보 업데이트
     func updateGrowthDiary(userID: String, diaryID: String, updatedDiary: GrowthDiaryRequest, newSelfImageData: Data?, newMotherImageData: Data?, newFatherImageData: Data?, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -940,6 +955,44 @@ extension DiaryPostService {
                 print("Successfully deleted file at path: \(fileRef.fullPath)")
             }
             completion(error)
+        }
+    }
+}
+
+extension DiaryPostService {
+   
+    func deleteAllGrowthDiaries(forUser userID: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let growthDiariesRef = db.collection("users").document(userID).collection("growth_diaries_details")
+        
+        growthDiariesRef.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                completion(error)
+                return
+            }
+            
+            let group = DispatchGroup()
+            var errors: [Error] = []
+            
+            for document in querySnapshot?.documents ?? [] {
+                let diaryID = document.documentID
+                group.enter()
+                
+                self.deleteGrowthDiary(userID: userID, diaryID: diaryID) { error in
+                    if let error = error {
+                        errors.append(error)
+                    }
+                    group.leave()
+                }
+            }
+            
+            group.notify(queue: .main) {
+                if errors.isEmpty {
+                    completion(nil)
+                } else {
+                    completion(errors.first)
+                }
+            }
         }
     }
 }
