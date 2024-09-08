@@ -21,4 +21,5 @@ struct UserProfile {
     let loginType: String
     var lizardCount: Int
     var postCount: Int
+    var isVaildUser: Bool
 }

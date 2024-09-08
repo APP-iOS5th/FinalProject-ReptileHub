@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		460671312C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */; };
 		460671352C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */; };
+		464338092C8DB5FE00D9DDCF /* TermsAgreementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464338082C8DB5FE00D9DDCF /* TermsAgreementView.swift */; };
 		4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */; };
 		4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2E22C64D71700BCD451 /* AuthUser.swift */; };
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
@@ -112,6 +113,7 @@
 /* Begin PBXFileReference section */
 		460671302C7ED9FC009B8AC4 /* testVC-DiaryDetail,EditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "testVC-DiaryDetail,EditVC.swift"; sourceTree = "<group>"; };
 		460671342C7F1B33009B8AC4 /* TestVC -BookmarkPostsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestVC -BookmarkPostsViewController.swift"; sourceTree = "<group>"; };
+		464338082C8DB5FE00D9DDCF /* TermsAgreementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementView.swift; sourceTree = "<group>"; };
 		4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementViewController.swift; sourceTree = "<group>"; };
 		4674B2E22C64D71700BCD451 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				46F0F7ED2C6AE46400444C98 /* LoginView.swift */,
+				464338082C8DB5FE00D9DDCF /* TermsAgreementView.swift */,
 			);
 			path = LoginView;
 			sourceTree = "<group>";
@@ -552,6 +555,7 @@
 				46DA26332C6EE198005C7609 /* UserModel.swift in Sources */,
 				5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */,
 				9F2BD4452C7BF803006FDD69 /* SpecialDetailView.swift in Sources */,
+				464338092C8DB5FE00D9DDCF /* TermsAgreementView.swift in Sources */,
 				58F3F6442C781F1400FDABD1 /* AddPostView.swift in Sources */,
 				588CE3D82C524EA900338878 /* SceneDelegate.swift in Sources */,
 				9F2BD4342C75C4B5006FDD69 /* SpecialPlusButtonView.swift in Sources */,
@@ -738,7 +742,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P95R3MRRWK;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = NSPhotoLibraryUsageDescription;
@@ -768,7 +772,7 @@
 				CODE_SIGN_ENTITLEMENTS = ReptileHub/ReptileHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P95R3MRRWK;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ReptileHub/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = NSPhotoLibraryUsageDescription;

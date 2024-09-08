@@ -50,12 +50,14 @@ struct AppleAuthUser: AuthUser {
     let idToken: String? //
     let accessToken: String? = nil
     let providerUID: String
+    let authorizationCode: String?
 
     init(credential: ASAuthorizationAppleIDCredential) {
         self.uid = credential.user
         self.email = credential.email
         self.name = credential.fullName?.formatted()
         self.idToken = String(data: credential.identityToken ?? Data(), encoding: .utf8)
+        self.authorizationCode = String(data: credential.authorizationCode ?? Data(), encoding: .utf8)
         self.providerUID = credential.user // Apple 고유 사용자 ID
         self.loginType = "Apple"
     }
