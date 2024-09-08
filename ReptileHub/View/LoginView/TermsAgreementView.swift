@@ -30,7 +30,7 @@ class TermsAgreementView: UIView {
         textView.backgroundColor = UIColor.lightGray
         textView.layer.cornerRadius = 8
         textView.isScrollEnabled = true
-        textView.text = "여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ...여기에 개인정보 수집 및 이용에 대한 긴 텍스트가 들어갑니다. ..."
+        textView.text = ""
         return textView
     }()
 
@@ -85,6 +85,18 @@ class TermsAgreementView: UIView {
         setupView()
         setupActions()
     }
+    
+    private func readTextFile() -> String {
+            var text = ""
+            
+            guard let path = Bundle.main.path(forResource: "PersonalInfo.txt", ofType: nil) else { return "" }
+            do {
+                text = try String(contentsOfFile: path, encoding: .utf8)
+                return text
+            } catch {
+                return "Error : 개인정보수집동의.txt file read failed - \(error.localizedDescription)"
+            }
+        }
 
     private func setupView() {
         backgroundColor = .white
@@ -95,6 +107,7 @@ class TermsAgreementView: UIView {
         addSubview(agreementTextView)
         addSubview(buttonStackView)
 
+        agreementTextView.text = readTextFile()
         // 오토레이아웃 설정
         setupConstraints()
     }

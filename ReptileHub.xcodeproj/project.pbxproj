@@ -36,6 +36,7 @@
 		46F0F7F92C6D997800444C98 /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7F82C6D997800444C98 /* PostModel.swift */; };
 		5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */; };
 		580E1AC12C7E421B00CD3A91 /* PHPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580E1AC02C7E421B00CD3A91 /* PHPickerCollectionViewCell.swift */; };
+		581F02E82C8DDA37005E5407 /* PersonalInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 581F02E72C8DDA37005E5407 /* PersonalInfo.txt */; };
 		583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */; };
 		58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */; };
 		5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5881F01F2C73122500FBB13E /* CommunityListView.swift */; };
@@ -130,6 +131,7 @@
 		46F0F7F82C6D997800444C98 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		580E1AC02C7E421B00CD3A91 /* PHPickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerCollectionViewCell.swift; sourceTree = "<group>"; };
+		581F02E72C8DDA37005E5407 /* PersonalInfo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PersonalInfo.txt; path = ../../../../PersonalInfo.txt; sourceTree = "<group>"; };
 		583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailViewController.swift; sourceTree = "<group>"; };
 		58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
 		5881F01F2C73122500FBB13E /* CommunityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListView.swift; sourceTree = "<group>"; };
@@ -232,6 +234,15 @@
 			path = LoginView;
 			sourceTree = "<group>";
 		};
+		581F02E62C8DD8CC005E5407 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				581F02E72C8DDA37005E5407 /* PersonalInfo.txt */,
+			);
+			name = Text;
+			path = ReptileHub/Text;
+			sourceTree = SOURCE_ROOT;
+		};
 		584107DC2C5395A100DA47BA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -327,6 +338,7 @@
 		588CE3D42C524EA900338878 /* ReptileHub */ = {
 			isa = PBXGroup;
 			children = (
+				581F02E62C8DD8CC005E5407 /* Text */,
 				7994BDA22C7E413C00ADE7A7 /* Extension */,
 				798476422C70EFA400895D2D /* Components */,
 				469B443D2C6308B300B1C49B /* ReptileHub.entitlements */,
@@ -509,6 +521,7 @@
 			files = (
 				588CE3DF2C524EAA00338878 /* Assets.xcassets in Resources */,
 				588CE3E22C524EAA00338878 /* Base in Resources */,
+				581F02E82C8DDA37005E5407 /* PersonalInfo.txt in Resources */,
 				469B443F2C63116000B1C49B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -748,9 +761,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = kr.Bin.ReptileHub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -780,9 +797,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = kr.Bin.ReptileHub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

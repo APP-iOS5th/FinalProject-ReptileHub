@@ -152,7 +152,33 @@ class CommunityDetailViewController: UIViewController {
     }
     
     private func reportButtonAction() {
-        print("report")
+        let alert = UIAlertController(title: "신고", message: "해당 게시글의 작성자를 신고하시겠습니까?", preferredStyle: .alert)
+        
+        // 텍스트 필드 추가
+        alert.addTextField { textField in
+            textField.placeholder = "신고 사유를 입력하세요"
+        }
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "신고", style: .destructive, handler: { _ in
+            // 텍스트 필드에서 입력된 값 가져오기
+            let reportReason = alert.textFields?.first?.text ?? "신고되었음"
+            
+            UserService.shared.reportPost(postID: self.detailView.postID, reportedUserID: self.detailView.postUserId, currentUserID: UserService.shared.currentUserId, content: reportReason) { error in
+                if let error = error {
+                    print("게시글 신고 에러 : \(error.localizedDescription)")
+                } else {
+                    print("게시글 신고 완료")
+                    
+                    // 신고 완료 메시지 알림 띄우기
+                    let successAlert = UIAlertController(title: "신고 완료", message: "신고가 성공적으로 처리되었습니다.", preferredStyle: .alert)
+                    successAlert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                    self.present(successAlert, animated: true, completion: nil)
+                }
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
     }
     
     //MARK: - 커뮤니티 디테일 뷰 setup
@@ -290,6 +316,37 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
 }
 
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
+    func reportCommentAction(cell: CommentTableViewCell) {
+        print("댓글 신고!")
+        guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+        let alert = UIAlertController(title: "신고", message: "해당 댓글의 작성자를 신고하시겠습니까?", preferredStyle: .alert)
+        
+        // 텍스트 필드 추가
+        alert.addTextField { textField in
+            textField.placeholder = "신고 사유를 입력하세요"
+        }
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "신고", style: .destructive, handler: { _ in
+            // 텍스트 필드에서 입력된 값 가져오기
+            let reportReason = alert.textFields?.first?.text ?? "신고되었음"
+            
+            UserService.shared.reportComment(postID: self.detailView.postID, commentID: self.fetchComments[indexPath.row].commentID, reportedUserID: self.fetchComments[indexPath.row].userID, currentUserID: UserService.shared.currentUserId, content: reportReason) { error in
+                if let error = error {
+                    print("댓글 신고 에러")
+                } else {
+                    print("댓글 신고 성고")
+                    // 신고 완료 메시지 알림 띄우기
+                    let successAlert = UIAlertController(title: "신고 완료", message: "신고가 성공적으로 처리되었습니다.", preferredStyle: .alert)
+                    successAlert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                    self.present(successAlert, animated: true, completion: nil)
+                }
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
     func onTapCommentProfile(cell: CommentTableViewCell) {
         guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
         
