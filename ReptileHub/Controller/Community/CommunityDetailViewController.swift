@@ -290,6 +290,10 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
 }
 
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
+    func reportCommentAction(cell: CommentTableViewCell) {
+        print("댓글 신고!")
+    }
+    
     func onTapCommentProfile(cell: CommentTableViewCell) {
         guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
         
