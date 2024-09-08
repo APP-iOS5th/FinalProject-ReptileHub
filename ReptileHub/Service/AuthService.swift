@@ -569,3 +569,162 @@ extension AuthService {
         }
     }
 }
+
+extension AuthService {
+ 
+    func deleteUserAccount(userID: String, loginType: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(userID)
+
+        
+        // 기본값 설정
+        let defaultProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/reptilehub-a8815.appspot.com/o/profile_images%2FinVaild_Profile.jpeg?alt=media&token=4379f3e7-2c2e-4d51-a06b-f095d15f7ee1" // 기본 이미지 URL
+        let defaultName = "탈퇴한 유저"
+        let defaultInfo = "알수없음"
+
+        // DispatchGroup을 사용해 모든 비동기 작업이 완료될 때까지 기다림
+        let group = DispatchGroup()
+
+        // Apple 로그인 유저의 경우 refreshToken을 해제하기 위한 로직
+        if loginType == "Apple", let refreshToken = UserDefaults.standard.string(forKey: "refreshToken") {
+            group.enter()
+            //Todo - UR
+            let urlString = "https://us-central1-reptilehub-a8815.cloudfunctions.net/revokeToken?refresh_token=\(refreshToken)"
+            if let encodedURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+               let url = URL(string: encodedURL) {
+                let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print("Error revoking Apple refresh token: \(error.localizedDescription)")
+                    } else {
+                        print("Successfully revoked Apple refresh token.")
+                    }
+                    group.leave()
+                }
+                task.resume()
+            } else {
+                group.leave()
+            }
+        }
+
+        // 유저 프로필 정보 업데이트
+        group.enter()
+        userRef.updateData([
+            "name": defaultName,
+            "profileImageURL": defaultProfileImageURL,
+            "providerUID": defaultInfo,
+            "loginType": defaultInfo,
+            "lizardCount": 0,
+            "postCount": 0,
+            "isVaildUser": false
+        ]) { error in
+            if let error = error {
+                completion(error)
+                group.leave()
+                return
+            }
+
+            // 프로필 이미지가 기본 이미지가 아니라면 삭제
+            userRef.getDocument { (document, error) in
+                if let document = document, document.exists, let data = document.data() {
+                    if let currentProfileImageURL = data["profileImageURL"] as? String, currentProfileImageURL != defaultProfileImageURL {
+                        self.deleteImage(from: currentProfileImageURL) { error in
+                            if let error = error {
+                                print("프로필 이미지 삭제 에러: \(error.localizedDescription)")
+                            } else {
+                                print("프로필 이미지가 성공적으로 삭제되었습니다.")
+                            }
+                        }
+                    }
+                }
+                group.leave()
+            }
+        }
+
+        // 모든 성장일지 삭제
+        group.enter()
+        DiaryPostService.shared.deleteAllGrowthDiaries(forUser: userID) { error in
+            if let error = error {
+                completion(error)
+                group.leave()
+                return
+            }
+            group.leave()
+        }
+
+        // 모든 작업이 완료되면 FirebaseAuth에서 유저 삭제 후 로그아웃
+        group.notify(queue: .main) {
+            if let user = Auth.auth().currentUser {
+                user.delete { error in
+                    if let error = error {
+                        print("FirebaseAuth에서 유저 삭제 에러: \(error.localizedDescription)")
+                        completion(error)
+                    } else {
+                        print("FirebaseAuth에서 유저가 성공적으로 삭제되었습니다.")
+                        // 탈퇴 후 로그인 화면으로 이동하는 로직 추가
+                        self.navigateToLoginScreen()
+                        completion(nil)
+                    }
+                }
+            } else {
+                print("현재 로그인된 유저가 없습니다.")
+                self.navigateToLoginScreen()
+                completion(nil)
+            }
+        }
+        
+        // FirebaseAuth 로그아웃 처리
+        do {
+            try Auth.auth().signOut()
+            print("FirebaseAuth 로그아웃 성공")
+        } catch let signOutError as NSError {
+            print("FirebaseAuth 로그아웃 에러: \(signOutError.localizedDescription)")
+        }
+    }
+
+    private func navigateToLoginScreen() {
+        DispatchQueue.main.async {
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+               let window = sceneDelegate.window {
+                let loginVC = LoginViewController() // 로그인 화면으로 이동할 뷰 컨트롤러
+                window.rootViewController = loginVC
+                window.makeKeyAndVisible()
+            }
+        }
+    }
+}
+
+extension AuthService {
+    private func extractFileName(from url: String) -> String? {
+        guard let urlComponents = URLComponents(string: url),
+              let path = urlComponents.path.removingPercentEncoding else {
+            return nil
+        }
+        
+        let pathComponents = path.split(separator: "/")
+        return pathComponents.last?.components(separatedBy: "%2F").last
+    }
+    
+    func deleteImage(from url: String, completion: @escaping (Error?) -> Void) {
+        guard let fileName = extractFileName(from: url) else {
+            print("Invalid file URL: \(url)")
+            completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid file URL"]))
+            return
+        }
+        
+        // 기본 프로필 이미지는 삭제하지 않음
+        if fileName != "default_profile.jpg" {
+            let fileRef = Storage.storage().reference().child("profile_images/\(fileName)")
+            print("Deleting file at path: \(fileRef.fullPath)")
+            fileRef.delete { error in
+                if let error = error {
+                    print("Error deleting file at path: \(fileRef.fullPath) - \(error.localizedDescription)")
+                } else {
+                    print("Successfully deleted file at path: \(fileRef.fullPath)")
+                }
+                completion(error)
+            }
+        } else {
+            completion(nil)
+        }
+    }
+}
