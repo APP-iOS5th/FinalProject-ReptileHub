@@ -9,15 +9,12 @@ import UIKit
 import SnapKit
 
 class ProfileView: UIView {
-
     
-    // 배경 수정 필요
-    // UserProfile 더미 데이터
-//    let users: [UserProfile] = [
-//        UserProfile(uid: "1001", providerUID: "123", name: "고앵이", profileImageURL: "profile", loginType: "profile2", lizardCount: 5, postCount: 12)
-//    ]
 
-    // MARK: - Properties (프로필 이미지, 이름, 스택뷰, 테이블뷰 등)
+
+    // MARK: - 프로필 뷰 구성요소
+    // 프로필 이미지
+
     private let profileImage: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 95
@@ -27,12 +24,14 @@ class ProfileView: UIView {
         return imageView
     }()
     
+    // 프로필 이름
     private var profileName: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 23)
         return label
     }()
     
+    // 스택뷰 (내 도마뱀 + 도마뱀 수 카운트)
     private let firstLabel: UILabel = {
         let label = UILabel()
         label.text = "내 도마뱀"
@@ -55,6 +54,7 @@ class ProfileView: UIView {
         return stackView
     }()
     
+    // 스택뷰 (내가 쓴 게시글 + 게시글 수 카운트)
     private let secondLabel: UILabel = {
         let label = UILabel()
         label.text = "내가 쓴 게시글"
@@ -77,6 +77,7 @@ class ProfileView: UIView {
         return stackView
     }()
     
+    // 스택뷰 (소셜 로그인 + 로그인 타입 별 이미지)
     private let thirdLabel: UILabel = {
         let label = UILabel()
         label.text = "소셜 로그인"
@@ -101,6 +102,7 @@ class ProfileView: UIView {
         return stackView
     }()
     
+    // 3개 스택뷰의 스택뷰
     private lazy var lastStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [firstStackView, secondStackView, thirdStackView])
         stackView.axis = .horizontal
@@ -112,13 +114,15 @@ class ProfileView: UIView {
         return stackView
     }()
     
-    private let postList: UITableView = {
+    // "내가 작성한 댓글", "북마크한 게시글", "내가 차단한 사용자" 테이블 뷰
+    private (set) var postList: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.isScrollEnabled = false
         return tableView
     }()
     
+    // 회원 탈퇴 버튼
     let withdrawalButton: UIButton = {
         let button = UIButton()
         button.setTitle("회원 탈퇴", for: .normal)
@@ -127,7 +131,7 @@ class ProfileView: UIView {
         return button
     }()
     
-    private let centerLabel: UILabel = {
+    let centerLabel: UILabel = {
         let label = UILabel()
         label.text = "|"
         label.font = UIFont.systemFont(ofSize: 15)
@@ -136,6 +140,7 @@ class ProfileView: UIView {
         return label
     }()
     
+    // 로그아웃 버튼
     let logoutButton: UIButton = {
         let button = UIButton()
         button.setTitle("로그아웃", for: .normal)
@@ -144,6 +149,7 @@ class ProfileView: UIView {
         return button
     }()
     
+    // 회원탈퇴, 로그아웃 버튼 스택뷰
     private lazy var buttonsStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [withdrawalButton, centerLabel, logoutButton])
         stackView.axis = .horizontal
@@ -153,30 +159,25 @@ class ProfileView: UIView {
         return stackView
     }()
     
+    // 프로필 스크롤 뷰 (조건에 따라 스크롤 활성화)
     private lazy var profileScrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        
         return scrollView
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        setProfileImage()
-        setProfileName()
-        setProfileLizardCount()
-        setProfilePostCount()
-        setProfileLoginType()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Setup Views
+    // MARK: - 뷰 구성 메서드
     private func setupView() {
         self.backgroundColor = .white
-        
+    
         self.addSubview(profileScrollView)
         
         profileScrollView.addSubview(profileImage)
@@ -226,24 +227,25 @@ class ProfileView: UIView {
         }
     }
     
-    private func setProfileImage() {
-        profileImage.image = UIImage(named: users[0].profileImageURL)
-    }
-    
-    private func setProfileName() {
-        profileName.text = users[0].name
-    }
-    
-    private func setProfileLizardCount() {
-        firstButton.setTitle(String(users[0].lizardCount), for: .normal)
-    }
-    
-    private func setProfilePostCount() {
-        secondButton.setTitle(String(users[0].postCount), for: .normal)
-    }
-    
-    private func setProfileLoginType() {
-        thirdImage.image = UIImage(named: users[0].loginType)
+    // MARK: - Profile 데이터
+    func setProfileData(userData: UserProfile) {
+        profileImage.setImage(with: userData.profileImageURL)
+        profileName.text = userData.name
+        firstButton.setTitle(String(userData.lizardCount), for: .normal)
+        print("포스트 카운트 : \(userData.postCount)")
+        secondButton.setTitle(String(userData.postCount), for: .normal)
+        
+        // 로그인 타입별 소셜로그인 이미지
+        switch userData.loginType {
+        case "Kakao":
+            thirdImage.image = UIImage(named: "kakaotalk")
+        case "Google":
+            thirdImage.image = UIImage(named: "googleIcon")
+        case "Apple":
+            thirdImage.image = UIImage(named: "appleIcon")
+        default:
+            thirdImage.image = UIImage(named: "default_icon")
+        }
     }
     
     func configureListTableView(delegate: UITableViewDelegate, datasource: UITableViewDataSource) {
@@ -251,6 +253,7 @@ class ProfileView: UIView {
         postList.dataSource = datasource
     }
     
+    // MARK: - 스크롤 뷰 조건 활성화 
     func updateScrollState(){
         profileScrollView.setNeedsLayout()
         profileScrollView.layoutIfNeeded()

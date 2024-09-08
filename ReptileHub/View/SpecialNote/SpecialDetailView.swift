@@ -31,7 +31,7 @@ class SpecialDetailView: UIView {
         ]
     // 특이사항 상세 뷰 이미지 뷰
     private var imageViews: [UIView] = []
-    private let imageStackView: UIStackView = UIStackView()
+    private var imageStackView: UIStackView = UIStackView()
     private let imageScrollView: UIScrollView = UIScrollView()
     
     // 특이사항 상세 뷰 이미지 카운트 뷰
@@ -126,7 +126,7 @@ class SpecialDetailView: UIView {
     }
     
     //MARK: -  이미지 스크롤 뷰 레이아웃
-    private func setupImageScrollView() {
+    func setupImageScrollView() {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fill
         imageStackView.alignment = .center
@@ -152,6 +152,8 @@ class SpecialDetailView: UIView {
             make.top.leading.trailing.bottom.equalTo(imageScrollView)
         }
         
+        print("이미지 뷰 개수",imageViews.count)
+        imageViews.removeAll()
         for i in 0..<specialImages.count {
             let imageView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 230))
             
@@ -166,7 +168,11 @@ class SpecialDetailView: UIView {
             
             imageViews.append(imageView)
         }
-        
+        print("추가된 이미지 스택 뷰 1", imageStackView.subviews.count)
+        for o in imageViews{
+            imageStackView.removeArrangedSubview(o)
+        }
+        print(imageStackView.subviews.count)
         for imageView in imageViews {
             imageView.backgroundColor = .gray
             imageStackView.addArrangedSubview(imageView)
@@ -175,10 +181,11 @@ class SpecialDetailView: UIView {
                 make.height.equalTo(230)
                 make.width.equalTo(imageScrollView)
             }
+            print("추가된 이미지 스택 뷰 2", imageStackView.subviews.count)
         }
     }
     //MARK: - 이미지 카운트 레이아웃
-    private func setupImagePageCountLabel() {
+    func setupImagePageCountLabel() {
         pageCountView.backgroundColor = .lightGray
         pageCountView.layer.cornerRadius = 12
         
@@ -202,18 +209,26 @@ class SpecialDetailView: UIView {
             make.centerY.equalTo(pageCountView)
         }
     }
-    func writeSpecialDetail(data: SpecialEntry) {
-        print("안되면 울거야",specialImages)
-        specialImages.append(contentsOf: data.image.map{ UIImageView(image: $0)})
-        print("제발 되게 해주세요.",specialImages)
-        specialTitle.text = data.specialTitle
-        dateLabel.text = data.date.toString()
-        specialText.text = data.specialText
-//        print(data.image ?? UIImage(systemName: "person")!)
+    //MARK: - SpecialDetialView 데이터 보내주는 함수
+    func writeSpecialDetail(data: DiaryResponse, lizardName: String) {
+        for view in imageStackView.arrangedSubviews {
+            imageStackView.removeArrangedSubview(view)
+            view.removeFromSuperview() // 스택 뷰에서 제거 후 뷰도 슈퍼뷰에서 제거
+        }
+        specialImages = []
+        for url in data.imageURLs {
+        let imageView = UIImageView()
+            imageView.setImage(with: url)
+        specialImages.append(imageView)
+        }
+        specialTitle.text = data.title
+        specialLizardName.text = lizardName
+        dateLabel.text = data.selectedDate?.formatted
+        specialText.text = data.content
         setupImageScrollView()
         setupImagePageCountLabel()
     }
-    
+    //TODO: 
 }
 //MARK: - 이미지 스크롤 카운트
 extension SpecialDetailView: UIScrollViewDelegate {

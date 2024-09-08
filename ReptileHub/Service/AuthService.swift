@@ -418,7 +418,9 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
             }
 
             let rawNonce = self.currentNonce ?? ""
+
             let credential = OAuthProvider.credential(providerID: .apple, idToken: idTokenString, rawNonce: rawNonce)
+
 
             // AppleAuthUser 객체를 생성할 때 authorizationCode 포함
             let appleUser = AppleAuthUser(credential: appleIDCredential)

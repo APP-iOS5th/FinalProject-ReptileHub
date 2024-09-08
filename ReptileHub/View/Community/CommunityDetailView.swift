@@ -10,6 +10,8 @@ import SnapKit
 
 protocol CommunityDetailViewDelegate: AnyObject {
     func createCommentAction(postId: String, commentText: String)
+    
+    func onTapProfileImage(postUserId: String)
 }
 
 class CommunityDetailView: UIView {
@@ -63,8 +65,8 @@ class CommunityDetailView: UIView {
     // 좋아요, 댓글 개수
     private var likeButton: UIButton = UIButton(type: .custom)
     private var likeButtonToggle: Bool?
-    private let likeCount: UILabel = UILabel()
-    private let commentCount: UILabel = UILabel()
+    let likeCount: UILabel = UILabel()
+    let commentCount: UILabel = UILabel()
     private let countInfoStackView: UIStackView = UIStackView()
     
     // 본문과 댓글 구분선
@@ -79,8 +81,8 @@ class CommunityDetailView: UIView {
     
     // 댓글 작성란
     private let commentBackgroundView: UIView = UIView()
-    private let commentTextView: UITextView = UITextView()
-    private let sendButton: UIButton = UIButton()
+    let commentTextView: UITextView = UITextView()
+    let sendButton: UIButton = UIButton()
     private let placeHolder: UILabel = UILabel()
     
     
@@ -156,6 +158,14 @@ class CommunityDetailView: UIView {
         profileImage.backgroundColor = .lightGray
         profileImage.layer.cornerRadius = 30
         profileImage.clipsToBounds = true
+        
+        profileImage.isUserInteractionEnabled = true
+        let profileTapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapProfile))
+        profileImage.addGestureRecognizer(profileTapGesture)
+    }
+    
+    @objc private func onTapProfile() {
+        delegate?.onTapProfileImage(postUserId: postUserId)
     }
     
  
@@ -429,7 +439,7 @@ class CommunityDetailView: UIView {
         commentTextView.font = UIFont.systemFont(ofSize: 18)
         commentTextView.isScrollEnabled = false
         commentTextView.textContainer.lineFragmentPadding = 15
-        commentTextView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.6)
+        commentTextView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.2)
         
         placeHolder.text = "댓글을 남겨보세요"
         placeHolder.font = UIFont.systemFont(ofSize: 18, weight: .light)
@@ -438,7 +448,8 @@ class CommunityDetailView: UIView {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: 25)
         let planeImage = UIImage(systemName: "paperplane.fill", withConfiguration: imageConfig)
         sendButton.setImage(planeImage, for: .normal)
-        sendButton.tintColor = .addBtnGraphTabbar
+        sendButton.tintColor = UIColor.lightGray
+        sendButton.isEnabled = false
         sendButton.addTarget(self, action: #selector(sendButtonAction), for: .touchUpInside)
         commentBackgroundView.backgroundColor = .groupProfileBG
         
@@ -516,8 +527,13 @@ class CommunityDetailView: UIView {
         
         if textView.text == "" {
             placeHolder.textColor = .white
+            sendButton.isEnabled = false
+            sendButton.tintColor = UIColor.lightGray
         } else {
             placeHolder.textColor = .clear
+            sendButton.isEnabled = true
+            sendButton.tintColor = .addBtnGraphTabbar
+                
         }
         
         if estimatedSize.height > 102 {
@@ -554,6 +570,9 @@ class CommunityDetailView: UIView {
     }
     
     func configureFetchData(postDetailData: PostDetailResponse, likeCount: Int, commentCount: Int, profileImageName: String, name: String) {
+        self.contentImages = []
+        self.imageViews = []
+        
         self.postID = postDetailData.postID
         self.postUserId = postDetailData.userID
         
@@ -573,6 +592,15 @@ class CommunityDetailView: UIView {
         likeButton.setImage(UIImage(systemName: postDetailData.isLiked ? "heart.fill" : "heart", withConfiguration: config), for: .normal)
         
         if postDetailData.imageURLs.count > 0 {
+            self.imagePageCount.isHidden = false
+            self.pageCountView.isHidden = false
+            self.imagePageCount.text = "1/\(postDetailData.imageURLs.count)"
+            contentText.snp.remakeConstraints { make in
+                make.top.equalTo(imageScrollView.snp.bottom).offset(10)
+                make.leading.trailing.equalTo(titleStackView)
+                make.height.greaterThanOrEqualTo(80)
+            }
+            
             for imageName in postDetailData.imageURLs {
                 let imageView: UIImageView = UIImageView()
                 imageView.setImage(with: imageName)
@@ -607,14 +635,13 @@ class CommunityDetailView: UIView {
                 }
             }
         } else {
-            self.imageScrollView.removeFromSuperview()
-            self.imagePageCount.removeFromSuperview()
-            
             contentText.snp.remakeConstraints() { make in
                 make.top.equalTo(divisionLine.snp.bottom).offset(10)
                 make.leading.trailing.equalTo(titleStackView)
                 make.height.greaterThanOrEqualTo(80)
             }
+            self.imagePageCount.isHidden = true
+            self.pageCountView.isHidden = true
         }
         
         self.updateImageStackView()

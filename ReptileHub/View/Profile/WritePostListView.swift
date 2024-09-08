@@ -10,15 +10,15 @@ import SnapKit
 
 class WritePostListView: UIView {
 
-    private var WritePostTableView: UITableView = {
+    // 내가 쓴 게시글 테이블 뷰
+    private (set) var WritePostTableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(WritePostListTableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupView()
     }
     

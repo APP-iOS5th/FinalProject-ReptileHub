@@ -10,7 +10,8 @@ import SnapKit
 
 class BlockUserView: UIView {
     
-    let blockUserTableView: UITableView = {
+    // 차단 유저 테이블 뷰
+    private (set) var blockUserTableView: UITableView = {
         let tableView = UITableView()
         tableView.register(BlockUserTableViewCell.self, forCellReuseIdentifier: "userCell")
         return tableView
