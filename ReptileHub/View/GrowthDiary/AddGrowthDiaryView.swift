@@ -99,7 +99,12 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //성별
     private lazy var genderDropdownView = DropDownView(options: [Gender.male.rawValue, Gender.female.rawValue, Gender.unKnown.rawValue], title: "성별을 선택해주세요.")
     //무게
-    private lazy var weightTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
+    private lazy var weightTextField: UITextField = {
+        let textField = createTextField(text: "무게를 입력해주세요.")
+        textField.keyboardType = .numberPad
+        return textField
+    }()
+    
     //피딩 방식
     private lazy var feedMethodDropdownView: DropDownView = DropDownView(options: ["자율", "핸드"], title: "피딩 방식을 선택해주세요.")
     //꼬리 유무
@@ -229,6 +234,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     
     private func setUI(){
         addSubview(scrollView)
+        weightTextField.keyboardType = .numberPad
         
         scrollView.addSubview(contentView)
         contentView.addSubview(mainStackView)
