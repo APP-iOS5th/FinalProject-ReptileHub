@@ -25,7 +25,6 @@ class AddEditWeightView: UIView {
     //MARK: - 날짜 선택 픽커
     private lazy var addWeightDatePicker: UIDatePicker = {
         let picker = UIDatePicker()
-        //        picker.backgroundColor = .red
         picker.preferredDatePickerStyle = .automatic
         picker.datePickerMode = .date
         return picker
@@ -90,7 +89,6 @@ class AddEditWeightView: UIView {
         button.configuration = config
         
         button.addAction(UIAction{ [weak self] _ in
-            print("B")
             self?.cancelButtonTapped?()
         }, for: .touchUpInside)
         

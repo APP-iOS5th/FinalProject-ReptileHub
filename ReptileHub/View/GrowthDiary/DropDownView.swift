@@ -95,7 +95,6 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private func openDropdown() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
-            print("Key window not found")
             return
         }
         
@@ -174,7 +173,6 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     @objc func closeDropdown(){
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
-            print("Key window not found")
             return
         }
         

@@ -29,7 +29,6 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
             self.loadData()
             shouldReloadImage = false
         }
-        // TODO: 편집모드일때 만약에 변경을 했을 경우에는 똑같이 shouldReloadImage변경하게 코드 작성
     }
     
     override func viewDidLoad() {
@@ -110,28 +109,3 @@ extension GrowthDiaryViewController{
         self.navigationController?.pushViewController(detailGrowthDiaryVicontroller, animated: true)
     }
 }
-
-#if DEBUG
-import SwiftUI
-struct ViewControllerRepresentable: UIViewControllerRepresentable {
-    
-    func updateUIViewController(_ uiView: UIViewController,context: Context) {
-        // leave this empty
-    }
-    @available(iOS 13.0.0, *)
-    func makeUIViewController(context: Context) -> UIViewController{
-        GrowthDiaryViewController()
-    }
-}
-@available(iOS 13.0, *)
-struct ViewControllerRepresentable_PreviewProvider: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ViewControllerRepresentable()
-                .ignoresSafeArea()
-                .previewDisplayName(/*@START_MENU_TOKEN@*/"Preview"/*@END_MENU_TOKEN@*/)
-                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
-        }
-        
-    }
-} #endif

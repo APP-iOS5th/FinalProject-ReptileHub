@@ -83,8 +83,6 @@ class DetailGrowthDiaryViewController: UIViewController {
         DiaryPostService.shared.fetchGrowthDiaryDetails(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let responseData):
-                print("성공")
-                print(responseData)
                 self?.detailGrowthDiaryView.configureDetailGrowthDiaryData(detailData: responseData)
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
@@ -96,7 +94,6 @@ class DetailGrowthDiaryViewController: UIViewController {
         DiaryPostService.shared.fetchMonthlyWeightAverages(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let responseData):
-                print("성공")
                 self?.detailGrowthDiaryView.detailWeightChartData(data: responseData)
             case .failure(let error):
                 print("ERROR: \(error.localizedDescription)")
@@ -104,15 +101,12 @@ class DetailGrowthDiaryViewController: UIViewController {
         }
     }
 
-    // TODO: 최대 3개까지 주는건지(2개 있을 경우는 2개만 주는 지)
     private func fetchSpecialNotesData(){
         DiaryPostService.shared.fetchDiaryEntries(userID: UserService.shared.currentUserId, diaryID: diaryID, limit: 3) { [weak self] response in
             switch response{
             case .success(let responseData):
-                print("특이사항 limit불러오기 ", responseData)
                 self?.previewSpecialNotesData = responseData
                 self?.detailGrowthDiaryView.detailPreviesSpecialNoteTableView.reloadData()
-//                print("여기는 반영", self?.previewSpecialNotesData)
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
             }
@@ -178,14 +172,10 @@ class DetailGrowthDiaryViewController: UIViewController {
         editDetailVC.diaryID = self.diaryID
         self.navigationController?.pushViewController(editDetailVC, animated: true)
     }
-    
-    // TODO: menu는 성장일지에서 필요가 없으므로 옵셔널로 처리 요청
-    // TODO: 테이블 cell의 데이터를 넣는 함수 요청
 }
 
 extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataSource, SpecialDetailViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("과연 프리뷰의 개수는", previewSpecialNotesData.count)
         if previewSpecialNotesData.count == 0{
             detailGrowthDiaryView.detailPreviesSpecialNoteTableView.isHidden = true
             detailGrowthDiaryView.emptyview.isHidden = false
@@ -204,7 +194,6 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SpecialListViewCell.identifier, for: indexPath) as? SpecialListViewCell else {
             return UITableViewCell()
         }
-        // TODO: cell 대입함수 사용하기
         cell.selectionStyle = .none
         cell.configureCell(specialEntry: previewSpecialNotesData[indexPath.item])
         cell.deleteButton.isHidden = true
@@ -212,7 +201,6 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // TODO: 해당 cell에 맞는 디테일 뷰로 넘어가게 수정하기
         let specialNotesDetailVC = SpecialDetailViewController(saverEntries: previewSpecialNotesData[indexPath.item], diaryID: diaryID, lizardName: lizardName)
         specialNotesDetailVC.delegate = self
         self.navigationController?.pushViewController(specialNotesDetailVC, animated: true)
@@ -227,5 +215,4 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
             }
         }
     }
-    
 }

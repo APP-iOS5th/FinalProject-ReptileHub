@@ -39,15 +39,6 @@ class WeightAddEditViewController: UIViewController {
         return button
     }()
     
-//    override func vieAppearing(_ animated: Bool) {
-//        super.viewIsAppearing(animated)
-//        if shouldReloadWeightData{
-//            print("업데이틑 됌")
-//            self.fetchWeightData()
-//            self.shouldReloadWeightData = false
-//        }
-//    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         weightAddEditView.weightAddEditViewScrollState()
@@ -72,8 +63,6 @@ class WeightAddEditViewController: UIViewController {
         DiaryPostService.shared.fetchDailyWeightEntries(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
             switch response{
             case .success(let responseData):
-                print("여기가 데이터 입니다.")
-                print(responseData)
                 self?.weightEntries = responseData
                 self?.weightAddEditView.reloadWeightAddEditListView()
             case .failure(let error):
@@ -134,5 +123,4 @@ extension WeightAddEditViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         60
     }
-    
 }

@@ -8,54 +8,6 @@
 import SwiftUI
 import Charts
 
-//struct GrowthDiaryResponse: Codable {
-//    var lizardInfo: LizardInfoResponse
-//    var parentInfo: ParentsResponse?
-//}
-//
-//struct LizardInfoResponse: Codable {
-//    var name: String
-//    var species: String
-//    var morph: String?
-//    var hatchDays: Date
-//    var imageURL: String?
-//    var gender: String
-//    var weight: Int
-//    var feedMethod: String
-//    var tailexistence: Bool
-//}
-
-
-
-//struct MonthlyHoursOfSunshine: Identifiable {
-//    var date: Date
-//    var hoursOfSunshine: Double
-//    let id = UUID()
-//
-//
-//    init(month: Int, hoursOfSunshine: Double) {
-//        let calendar = Calendar.autoupdatingCurrent
-//        self.date = calendar.date(from: DateComponents(year: 2020, month: month))!
-//        self.hoursOfSunshine = hoursOfSunshine
-//    }
-//}
-//
-//
-//var data: [MonthlyHoursOfSunshine] = [
-//    MonthlyHoursOfSunshine(month: 1, hoursOfSunshine: 74),
-//    MonthlyHoursOfSunshine(month: 2, hoursOfSunshine: 99),
-////    MonthlyHoursOfSunshine(month: 3, hoursOfSunshine: 98),
-////    MonthlyHoursOfSunshine(month: 4, hoursOfSunshine: 91),
-////    MonthlyHoursOfSunshine(month: 5, hoursOfSunshine: 93),
-////    MonthlyHoursOfSunshine(month: 6, hoursOfSunshine: 92),
-////    MonthlyHoursOfSunshine(month: 7, hoursOfSunshine: 97),
-////    MonthlyHoursOfSunshine(month: 8, hoursOfSunshine: 69),
-////    MonthlyHoursOfSunshine(month: 9, hoursOfSunshine: 86),
-////    MonthlyHoursOfSunshine(month: 10, hoursOfSunshine: 83),
-////    MonthlyHoursOfSunshine(month: 11, hoursOfSunshine: 90),
-////    MonthlyHoursOfSunshine(month: 12, hoursOfSunshine: 62)
-//]
-
 struct WeightLineChartView: View {
     var weightData: [MonthWeightAverage]?
     var body: some View {

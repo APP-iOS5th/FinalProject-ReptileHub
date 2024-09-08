@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import SwiftUI
 
 class DetailGrowthDiaryView: UIView {
     
@@ -219,7 +220,6 @@ class DetailGrowthDiaryView: UIView {
     }()
     
     //MARK: - 무게 추이 그래프
-    // TODO: 그래프 만들기
     private lazy var detailWeightGraph: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5
@@ -375,7 +375,7 @@ class DetailGrowthDiaryView: UIView {
     
     //MARK: - 디테일 스택 뷰
     private lazy var detailStackView: UIStackView = {
-        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView, detailPreviewsSpecialNoteStackView, deleteGrowthDiaryButton/*, detailPreviewsSpecialNoteStackView*/])
+        let view = UIStackView(arrangedSubviews: [detailLizardFirstInfoStackView, detailWeightStackView, detailParentStackView, detailPreviewsSpecialNoteStackView, deleteGrowthDiaryButton])
         view.axis = .vertical
         view.spacing = 30
         return view
@@ -385,8 +385,6 @@ class DetailGrowthDiaryView: UIView {
     private lazy var detailContentView: UIView = {
         let view = UIView()
         view.addSubview(detailStackView)
-        //        view.addSubview(detailSpecialNoteHeaderStackView)
-        //        view.addSubview(detailPreviewsSpecialNoteStackView)
         return view
     }()
     
@@ -465,28 +463,12 @@ class DetailGrowthDiaryView: UIView {
             make.height.equalTo(200)
         }
         
-        
-//        detailWeightLineChartView.snp.makeConstraints { make in
-//            make.leading.trailing.equalTo(detailWeightStackView)
-//        }
-        
-        //        detailSpecialNoteHeaderStackView.snp.makeConstraints { make in
-        //            make.top.equalTo(detailStackView.snp.bottom).offset(30)
-        //            make.leading.trailing.equalTo(detailStackView)
-        //        }
-        
-        //
-        
-        
         detailPreviewsSpecialNoteStackView.snp.makeConstraints { make in
             make.leading.trailing.equalTo(detailStackView)
-            //            make.bottom.equalTo(detailStackView)
         }
         
         detailPreviesSpecialNoteTableView.snp.makeConstraints { make in
-            //            make.edges.equalTo(detailPreviewsSpecialNoteStackView)
             make.leading.trailing.equalTo(detailStackView)
-            //            make.bottom.equalTo(detailPreviewsSpecialNoteStackView)
             detailTableViewHeightContaint = make.height.equalTo(0).constraint
         }
         
@@ -564,33 +546,7 @@ class DetailGrowthDiaryView: UIView {
         detailTableViewHeightContaint?.update(offset: newHeight)
     }
     
-    //    func detailAddSepcialNotesCellView(_ cellView: UIView){
-    //        detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
-    //    }
-    
-    //    func cellData(){
-    //        for _ in 0..<3{
-    //            let cellView = createCellView()
-    //            detailPreviewsSpecialNoteStackView.addArrangedSubview(cellView)
-    //        }
-    //    }
-    //
-    //    func createCellView() -> UIView {
-    //           // CustomTableViewCell 생성
-    //           let cell = SpecialListViewCell(style: .default, reuseIdentifier: SpecialListViewCell.identifier)
-    //
-    //           // 셀의 높이를 설정
-    //           cell.contentView.snp.makeConstraints { make in
-    //               make.height.equalTo(100)
-    //           }
-    //
-    //
-    //
-    //           return cell.contentView
-    //       }
     func configureDetailGrowthDiaryData(detailData: GrowthDiaryResponse){
-        print("FFSDFSDFDFDSFDSFDFS")
-        print(detailData)
         let lizardData = detailData.lizardInfo
         
         if let imageURL = lizardData.imageURL{
@@ -598,7 +554,6 @@ class DetailGrowthDiaryView: UIView {
         }else{
             detailThumbnailImageView.image = UIImage(named: "tempImage")
         }
-        print("a")
         detailLiazardNameLabel.text = lizardData.name
         detailLizardSepciesMorphInfoLabel.text = "\(lizardData.species) · 모프 \(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
         detailHatchDaysLabel.text = lizardData.hatchDays.formatted
@@ -618,7 +573,6 @@ class DetailGrowthDiaryView: UIView {
            let fatherName = detailFatherInfoView.viewWithTag(2) as? UILabel,
            let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(3) as? UILabel
         {
-            // TODO: 지금은 무조건 있다고 가정
             fatherImageView.setImage(with: fatherData.imageURL!)
             fatherName.text = fatherData.name
             fatherSpeciesMorph.text = "\(fatherData.morph != nil ? fatherData.morph! : "없음")"
@@ -628,7 +582,6 @@ class DetailGrowthDiaryView: UIView {
            let motherName = detailMotherInfoView.viewWithTag(2) as? UILabel,
            let motherSpeciesMorph = detailMotherInfoView.viewWithTag(3) as? UILabel
         {
-            // TODO: 지금은 무조건 있다고 가정
             motherImageView.setImage(with: motherData.imageURL!)
             motherName.text = motherData.name
             motherSpeciesMorph.text = "\(motherData.morph != nil ? motherData.morph! : "없음")"
@@ -636,22 +589,3 @@ class DetailGrowthDiaryView: UIView {
         
     }
 }
-
-#if DEBUG
-import SwiftUI
-
-struct DetailGrowthDiaryViewRepresentable: UIViewRepresentable{
-    func makeUIView(context: Context) -> DetailGrowthDiaryView {
-        return DetailGrowthDiaryView()
-    }
-    
-    func updateUIView(_ uiView: DetailGrowthDiaryView, context: Context) {
-        uiView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
-    }
-}
-
-#Preview(body: {
-    DetailGrowthDiaryViewRepresentable()
-})
-#endif

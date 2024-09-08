@@ -48,7 +48,6 @@ class GrowthDiaryListView: UIView {
         buttonText.mergeAttributes(attributes)
         
         config.attributedTitle = buttonText
-        // TODO: ColorSet으로 설정해서 사용하기
         config.baseBackgroundColor = UIColor.addBtnGraphTabbar
         config.baseForegroundColor = .white
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 0, bottom: 14, trailing: 0)
@@ -146,26 +145,3 @@ class GrowthDiaryListView: UIView {
         }
     }
 }
-
-#if DEBUG
-import SwiftUI
-
-struct GrowthDiaryListViewRepresentable: UIViewRepresentable {
-    func makeUIView(context: Context) -> GrowthDiaryListView {
-        return GrowthDiaryListView()
-    }
-    
-    func updateUIView(_ uiView: GrowthDiaryListView, context: Context) {
-        // 필요하다면 뷰 업데이트
-        uiView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
-    }
-}
-
-struct MyCustomView_Previews: PreviewProvider {
-    static var previews: some View {
-        GrowthDiaryListViewRepresentable()
-            .previewLayout(.sizeThatFits) // 크기를 맞춤 설정할 수 있음
-    }
-}
-#endif

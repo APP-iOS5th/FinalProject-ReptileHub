@@ -62,7 +62,6 @@ class WeightAddViewController: UIViewController {
                     print("ERROR: \(error.localizedDescription)")
                 }else{
                     if let previousVC = self?.previousVC{
-                        print("업데이트")
                         previousVC.updateWeightData()
                     }
                     self?.dismiss(animated: true)
@@ -74,7 +73,6 @@ class WeightAddViewController: UIViewController {
                     print("ERROR: \(error.localizedDescription)")
                 }else{
                     if let previousVC = self?.previousVC{
-                        print("추가 성공")
                         previousVC.updateWeightData()
                     }
                     self?.dismiss(animated: true)

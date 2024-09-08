@@ -59,7 +59,6 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     
     private func uploadGrowthDiary(){
         let result = addGrowthDiaryView.growthDiaryRequestData()
-        print("asdfdsfsaf", result)
         if editMode{
             //editMode가 true일떄 수정하기 활성화
             guard let diaryID = diaryID else { return }
@@ -67,7 +66,6 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                 if let error = error{
                     print("ERROR: \(error.localizedDescription)")
                 }else{
-                    print("수정 성공")
                     if let previousVC = self?.previousViewController,
                     let previousDetailVC = self?.previousDetailVC{
                         previousVC.updateImage()
@@ -83,9 +81,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                 if let error = error{
                     print("error", error.localizedDescription)
                 }else{
-                    print("Success")
                     if let previousVC = self?.previousViewController{
-                        print("privousVC", previousVC)
                         previousVC.updateImage()
                     }
                     self?.navigationController?.popViewController(animated: true)
@@ -153,28 +149,3 @@ extension AddGrowthDiaryViewController: PHPickerViewControllerDelegate{
            }
        }
 }
-
-#if DEBUG
-import SwiftUI
-struct AddViewControllerRepresentable: UIViewControllerRepresentable {
-    
-    func updateUIViewController(_ uiView: UIViewController,context: Context) {
-        // leave this empty
-    }
-    @available(iOS 13.0.0, *)
-    func makeUIViewController(context: Context) -> UIViewController{
-        AddGrowthDiaryViewController(editMode: false)
-    }
-}
-@available(iOS 13.0, *)
-struct AddViewControllerRepresentable_PreviewProvider: PreviewProvider {
-    static var previews: some View {
-        Group {
-            AddViewControllerRepresentable()
-                .ignoresSafeArea()
-                .previewDisplayName(/*@START_MENU_TOKEN@*/"Preview"/*@END_MENU_TOKEN@*/)
-                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
-        }
-        
-    }
-} #endif
