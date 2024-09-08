@@ -139,7 +139,7 @@ class CommentTableViewCell: UITableViewCell {
             self.blockCommentAction()
         }),
         UIAction(title: "신고하기", image: UIImage(systemName: "exclamationmark.bubble"), attributes: .destructive, handler: { _ in
-            
+            self.reportCommentAction()
         }) ]
         
         menuButton.showsMenuAsPrimaryAction = true
