@@ -9,7 +9,8 @@ import UIKit
 
 class WritePostListViewController: UIViewController {
     
-    private var fetchUserProfile: UserProfile?
+    
+    var fetchUserData: UserProfile?
     private let communityListView = CommunityListView()
     private let writePostListView = WritePostListView()
     var fetchPosts: [ThumbnailPostResponse] = []
@@ -29,9 +30,8 @@ class WritePostListViewController: UIViewController {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(true)
-        
-        // MARK: - 로그인 한 사용자가 작성한 게시글 불러오기
-        UserService.shared.fetchUserPostsThumbnails(userID: UserService.shared.currentUserId) { result in
+        guard let fetchUserUid = fetchUserData?.uid else { return }
+        UserService.shared.fetchUserPostsThumbnails(userID: fetchUserUid) { result in
             switch result {
             case .success(let userPosts):
                 print("내가 쓴 게시글 가져오기 성공")

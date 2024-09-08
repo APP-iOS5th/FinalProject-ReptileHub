@@ -107,7 +107,13 @@ class CommunityDetailViewController: UIViewController {
     }
     
     private func editButtonAction() {
-        print("edit")
+        print("디테일 뷰에서의 수정하기 클릭.")
+        let addPostViewController = AddPostViewController(postId: detailView.postID, editMode: true)
+        
+        addPostViewController.delegate = self
+        
+        addPostViewController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(addPostViewController, animated: true)
     }
     
     private func deleteButtonAction() {
@@ -233,11 +239,35 @@ extension CommunityDetailViewController: UITextViewDelegate {
 }
 
 extension CommunityDetailViewController: CommunityDetailViewDelegate {
+    func onTapProfileImage(postUserId: String) {
+
+        UserService.shared.fetchUserProfile(uid: postUserId) { result in
+            switch result {
+            case .success(let userData):
+                // 해당유저가 탈퇴된 계정인지 확인
+//                if !userData.isValid {
+                let profileVC = ProfileViewController()
+                    profileVC.profileView.setProfileData(userData: userData)
+                profileVC.currentUserProfile = userData
+                profileVC.isMyProfile = false
+                self.navigationController?.pushViewController(profileVC, animated: true)
+//                } else {
+//                    // 탈퇴한 계정이라는 alert 필요
+//                }
+            case .failure(let error):
+                print("클릭한 유저의 프로필 가져오기 실패 : \(error.localizedDescription)")
+            }
+        }
+
+    }
+    
     func createCommentAction(postId: String, commentText: String) {
         CommunityService.shared.addComment(postID: postId, userID: UserService.shared.currentUserId, content: commentText) { result in
             switch result {
             case .success(let latestComments):
                 self.detailView.commentTextView.text = ""
+                self.detailView.sendButton.isEnabled = false
+                self.detailView.sendButton.tintColor = UIColor.lightGray
                 self.fetchComments = latestComments
                 
                 var height: CGFloat = 50
@@ -259,35 +289,28 @@ extension CommunityDetailViewController: CommunityDetailViewDelegate {
     
 }
 
-//error in
-//    if let error = error {
-//        print("댓글 작성 에러 : \(error.localizedDescription)")
-//    } else {
-//        print("댓글 작성 성공!")
-//        CommunityService.shared.fetchComments(forPost: postId) { result in
-//            switch result {
-//            case .success(let commentsData):
-//                self.fetchComments = commentsData
-//                
-//                var height: CGFloat = 50
-//
-//                for comment in self.fetchComments {
-//                    height = height + self.getLabelHeight(tableView: self.detailView.commentTableView, text: comment.content) + 50
-//                }
-//                self.detailView.updateCommentTableViewHeight(height: height)
-//                
-//                self.detailView.commentTableView.reloadData()
-//                
-//                // 디테일 뷰의 댓글 카운트 1 증가
-//                self.detailView.addCommentCount()
-//            case .failure(let error):
-//                print("추가된 댓글 포함하여 댓글 가져오기 실패 : \(error.localizedDescription)")
-//            }
-//        }
-//        
-//    }
-
 extension CommunityDetailViewController: CommentTableViewCellDelegate {
+    func onTapCommentProfile(cell: CommentTableViewCell) {
+        guard let indexPath = self.detailView.commentTableView.indexPath(for: cell) else { return }
+        
+        UserService.shared.fetchUserProfile(uid: self.fetchComments[indexPath.row].userID) { result in
+            switch result {
+            case .success(let userData):
+                // 해당 유저가 탈퇴계정인지 확인
+                //                if userData.isValid {
+                let profileVC = ProfileViewController()
+                profileVC.profileView.setProfileData(userData: userData)
+                profileVC.currentUserProfile = userData
+                profileVC.isMyProfile = false
+                self.navigationController?.pushViewController(profileVC, animated: true)
+                //                } else {
+                //
+                //                }
+            case .failure(let error):
+                print("끄아아아아아아앙!!: \(error.localizedDescription)")
+            }
+        }
+    }
 
     func deleteCommentAction(cell: CommentTableViewCell) {
         let alert = UIAlertController(title: "알림", message: "댓글을 삭제하시겠습니까?", preferredStyle: .alert)
@@ -336,4 +359,19 @@ extension CommunityDetailViewController: CommentTableViewCellDelegate {
         present(alert, animated: true, completion: nil)
     }
     
+}
+
+extension CommunityDetailViewController: AddPostViewControllerDelegate {
+    func dismissAddPost(detailPostData: PostDetailResponse) {
+                UserService.shared.fetchUserProfile(uid: self.detailView.postUserId) { result in
+                    switch result {
+                    case .success(let userData):
+                        self.detailView.configureFetchData(postDetailData: detailPostData, likeCount: Int(self.detailView.likeCount.text ?? "0") ?? 0, commentCount: Int(self.detailView.commentCount.text ?? "0") ?? 0, profileImageName: userData.profileImageURL, name: userData.name)
+                        
+                    case .failure(let error):
+                        print("에러에러에러")
+                    }
+                }
+        
+    }
 }

@@ -47,7 +47,7 @@ class CommunityViewController: UIViewController {
         CommunityService.shared.fetchAllPostThumbnails(forCurrentUser: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let thumnails):
-                print("차단유저 제외 모든 post 불러오기 성공")
+                print("차단유저 제외 모든 post 불러오기 성공 : \(thumnails)")
                 self.fetchTestData = thumnails
                 self.communityListView.communityTableView.reloadData()
             case .failure(let error):
@@ -77,7 +77,7 @@ class CommunityViewController: UIViewController {
 
 extension CommunityViewController: CommunityListViewDelegate {
     func didTapAddPostButton() {
-        let addPostViewController = AddPostViewController()
+        let addPostViewController = AddPostViewController(postId: "", editMode: false)
         addPostViewController.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(addPostViewController, animated: true)
     }

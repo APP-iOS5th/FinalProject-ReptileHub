@@ -11,6 +11,10 @@ import FirebaseAuth
 
 class ProfileViewController: UIViewController {
     
+    var currentUserProfile: UserProfile?
+    
+    var isMyProfile: Bool?
+    
     var userProfileData = [String]()
     private var shouldReloadImage = false {
         didSet {
@@ -23,7 +27,8 @@ class ProfileViewController: UIViewController {
     }
     
     private var list = ["내가 작성한 댓글", "북마크한 게시글", "내가 차단한 사용자"]
-    private let profileView = ProfileView()
+    
+    let profileView = ProfileView()
     
     override func loadView() {
         super.viewDidLoad()
@@ -51,11 +56,17 @@ class ProfileViewController: UIViewController {
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.pencil"), style: .plain, target: self, action: #selector(editUserInfo))
         barButtonItem.tintColor = .gray
         self.navigationItem.rightBarButtonItem = barButtonItem
+        barButtonItem.isHidden = !(self.isMyProfile ?? false)
         
         profileView.firstButton.addTarget(self, action: #selector(myReptileButtonTouch), for: .touchUpInside)
         profileView.secondButton.addTarget(self, action: #selector(writePostButtonTouch), for: .touchUpInside)
         profileView.withdrawalButton.addTarget(self, action: #selector(withdrawalButtonTouch), for: .touchUpInside)
         profileView.logoutButton.addTarget(self, action: #selector(logoutButtonTouch), for: .touchUpInside)
+        if !(self.isMyProfile ?? true) {
+            profileView.withdrawalButton.isHidden = true
+            profileView.logoutButton.isHidden = true
+            profileView.centerLabel.isHidden = true
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -74,9 +85,9 @@ class ProfileViewController: UIViewController {
         UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
             switch result {
             case .success(let userData):
-                self.profileView.setProfileData(userData: userData)
                 self.userProfileData.removeAll()
                 self.userProfileData.append(contentsOf: [userData.name, userData.profileImageURL])
+
                 self.profileView.postList.reloadData()
                 print("userData: \(userData)")
                 print("불러오기 성공: \(self.userProfileData)")
@@ -106,14 +117,17 @@ class ProfileViewController: UIViewController {
 
     // 내 도마뱀 탭바 이동
     @objc func myReptileButtonTouch() {
-        if let tabBarController = self.tabBarController {
-            tabBarController.selectedIndex = 1
+        if self.isMyProfile ?? true {
+            if let tabBarController = self.tabBarController {
+                tabBarController.selectedIndex = 1
+            }
         }
     }
 
     // 내가 쓴 게시글 뷰
     @objc func writePostButtonTouch() {
         let writePostController = WritePostListViewController()
+        writePostController.fetchUserData = self.currentUserProfile
         self.navigationController?.pushViewController(writePostController, animated: true)
     }
 
@@ -126,7 +140,7 @@ class ProfileViewController: UIViewController {
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")
         
-        // AuthService의 로그아웃 메서드 호출
+        // AuthService의 로그아웃 메서드 호출)
         AuthService.shared.logout { success in
             if success {
                 print("DEBUG: 로그아웃 성공")
@@ -165,23 +179,30 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         let symbol = UIImageView(image: UIImage(systemName: "chevron.right"))
         symbol.tintColor = .black
         cell.accessoryView = symbol
+        if !(self.isMyProfile ?? true) && indexPath.row == 2 {
+            cell.isHidden = true
+        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        let viewController: UIViewController
+    
         switch indexPath.row {
         case 0:
-            viewController = WriteReplyListViewController()
+            let writeReplyVC = WriteReplyListViewController()
+            writeReplyVC.fetchUserData = self.currentUserProfile
+            self.navigationController?.pushViewController(writeReplyVC, animated: true)
         case 1:
-            viewController = LikePostViewController()
+            let likePostVC = LikePostViewController()
+            likePostVC.fetchUserData = self.currentUserProfile
+            self.navigationController?.pushViewController(likePostVC, animated: true)
         case 2:
-            viewController = BlockUserViewController()
+            let blockUserVC = BlockUserViewController()
+            self.navigationController?.pushViewController(blockUserVC, animated: true)
         default:
             return
         }
-        self.navigationController?.pushViewController(viewController, animated: true)
+    
     }
 }
