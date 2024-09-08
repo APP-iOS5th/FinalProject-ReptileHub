@@ -139,7 +139,7 @@ class AuthService: NSObject {
                 completion(false)
                 return
             }
-            credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idToken, rawNonce: currentNonce!)
+            credential = OAuthProvider.credential(providerID: .apple, idToken: idToken, rawNonce: currentNonce!)
         case "Kakao":
             let email = user.email ?? ""
             let password = user.uid
@@ -218,25 +218,45 @@ class AuthService: NSObject {
     }
 
     private func navigateToTermsAgreementView(user: AuthUser, presentingViewController: UIViewController, completion: @escaping (Bool) -> Void) {
-        let termsVC = TermsAgreementViewController(user: user)
-        termsVC.modalPresentationStyle = .fullScreen
-        termsVC.onAgreementAccepted = {
-            self.createFirebaseUser(user: user) { success in
-                if success, let uid = Auth.auth().currentUser?.uid {
-                    self.saveUserWithDefaultProfileImage(uid: uid, user: user) {
-                        completion(true)
+        DispatchQueue.main.async {
+            let termsVC = TermsAgreementViewController(user: user) // authorizationCode 전달
+            termsVC.modalPresentationStyle = .fullScreen
+            termsVC.onAgreementAccepted = {
+                self.createFirebaseUser(user: user) { success in
+                    if success, let uid = Auth.auth().currentUser?.uid {
+                        self.saveUserWithDefaultProfileImage(uid: uid, user: user) {
+                            // 약관 동의 후, refreshToken 생성 로직 추가
+                            if user.loginType == "Apple", let code = termsVC.authorizationCode {
+                                // 비동기 작업이 완료된 후에도 UI 업데이트는 메인 스레드에서 실행
+                                DispatchQueue.main.async {
+                                    self.getAppleRefreshToken(code: code) { result in
+                                        switch result {
+                                        case .success(let refreshToken):
+                                            UserDefaults.standard.set(refreshToken, forKey: "refreshToken")
+                                            UserDefaults.standard.synchronize()
+                                            print("DEBUG: Refresh token saved successfully.")
+                                        case .failure(let error):
+                                            print("DEBUG: Failed to get refresh token - \(error.localizedDescription)")
+                                        }
+                                        completion(true)
+                                    }
+                                }
+                            } else {
+                                completion(true)
+                            }
+                        }
+                    } else {
+                        completion(false)
                     }
-                } else {
-                    completion(false)
                 }
             }
+            
+            termsVC.onAgreementDeclined = {
+                completion(false)
+            }
+            
+            presentingViewController.present(termsVC, animated: true, completion: nil)
         }
-        
-        termsVC.onAgreementDeclined = {
-            completion(false)
-        }
-        
-        presentingViewController.present(termsVC, animated: true, completion: nil)
     }
     
     private func createFirebaseUser(user: AuthUser, completion: @escaping (Bool) -> Void) {
@@ -255,7 +275,7 @@ class AuthService: NSObject {
                 completion(false)
                 return
             }
-            credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idToken, rawNonce: currentNonce!)
+            credential = OAuthProvider.credential(providerID: .apple, idToken: idToken, rawNonce: currentNonce!)
         case "Kakao":
             let email = user.email ?? ""
             let password = user.uid
@@ -327,7 +347,8 @@ class AuthService: NSObject {
             "name": user.name ?? "",
             "loginType": user.loginType,
             "providerUID": user.providerUID,
-            "profileImageURL": profileImageURL
+            "profileImageURL": profileImageURL,
+            "isVaildUser": true
         ]
         
         if user.loginType == "Apple" {
@@ -397,37 +418,11 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
             }
 
             let rawNonce = self.currentNonce ?? ""
-            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: rawNonce)
-            
-            if let authorizationCode = appleIDCredential.authorizationCode,
-               let codeString = String(data: authorizationCode, encoding: .utf8) {
-               
-               print("dㅣ것은 authorizationCode여", authorizationCode)
-               print("이것은 CodesTring이여", codeString)
-               
-               let url = URL(string: "https://us-central1-reptilehub-a8815.cloudfunctions.net/getRefreshToken?code=\(codeString)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
-               
-               
-               let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-                   if let data = data {
-                       let refreshToken = String(data: data, encoding: .utf8) ?? ""
-                       print("하하하하하하하하하하하하하하하하 리프레쉬토큰이다 !!! ",refreshToken)
-                       UserDefaults.standard.set(refreshToken, forKey: "refreshToken")
-                       UserDefaults.standard.synchronize()
-                   }
-                   
-                   if let response = response {
-                       print("하하하하하하하하핳Response",response)
-                   }
-                   if let error = error {
-                       print("슈밤" , error.localizedDescription)
-                   }
-                   
-               }
-               task.resume()
-           }
-            
 
+            let credential = OAuthProvider.credential(providerID: .apple, idToken: idTokenString, rawNonce: rawNonce)
+
+
+            // AppleAuthUser 객체를 생성할 때 authorizationCode 포함
             let appleUser = AppleAuthUser(credential: appleIDCredential)
 
             self.checkIfUserExists(providerUID: appleUser.uid, loginType: appleUser.loginType) { exists in
@@ -444,7 +439,7 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
                                 print("DEBUG: Reauthenticated with Apple ID successfully")
                                 self.loginCompletion?(true)
                                 // 재인증 성공 시 다음 화면으로 전환
-                              //  self.navigateToMainScreen()
+                                // self.navigateToMainScreen()
                             }
                         }
                     } else {
@@ -456,12 +451,13 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
                             } else {
                                 print("DEBUG: Firebase Sign In 성공")
                                 self.loginCompletion?(true)
-                               // self.navigateToMainScreen()
+                                // self.navigateToMainScreen()
                             }
                         }
                     }
                 } else {
                     if let presentingViewController = UIApplication.shared.windows.first?.rootViewController {
+                        // authorizationCode는 appleUser 객체를 통해 전달됨
                         self.navigateToTermsAgreementView(user: appleUser, presentingViewController: presentingViewController, completion: self.loginCompletion ?? { _ in })
                     }
                 }
@@ -481,7 +477,38 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
             }
         }
     }
-
+   //MARK: - 회원가입 당시 애플 리프레쉬 토큰 만드는 함수
+    private func getAppleRefreshToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        print("리프레쉬토큰 생성중 ....")
+        let urlString = "https://us-central1-testforfinal-e5ce4.cloudfunctions.net/getRefreshToken?code=\(code)"
+        guard let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "") else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("DEBUG: Error in getting refresh token - \(error.localizedDescription)")
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data, let refreshToken = String(data: data, encoding: .utf8) else {
+                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to parse refresh token"])))
+                    return
+                }
+                
+                print("DEBUG: Successfully fetched refresh token - \(refreshToken)")
+                completion(.success(refreshToken))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return UIApplication.shared.windows.first { $0.isKeyWindow } ?? UIWindow()
@@ -539,6 +566,165 @@ extension AuthService {
                     self.navigateToTermsAgreementView(user: kakaoUser, presentingViewController: presentingViewController, completion: completion)
                 }
             }
+        }
+    }
+}
+
+extension AuthService {
+ 
+    func deleteUserAccount(userID: String, loginType: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(userID)
+
+        
+        // 기본값 설정
+        let defaultProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/reptilehub-a8815.appspot.com/o/profile_images%2FinVaild_Profile.jpeg?alt=media&token=4379f3e7-2c2e-4d51-a06b-f095d15f7ee1" // 기본 이미지 URL
+        let defaultName = "탈퇴한 유저"
+        let defaultInfo = "알수없음"
+
+        // DispatchGroup을 사용해 모든 비동기 작업이 완료될 때까지 기다림
+        let group = DispatchGroup()
+
+        // Apple 로그인 유저의 경우 refreshToken을 해제하기 위한 로직
+        if loginType == "Apple", let refreshToken = UserDefaults.standard.string(forKey: "refreshToken") {
+            group.enter()
+            //Todo - UR
+            let urlString = "https://us-central1-reptilehub-a8815.cloudfunctions.net/revokeToken?refresh_token=\(refreshToken)"
+            if let encodedURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+               let url = URL(string: encodedURL) {
+                let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print("Error revoking Apple refresh token: \(error.localizedDescription)")
+                    } else {
+                        print("Successfully revoked Apple refresh token.")
+                    }
+                    group.leave()
+                }
+                task.resume()
+            } else {
+                group.leave()
+            }
+        }
+
+        // 유저 프로필 정보 업데이트
+        group.enter()
+        userRef.updateData([
+            "name": defaultName,
+            "profileImageURL": defaultProfileImageURL,
+            "providerUID": defaultInfo,
+            "loginType": defaultInfo,
+            "lizardCount": 0,
+            "postCount": 0,
+            "isVaildUser": false
+        ]) { error in
+            if let error = error {
+                completion(error)
+                group.leave()
+                return
+            }
+
+            // 프로필 이미지가 기본 이미지가 아니라면 삭제
+            userRef.getDocument { (document, error) in
+                if let document = document, document.exists, let data = document.data() {
+                    if let currentProfileImageURL = data["profileImageURL"] as? String, currentProfileImageURL != defaultProfileImageURL {
+                        self.deleteImage(from: currentProfileImageURL) { error in
+                            if let error = error {
+                                print("프로필 이미지 삭제 에러: \(error.localizedDescription)")
+                            } else {
+                                print("프로필 이미지가 성공적으로 삭제되었습니다.")
+                            }
+                        }
+                    }
+                }
+                group.leave()
+            }
+        }
+
+        // 모든 성장일지 삭제
+        group.enter()
+        DiaryPostService.shared.deleteAllGrowthDiaries(forUser: userID) { error in
+            if let error = error {
+                completion(error)
+                group.leave()
+                return
+            }
+            group.leave()
+        }
+
+        // 모든 작업이 완료되면 FirebaseAuth에서 유저 삭제 후 로그아웃
+        group.notify(queue: .main) {
+            if let user = Auth.auth().currentUser {
+                user.delete { error in
+                    if let error = error {
+                        print("FirebaseAuth에서 유저 삭제 에러: \(error.localizedDescription)")
+                        completion(error)
+                    } else {
+                        print("FirebaseAuth에서 유저가 성공적으로 삭제되었습니다.")
+                        // 탈퇴 후 로그인 화면으로 이동하는 로직 추가
+                        self.navigateToLoginScreen()
+                        completion(nil)
+                    }
+                }
+            } else {
+                print("현재 로그인된 유저가 없습니다.")
+                self.navigateToLoginScreen()
+                completion(nil)
+            }
+        }
+        
+        // FirebaseAuth 로그아웃 처리
+        do {
+            try Auth.auth().signOut()
+            print("FirebaseAuth 로그아웃 성공")
+        } catch let signOutError as NSError {
+            print("FirebaseAuth 로그아웃 에러: \(signOutError.localizedDescription)")
+        }
+    }
+
+    private func navigateToLoginScreen() {
+        DispatchQueue.main.async {
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+               let window = sceneDelegate.window {
+                let loginVC = LoginViewController() // 로그인 화면으로 이동할 뷰 컨트롤러
+                window.rootViewController = loginVC
+                window.makeKeyAndVisible()
+            }
+        }
+    }
+}
+
+extension AuthService {
+    private func extractFileName(from url: String) -> String? {
+        guard let urlComponents = URLComponents(string: url),
+              let path = urlComponents.path.removingPercentEncoding else {
+            return nil
+        }
+        
+        let pathComponents = path.split(separator: "/")
+        return pathComponents.last?.components(separatedBy: "%2F").last
+    }
+    
+    func deleteImage(from url: String, completion: @escaping (Error?) -> Void) {
+        guard let fileName = extractFileName(from: url) else {
+            print("Invalid file URL: \(url)")
+            completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid file URL"]))
+            return
+        }
+        
+        // 기본 프로필 이미지는 삭제하지 않음
+        if fileName != "default_profile.jpg" {
+            let fileRef = Storage.storage().reference().child("profile_images/\(fileName)")
+            print("Deleting file at path: \(fileRef.fullPath)")
+            fileRef.delete { error in
+                if let error = error {
+                    print("Error deleting file at path: \(fileRef.fullPath) - \(error.localizedDescription)")
+                } else {
+                    print("Successfully deleted file at path: \(fileRef.fullPath)")
+                }
+                completion(error)
+            }
+        } else {
+            completion(nil)
         }
     }
 }

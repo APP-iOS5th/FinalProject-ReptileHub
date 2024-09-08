@@ -10,8 +10,11 @@ import SnapKit
 
 class ProfileView: UIView {
     
+
+
     // MARK: - 프로필 뷰 구성요소
     // 프로필 이미지
+
     private let profileImage: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 95
