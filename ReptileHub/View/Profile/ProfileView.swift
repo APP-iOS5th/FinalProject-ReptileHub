@@ -128,8 +128,7 @@ class ProfileView: UIView {
         return button
     }()
     
-    // 버튼 가운데 구분선
-    private let centerLabel: UILabel = {
+    let centerLabel: UILabel = {
         let label = UILabel()
         label.text = "|"
         label.font = UIFont.systemFont(ofSize: 15)
@@ -230,6 +229,7 @@ class ProfileView: UIView {
         profileImage.setImage(with: userData.profileImageURL)
         profileName.text = userData.name
         firstButton.setTitle(String(userData.lizardCount), for: .normal)
+        print("포스트 카운트 : \(userData.postCount)")
         secondButton.setTitle(String(userData.postCount), for: .normal)
         
         // 로그인 타입별 소셜로그인 이미지

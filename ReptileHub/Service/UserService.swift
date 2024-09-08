@@ -13,8 +13,8 @@ import FirebaseAuth
 class UserService {
     static let shared = UserService()
 
-    var currentUserId: String{
-        get{
+    var currentUserId: String {
+        get {
             return Auth.auth().currentUser?.uid ?? "nil"
         }
     }

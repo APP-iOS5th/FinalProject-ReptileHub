@@ -58,7 +58,7 @@ class CommunityTableViewCell: UITableViewCell {
         thumbnailImageView.clipsToBounds = true
         thumbnailImageView.layer.cornerRadius = 5
         thumbnailImageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        thumbnailImageView.backgroundColor = .lightGray
+        thumbnailImageView.backgroundColor = .textFieldPlaceholder.withAlphaComponent(0.3)
         
         self.contentView.addSubview(thumbnailImageView)
         

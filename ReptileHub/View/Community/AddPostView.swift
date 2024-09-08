@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import PhotosUI
+import Kingfisher
 
 protocol AddPostViewDelegate: AnyObject {
     func didTapPostButton(imageData: [Data], title: String, content: String)
@@ -40,7 +41,7 @@ class AddPostView: UIView {
     let contentTextView: UITextView = UITextView()
     let textViewPlaceholder: UILabel = UILabel()
     
-    private let postButton: UIButton = UIButton(type: .system)
+    let postButton: UIButton = UIButton(type: .system)
     
     var picker: PHPickerViewController = PHPickerViewController(configuration: PHPickerConfiguration())
     
@@ -64,6 +65,9 @@ class AddPostView: UIView {
         setupTitleTextView()
         setupContentTextView()
         setupPostButton()
+        
+        postButton.isEnabled = true
+        
     }
     
     required init?(coder: NSCoder) {
@@ -163,6 +167,14 @@ class AddPostView: UIView {
     
     @objc
     private func postButtonAction() {
+        // 버튼 비활성화
+            postButton.isEnabled = false
+            
+            // 비활성화된 상태에서 배경 색상을 회색으로 변경
+            postButton.backgroundColor = UIColor.gray
+            
+            // 버튼의 텍스트 색상도 적절히 변경할 수 있음
+            postButton.setTitleColor(.lightGray, for: .normal)
         delegate?.didTapPostButton(imageData: imageData, title: titleTextField.text ?? "nil", content: contentTextView.text ?? "nil")
     }
     
@@ -180,6 +192,33 @@ class AddPostView: UIView {
         return PHPickerViewController(configuration: config)
         
     }
+    
+    func configureEdit(configureEditData: PostDetailResponse) {
+        print("수정이다 수정!! : \(configureEditData)")
+            var images = [UIImage]()
+            for image in configureEditData.imageURLs {
+                let uiImage = UIImage()
+                KingfisherManager.shared.retrieveImage(with: URL(string: image)!) { result in
+                    
+                    switch result {
+                        case .success(let value):
+                            // 성공적으로 이미지를 다운로드했을 때
+                            let image = value.image
+                            print("Image downloaded: (image)")
+
+                            self.selectedImages.append(image)
+                        self.imagePickerCollectionView.reloadData()
+                        case .failure(let error):
+                            // 에러 처리
+                            print("Error downloading image: (error)")
+                        }
+                    }
+            }
+            titleTextField.text = configureEditData.title
+            contentTextView.text = configureEditData.content
+            textViewPlaceholder.isHidden = true
+        postButton.setTitle("수정하기", for: .normal)
+        }
     
 }
 

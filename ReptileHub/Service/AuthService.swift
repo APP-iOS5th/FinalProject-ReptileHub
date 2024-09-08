@@ -398,6 +398,35 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
 
             let rawNonce = self.currentNonce ?? ""
             let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: rawNonce)
+            
+            if let authorizationCode = appleIDCredential.authorizationCode,
+               let codeString = String(data: authorizationCode, encoding: .utf8) {
+               
+               print("dㅣ것은 authorizationCode여", authorizationCode)
+               print("이것은 CodesTring이여", codeString)
+               
+               let url = URL(string: "https://us-central1-reptilehub-a8815.cloudfunctions.net/getRefreshToken?code=\(codeString)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
+               
+               
+               let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+                   if let data = data {
+                       let refreshToken = String(data: data, encoding: .utf8) ?? ""
+                       print("하하하하하하하하하하하하하하하하 리프레쉬토큰이다 !!! ",refreshToken)
+                       UserDefaults.standard.set(refreshToken, forKey: "refreshToken")
+                       UserDefaults.standard.synchronize()
+                   }
+                   
+                   if let response = response {
+                       print("하하하하하하하하핳Response",response)
+                   }
+                   if let error = error {
+                       print("슈밤" , error.localizedDescription)
+                   }
+                   
+               }
+               task.resume()
+           }
+            
 
             let appleUser = AppleAuthUser(credential: appleIDCredential)
 
