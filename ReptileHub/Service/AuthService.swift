@@ -341,10 +341,11 @@ class AuthService: NSObject {
     
     private func saveUserToFirestore(uid: String, user: AuthUser, profileImageURL: String, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
+        let randomNickname = generateRandomNickname()
         var userData: [String: Any] = [
             "uid": uid,
             "email": user.email ?? "",
-            "name": user.name ?? "",
+            "name": randomNickname,
             "loginType": user.loginType,
             "providerUID": user.providerUID,
             "profileImageURL": profileImageURL,
@@ -364,7 +365,14 @@ class AuthService: NSObject {
             completion()
         }
     }
+    //MARK: - 유저 회원가입 시 랜덤 닉네임 부여
+    private func generateRandomNickname() -> String {
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        let randomCharacters = (0..<8).map { _ in characters.randomElement()! }
+        return "User-\(String(randomCharacters))" // User- 접두사와 랜덤 문자 결합
+    }
     
+    //MARK: - 애플 로그인 랜덤 난수 만들기
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         let charset: Array<Character> = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
@@ -424,6 +432,7 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
 
             // AppleAuthUser 객체를 생성할 때 authorizationCode 포함
             let appleUser = AppleAuthUser(credential: appleIDCredential)
+            
 
             self.checkIfUserExists(providerUID: appleUser.uid, loginType: appleUser.loginType) { exists in
                 if exists {
