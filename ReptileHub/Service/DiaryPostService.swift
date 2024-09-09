@@ -151,44 +151,47 @@ class DiaryPostService {
     
     //MARK: - DiaryDetail 정보 불러오는 함수. 썸네일에서 받아온 diaryID 를 할당해서 조회 하면 해당 detail 정보를 받을 수 있다 .
     func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (Result<GrowthDiaryResponse, Error>) -> Void) {
-        db.collection("users").document(userID)
-            .collection("growth_diaries_details")
-            .document(diaryID)
-            .getDocument { (document, error) in
-                if let error = error {
-                    print("Error getting document: \(error)")
-                    completion(.failure(error))
-                    return
-                }
-                
-                guard let document = document, let data = document.data() else {
-                    print("Document does not exist or no data available")
-                    let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist or no data available"])
-                    completion(.failure(noDataError))
-                    return
-                }
-                
-                do {
-                    // 수동으로 데이터를 파싱하여 GrowthDiaryResponse 객체를 생성
-                    let lizardInfo = try JSONDecoder().decode(LizardInfoResponse.self, from: JSONSerialization.data(withJSONObject: data["lizardInfo"] as Any))
-                    
-                    var parentInfo: ParentsResponse? = nil
-                    if let parentInfoData = data["parentInfo"] as? [String: Any] {
-                        let mother = try JSONDecoder().decode(ParentInfoResponse.self, from: JSONSerialization.data(withJSONObject: parentInfoData["mother"] as Any))
-                        let father = try JSONDecoder().decode(ParentInfoResponse.self, from: JSONSerialization.data(withJSONObject: parentInfoData["father"] as Any))
-                        
-                        parentInfo = ParentsResponse(mother: mother, father: father)
-                    }
-                    
-                    let diaryResponse = GrowthDiaryResponse(lizardInfo: lizardInfo, parentInfo: parentInfo)
-                    print("diaryResponse \(diaryResponse)")
-                    completion(.success(diaryResponse))
-                } catch {
-                    print("Failed to decode diary details: \(error)")
-                    completion(.failure(error))
-                }
-            }
-    }
+         db.collection("users").document(userID)
+             .collection("growth_diaries_details")
+             .document(diaryID)
+             .getDocument { (document, error) in
+                 if let error = error {
+                     print("Error getting document: \(error)")
+                     completion(.failure(error))
+                     return
+                 }
+
+                 guard let document = document, let data = document.data() else {
+                     print("Document does not exist or no data available")
+                     let noDataError = NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Document does not exist or no data available"])
+                     completion(.failure(noDataError))
+                     return
+                 }
+
+                 do {
+                     // 수동으로 데이터를 파싱하여 GrowthDiaryResponse 객체를 생성
+                     
+                     let lizardInfo = try JSONDecoder().decode(LizardInfoResponse.self, from: JSONSerialization.data(withJSONObject: data["lizardInfo"] as Any))
+
+                     print("BBBB")
+                     
+                     var parentInfo: ParentsResponse? = nil
+                     if let parentInfoData = data["parentInfo"] as? [String: Any] {
+                         let mother = try JSONDecoder().decode(ParentInfoResponse.self, from: JSONSerialization.data(withJSONObject: parentInfoData["mother"] as Any))
+                         let father = try JSONDecoder().decode(ParentInfoResponse.self, from: JSONSerialization.data(withJSONObject: parentInfoData["father"] as Any))
+
+                         parentInfo = ParentsResponse(mother: mother, father: father)
+                     }
+
+                     let diaryResponse = GrowthDiaryResponse(lizardInfo: lizardInfo, parentInfo: parentInfo)
+                     print("diaryResponse \(diaryResponse)")
+                     completion(.success(diaryResponse))
+                 } catch {
+                     print("Failed to decode diary details: \(error)")
+                     completion(.failure(error))
+                 }
+             }
+     }
     
     //MARK: - 성장일지 삭제 - 등록된 도마뱀 삭제시 -> 썸네일, detail, 성장일기 및 관련 image Storage 에서 삭제 및 프로필에 등록된 도마뱀 개수 -1
     func deleteGrowthDiary(userID: String, diaryID: String, completion: @escaping (Error?) -> Void) {
@@ -402,7 +405,7 @@ class DiaryPostService {
                 }
             }
         }
-
+        
         // 2. 기존에 있던 이미지 중 삭제된 이미지를 Firebase Storage에서 삭제
         for (key, imageData) in imagesData {
             if let imageData = imageData,  // 새로운 이미지 데이터가 있는지 확인
@@ -451,10 +454,10 @@ class DiaryPostService {
                     completion(error)
                     return
                 }
-
+                
                 let diaryData = try? JSONEncoder().encode(updatedDiary)
                 let dictionary = try? JSONSerialization.jsonObject(with: diaryData!, options: []) as? [String: Any]
-
+                
                 diaryRef.updateData(dictionary ?? [:]) { error in
                     completion(error)
                 }
@@ -464,7 +467,7 @@ class DiaryPostService {
 }
 
 extension DiaryPostService {
-   
+    
     //MARK: - 성장 일지 속 일기 작성 함수
     func createDiary(userID: String, diaryID: String, images: [Data], title: String, content: String, selectedDate: Date, completion: @escaping (Error?) -> Void) {
         uploadImages(images: images) { urls, errors in
@@ -472,12 +475,12 @@ extension DiaryPostService {
                 completion(errors.first)
                 return
             }
-
+            
             guard let urls = urls else {
                 completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to upload images"]))
                 return
             }
-
+            
             let diaryRequest = DiaryRequest(title: title, content: content, imageURLs: urls)
             let entryID = UUID().uuidString // 고유 ID 생성
             let diaryData: [String: Any] = [
@@ -488,7 +491,7 @@ extension DiaryPostService {
                 "selectedDate": Timestamp(date: selectedDate),
                 "createdAt": FieldValue.serverTimestamp()// 사용자가 선택한 날짜를 Timestamp로 저장
             ]
-
+            
             let db = Firestore.firestore()
             db.collection("users").document(userID)
                 .collection("growth_diaries_details").document(diaryID)
@@ -497,7 +500,7 @@ extension DiaryPostService {
                 }
         }
     }
-
+    
     //MARK: - 성장 일지 속 일기 불러오기 - limit 로 개수 조정 가능
     func fetchDiaryEntries(userID: String, diaryID: String, limit: Int? = nil, completion: @escaping (Result<[DiaryResponse], Error>) -> Void) {
         let db = Firestore.firestore()
@@ -508,7 +511,7 @@ extension DiaryPostService {
             .collection("diary_entries")
             .order(by: "selectedDate", descending: false) // selectedDate 필드를 기준으로 오름차순 정렬
             .order(by: "createdAt", descending: false) // 같은 날짜의 경우 작성 시간 기준 오름차순 정렬
-           
+        
         
         // limit 파라미터가 제공된 경우 쿼리에 제한 추가
         if let limit = limit {
@@ -525,7 +528,7 @@ extension DiaryPostService {
                 completion(.success([]))
                 return
             }
-
+            
             var diaryEntries: [DiaryResponse] = []
             
             for document in documents {
@@ -541,7 +544,7 @@ extension DiaryPostService {
                         title: title,
                         content: content,
                         imageURLs: imageURLs,
-                        createdAt: selectedDate.dateValue(), 
+                        createdAt: selectedDate.dateValue(),
                         selectedDate: selectedDate.dateValue() // 선택된 날짜를 사용
                     )
                     diaryEntries.append(diaryEntry)
@@ -627,7 +630,7 @@ extension DiaryPostService {
                 for imageURL in imageURLs {
                     group.enter()
                     
-                   
+                    
                     self.deleteImage(from: imageURL) { error in
                         if let error = error {
                             deletionErrors.append(error)
@@ -656,7 +659,7 @@ extension DiaryPostService {
             }
         }
     }
-
+    
     //MARK: - 성장 일지 속 일기 수정 함수
     func updateDiary(userID: String, diaryID: String, entryID: String, newTitle: String?, newContent: String?, newImages: [Data]?, existingImageURLs: [String]?, removedImageURLs: [String]?, newSelectedDate: Date?,        completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
@@ -664,11 +667,11 @@ extension DiaryPostService {
             .collection("growth_diaries_details").document(diaryID)
             .collection("diary_entries").document(entryID)
         let storageRef = Storage.storage().reference()
-
+        
         var updatedImageURLs: [String] = existingImageURLs ?? []
         var errors: [Error] = []
         let group = DispatchGroup()
-
+        
         // 1. 새로 추가된 이미지를 Firebase Storage에 업로드
         if let newImages = newImages {
             for imageData in newImages {
@@ -694,7 +697,7 @@ extension DiaryPostService {
                 }
             }
         }
-
+        
         // 2. 기존에 있던 이미지 중 삭제된 이미지를 Firebase Storage에서 삭제
         if let removedImageURLs = removedImageURLs {
             for imageURL in removedImageURLs {
@@ -713,7 +716,7 @@ extension DiaryPostService {
                 }
             }
         }
-
+        
         // 3. 모든 작업이 완료되면 Firestore 업데이트
         group.notify(queue: .main) {
             if !errors.isEmpty {
@@ -734,7 +737,7 @@ extension DiaryPostService {
             
             updatedData["imageURLs"] = updatedImageURLs
             updatedData["updatedAt"] = FieldValue.serverTimestamp()
-
+            
             // 4. Firestore 업데이트
             entryRef.updateData(updatedData) { error in
                 completion(error)
@@ -745,7 +748,7 @@ extension DiaryPostService {
 }
 
 extension DiaryPostService {
-    //MARK: - 도마뱀 몸무게 변화 추가 함수
+     //MARK: - 도마뱀 몸무게 변화 추가 함수
     func addWeightEntry(userID: String, diaryID: String, weight: Int, date: Date = Date(), completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
         let weightID = UUID().uuidString
@@ -868,7 +871,7 @@ extension DiaryPostService {
     //MARK: -  몸무게 기록 수정하기
     func updateWeightEntry(userID: String, diaryID: String, weightID: String, newWeight: Int? = nil, newDate: Date? = nil, completion: @escaping (Error?) -> Void) {
         let db = Firestore.firestore()
-
+    
         // 수정할 데이터가 없는 경우
         guard newWeight != nil || newDate != nil else {
             completion(nil) // 수정할 것이 없으면 오류 없이 반환
@@ -971,11 +974,11 @@ extension DiaryPostService {
               let path = urlComponents.path.removingPercentEncoding else {
             return nil
         }
-
+        
         let pathComponents = path.split(separator: "/")
         return pathComponents.last?.components(separatedBy: "%2F").last
     }
-
+    
     //MARK: -FireStorage 에서 해당 경로의 이미지 파일명 삭제 함수
     func deleteImage(from url: String, completion: @escaping (Error?) -> Void) {
         guard let fileName = extractFileName(from: url) else {

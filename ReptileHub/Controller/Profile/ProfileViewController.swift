@@ -135,9 +135,36 @@ class ProfileViewController: UIViewController {
 
     // 회원탈퇴 (버튼)
     @objc func withdrawalButtonTouch() {
-        print("회원탈퇴 버튼 터치")
+        let alert = UIAlertController(title: "회원탈퇴", message: "ReptileHub 앱을 탈퇴하시겠습니까?", preferredStyle: .alert)
+        
+
+        let delete = UIAlertAction(title: "탈퇴", style: .destructive){ [weak self] _ in
+            self?.deleteAuthentication()
+        }
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        alert.addAction(cancel)
+        alert.addAction(delete)
+        
+        present(alert, animated: true)
     }
 
+    private func deleteAuthentication(){
+        guard let loginType = currentUserProfile?.loginType else {
+            print("여기 뭔데 걸려?")
+            return
+        }
+        print(loginType, "입니다")
+        AuthService.shared.deleteUserAccount(userID: UserService.shared.currentUserId, loginType: loginType) { error in
+            if let error = error{
+                print("ERROR: \(error.localizedDescription)")
+            }else{
+                print("회원탈퇴가 정상적으로 이루어졌습니다.")
+            }
+        }
+    }
+    
+    
     // 로그아웃 (버튼)
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")

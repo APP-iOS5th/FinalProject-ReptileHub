@@ -25,14 +25,12 @@ struct LizardInfo:Codable {
     var tailexistence: Bool
     var imageURL: String?
 }
-
 // 도마뱀 등록할떄 성별
 enum Gender:String,Codable {
     case male = "male"
     case female = "female"
     case unKnown = "unKnown"
 }
-
 // 도마뱀 부모 정보
 struct ParentInfo:Codable {
     var name: String
@@ -68,7 +66,6 @@ struct ParentInfoResponse: Codable {
     var morph: String?
     var imageURL: String?
 }
-
 struct ParentsResponse: Codable {
     var mother: ParentInfoResponse
     var father: ParentInfoResponse
@@ -81,8 +78,6 @@ struct ThumbnailResponse: Codable {
     var name: String
     var createdAt: Date
 }
-
-
 // 성장일지 속 성장일기 작성할때 사용하는 구조체
 struct DiaryRequest {
     let title: String
@@ -99,7 +94,6 @@ struct DiaryResponse:Codable {
     let createdAt: Date?
     let selectedDate: Date?
 }
-
 // 도마뱀 날짜별 무게
 struct WeightEntry:Identifiable {
     let id: String
@@ -112,9 +106,8 @@ struct WeightEntry:Identifiable {
         self.date = date
     }
 }
-
 // 도마뱀 월별 무게 평균
-struct MonthWeightAverage {
+struct MonthWeightAverage: Hashable {
     let month: Int
     let averageWeight: Int
 }

@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelegate, UIScrollViewDelegate, KeyboardNotificationDelegate {
-
-    typealias request = (GrowthDiaryRequest, [Data?])
+    
+    typealias request = (GrowthDiaryRequest, [Data?], Bool)
     
     var buttonTapped: (()->Void)?
     let keyboardManager = KeyboardManager()
@@ -99,7 +99,12 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //성별
     private lazy var genderDropdownView = DropDownView(options: [Gender.male.rawValue, Gender.female.rawValue, Gender.unKnown.rawValue], title: "성별을 선택해주세요.")
     //무게
-    private lazy var weightTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
+    private lazy var weightTextField: UITextField = {
+        let textField = createTextField(text: "무게를 입력해주세요.")
+        textField.keyboardType = .numberPad
+        return textField
+    }()
+    
     //피딩 방식
     private lazy var feedMethodDropdownView: DropDownView = DropDownView(options: ["자율", "핸드"], title: "피딩 방식을 선택해주세요.")
     //꼬리 유무
@@ -107,29 +112,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         title: "꼬리",
         buttonTitles: ("있음", "없음")
     )
-    //    private lazy var hatchDaysDatePicker: UIDatePicker = {
-    //        let picker = UIDatePicker()
-    //        picker.preferredDatePickerStyle = .wheels
-    //        picker.datePickerMode = .date
-    //        picker.addTarget(self, action: #selector(dateChange), for: .valueChanged)
-    //        return picker
-    //    }()
-    //
-    //    //해칭일 날짜 textField
-    //    private lazy var hatchDaysTextFiled: UITextField = {
-    //        let textField = createTextField(text: Date().toString())
-    //        textField.inputView = hatchDaysDatePicker
-    //        return textField
-    //    }()
     
-    
-    // 텍스트 필드에 들어갈 텍스트를 DateFormatter 변환
-    //    private func dateFormat(date: Date) -> String {
-    //        let formatter = DateFormatter()
-    //        formatter.dateFormat = "yyyy / MM / dd"
-    //
-    //        return formatter.string(from: date)
-    //    }
     //MARK: - 아빠 정보
     //아빠 이미지
     private(set) lazy var fatherImageView: UIImageView = createImageVIew()
@@ -241,7 +224,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         keyboardManager.showNoti()
         keyboardManager.hideNoti()
         keyboardManager.delegate = self
-//        registerForKeyboardNotifications()
+        //        registerForKeyboardNotifications()
     }
     
     required init?(coder: NSCoder) {
@@ -251,6 +234,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     
     private func setUI(){
         addSubview(scrollView)
+        weightTextField.keyboardType = .numberPad
         
         scrollView.addSubview(contentView)
         contentView.addSubview(mainStackView)
@@ -268,7 +252,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         
         mainStackView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.leading.trailing.equalTo(scrollView).inset(24)
+            make.leading.trailing.equalTo(scrollView).inset(Spacing.mainSpacing)
         }
         
         line.snp.makeConstraints { make in
@@ -516,14 +500,23 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
         if parentSelected{
             let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
-            imageData.append(motherImageView.image == nil ? nil : motherImageView.image?.pngData())
+            if motherImageView.image == UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate){
+                imageData.append(nil)
+            }else{
+                imageData.append(motherImageView.image?.pngData())
+            }
+            
             let father = ParentInfo(name: fatherNameTextField.text ?? "이름 없음", morph: fatherMorphTextField.text)
-            imageData.append(fatherImageView.image == nil ? nil : fatherImageView.image?.pngData())
+            if fatherImageView.image == UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate){
+                imageData.append(nil)
+            }else{
+                imageData.append(fatherImageView.image?.pngData())
+            }
             let parent = Parents(mother: mother, father: father)
-            return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData)
+            return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData, parentSelected)
         }
         imageData.append(contentsOf: [nil, nil])
-        return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData)
+        return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData, parentSelected)
     }
     
     //MARK: - Action
@@ -556,10 +549,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             }
             if showButton.layer.name == "있음"{
                 self.morphSelected = true
-                print(morphSelected)
             }else{
                 self.parentSelected = true
-                print(parentSelected)
             }
             
             
@@ -622,7 +613,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         textField.resignFirstResponder() // 키보드를 닫음
         return true
     }
-
+    
     private func findFirstResponder(in view: UIView) -> UIView? {
         for subview in view.subviews {
             if subview.isFirstResponder {
@@ -660,27 +651,60 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             textField.text = datePicker?.date.formatted
         }
     }
-}
-
-#if DEBUG
-import SwiftUI
-
-struct AddGrowthDiaryViewRepresentable: UIViewRepresentable {
-    func makeUIView(context: Context) -> AddGrowthDiaryView {
-        return AddGrowthDiaryView()
-    }
     
-    func updateUIView(_ uiView: AddGrowthDiaryView, context: Context) {
-        // 필요하다면 뷰 업데이트
-        uiView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        uiView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+    func configureEditGrowthDiary(configureData: GrowthDiaryResponse){
+        let lizardInfo = configureData.lizardInfo
+        //자식 이미지
+        if let lizardImageName = lizardInfo.imageURL{
+            thumbnailImageView.contentMode = .scaleAspectFill
+            thumbnailImageView.setImage(with: lizardImageName)
+        }
+        nameTextField.text = lizardInfo.name
+        speciesTextField.text = lizardInfo.species
+        
+        if let morph = lizardInfo.morph{
+            morphTextField.text = morph
+        }
+        
+        hatchDaysTextField.text = lizardInfo.hatchDays.formatted
+        
+        genderDropdownView.selectedOption = lizardInfo.gender
+        
+        weightTextField.text = String(lizardInfo.weight)
+        
+        feedMethodDropdownView.selectedOption = lizardInfo.feedMethod
+        
+        tailSelected = lizardInfo.tailexistence
+        
+        guard let parentInfo = configureData.parentInfo else {
+            return
+        }
+        
+        if let fatherImageName = parentInfo.father.imageURL{
+            fatherImageView.contentMode = .scaleAspectFill
+            fatherImageView.setImage(with: fatherImageName)
+        }
+        
+        fatherNameTextField.text = parentInfo.father.name
+        
+        if let fatherMorph = parentInfo.father.morph{
+            fatherMorphTextField.text = fatherMorph
+        }
+        
+        if let motherImageName = parentInfo.mother.imageURL{
+            motherImageView.contentMode = .scaleAspectFill
+            motherImageView.setImage(with: motherImageName)
+        }
+        
+        motherNameTextField.text = parentInfo.mother.name
+        
+        if let motherMorph = parentInfo.mother.morph{
+            motherMorphTextField.text = motherMorph
+        }
+        
+        if var config = uploadGrowthDiaryButton.configuration{
+            config.title = "수정하기"
+            uploadGrowthDiaryButton.configuration = config
+        }
     }
 }
-
-struct AddGrowthDiaryView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddGrowthDiaryViewRepresentable()
-            .previewLayout(.sizeThatFits) // 크기를 맞춤 설정할 수 있음
-    }
-}
-#endif

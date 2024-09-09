@@ -28,6 +28,25 @@ class TermsAgreementViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+//        view.addSubview(agreeButton)
+//        view.addSubview(declineButton)
+//        
+//        agreeButton.snp.makeConstraints {
+//            $0.centerX.equalToSuperview()
+//            $0.centerY.equalToSuperview().offset(-20)
+//        }
+//      
+//        declineButton.snp.makeConstraints {
+//            $0.centerX.equalToSuperview()
+//            $0.centerY.equalToSuperview()
+//            
+//            agreeButton.addTarget(self, action: #selector(agreeButtonTapped), for: .touchUpInside)
+//            declineButton.addTarget(self, action: #selector(declineButtonTapped), for: .touchUpInside)
+//            agreeButton.setTitleColor(.black, for: .normal)
+//            declineButton.setTitleColor(.black, for: .normal)
+//            agreeButton.setTitle("Agree", for: .normal) 
+//            declineButton.setTitle("Decline", for: .normal)
+//        }
         
         setupAgreementView()
         setupActions() // 액션 설정

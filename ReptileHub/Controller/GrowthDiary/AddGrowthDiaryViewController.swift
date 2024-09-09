@@ -9,11 +9,23 @@ import UIKit
 import PhotosUI
 import FirebaseAuth
 
+
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var previousViewController: GrowthDiaryViewController?
-
+    weak var previousDetailVC: DetailGrowthDiaryViewController?
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
     private var selectedImageView: UIImageView?
+    let editMode: Bool
+    var diaryID: String?
+    
+    init(editMode: Bool){
+        self.editMode = editMode
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,32 +41,63 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
             self?.datePickerValueChanged()
         }
         addGrowthDiaryView.addAction(action: action)
-        
         addGrowthDiaryView.configureImageViewActions(target: self, action: #selector(imageViewTapped(_:)))
         
+        if self.editMode{
+            fetchGrowthDiaryData()
+        }
+
         addGrowthDiaryView.buttonTapped = { [weak self] in
             self?.uploadGrowthDiary()
         }
     }
     
     private func uploadGrowthDiary(){
-        guard let userId = Auth.auth().getUserID() else {
-            return
-        }
         let result = addGrowthDiaryView.growthDiaryRequestData()
-        print(result.1)
-        DiaryPostService.shared.registerGrowthDiary(userID: userId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
-            if let error = error{
-                print(error.localizedDescription)
-            }else{
-                if let previousVC = self?.previousViewController{
-                    previousVC.updateImage()
+        if editMode{
+            //editMode가 true일떄 수정하기 활성화
+            guard let diaryID = diaryID else { return }
+            DiaryPostService.shared.updateGrowthDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, updatedDiary: result.0, newSelfImageData: result.1[0], newMotherImageData: result.1[1], newFatherImageData: result.1[2]) { [weak self] error in
+                if let error = error{
+                    print("ERROR: \(error.localizedDescription)")
+                }else{
+                    if let previousVC = self?.previousViewController,
+                    let previousDetailVC = self?.previousDetailVC{
+                        previousVC.updateImage()
+                        previousDetailVC.updateDetailDate()
+                    }
+                    NotificationCenter.default.post(name: .parentInfoShow, object: nil, userInfo: ["parentShow": result.2])
+                    self?.navigationController?.popViewController(animated: true)
                 }
-                self?.navigationController?.popViewController(animated: true)
+            }
+        }else{
+            //editMode가 false일때 등록하기 활성화
+            DiaryPostService.shared.registerGrowthDiary(userID: UserService.shared.currentUserId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
+                if let error = error{
+                    print("error", error.localizedDescription)
+                }else{
+                    if let previousVC = self?.previousViewController{
+                        previousVC.updateImage()
+                    }
+                    self?.navigationController?.popViewController(animated: true)
+                }
             }
         }
     }
     
+    //MARK: - 수정 일떄는 데이터를 불러와야함
+    private func fetchGrowthDiaryData(){
+        guard let diaryID = diaryID else { return }
+        DiaryPostService.shared.fetchGrowthDiaryDetails(userID: UserService.shared.currentUserId, diaryID: diaryID) { [weak self] response in
+            switch response{
+            case .success(let responseData):
+                self?.addGrowthDiaryView.configureEditGrowthDiary(configureData: responseData)
+            case .failure(let error):
+                print("ERROR: \(error.localizedDescription)")
+            }
+        }
+    }
+
     private func datePickerValueChanged(){
         addGrowthDiaryView.updateDateField()
     }
@@ -101,28 +144,3 @@ extension AddGrowthDiaryViewController: PHPickerViewControllerDelegate{
            }
        }
 }
-
-#if DEBUG
-import SwiftUI
-struct AddViewControllerRepresentable: UIViewControllerRepresentable {
-    
-    func updateUIViewController(_ uiView: UIViewController,context: Context) {
-        // leave this empty
-    }
-    @available(iOS 13.0.0, *)
-    func makeUIViewController(context: Context) -> UIViewController{
-        AddGrowthDiaryViewController()
-    }
-}
-@available(iOS 13.0, *)
-struct AddViewControllerRepresentable_PreviewProvider: PreviewProvider {
-    static var previews: some View {
-        Group {
-            AddViewControllerRepresentable()
-                .ignoresSafeArea()
-                .previewDisplayName(/*@START_MENU_TOKEN@*/"Preview"/*@END_MENU_TOKEN@*/)
-                .previewDevice(PreviewDevice(rawValue: "iPhone 15 Pro"))
-        }
-        
-    }
-} #endif

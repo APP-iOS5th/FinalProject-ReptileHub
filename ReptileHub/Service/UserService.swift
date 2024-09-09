@@ -81,9 +81,7 @@ class UserService {
                 } else {
                     completion(.success(blockedUsers))
                 }
-                
               }
-            
         }
         
     }
