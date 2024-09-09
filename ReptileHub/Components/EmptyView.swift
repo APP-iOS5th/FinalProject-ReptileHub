@@ -11,7 +11,7 @@ class EmptyView: UIView {
     private lazy var emptyLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.textColor = UIColor(red: 215/255, green: 215/255, blue: 215/255, alpha: 1)
+        label.textColor = UIColor.textFieldPlaceholder
         label.font = UIFont.systemFont(ofSize: 20)
         return label
     }()

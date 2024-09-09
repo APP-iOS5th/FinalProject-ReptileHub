@@ -30,6 +30,7 @@ extension Date{
 //    print("Image removed from cache successfully")
 //}
 extension UIImageView{
+    //배열로도 받아올 수 있게하기
     func setImage(with urlString: String) {
         ImageCache.default.retrieveImage(forKey: urlString, options: nil) { result in
             
@@ -70,4 +71,11 @@ extension UIImageView{
             }
         }
     }
+}
+
+
+//MARK: - extension Notification.name
+extension Notification.Name {
+    static let dropdownDidOpen = Notification.Name("dropdownDidOpen")
+    static let parentInfoShow = Notification.Name("parentInfoShow")
 }

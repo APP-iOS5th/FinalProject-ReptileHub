@@ -12,7 +12,7 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private let title: String
     var isOpen = false
     
-    private(set) var selectedOption: String? {
+    var selectedOption: String? {
         didSet {
             titleButton.setTitle(selectedOption ?? title, for: .normal)
             titleButton.setTitleColor(UIColor.textFieldTitle, for: .normal)
@@ -95,7 +95,6 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     private func openDropdown() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
-            print("Key window not found")
             return
         }
         
@@ -174,7 +173,6 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
     @objc func closeDropdown(){
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
-            print("Key window not found")
             return
         }
         
@@ -229,8 +227,4 @@ class DropDownView: UIView, UITableViewDelegate, UITableViewDataSource {
         selectedOption = menus[indexPath.row]
         closeDropdown()
     }
-}
-
-extension Notification.Name {
-    static let dropdownDidOpen = Notification.Name("dropdownDidOpen")
 }
