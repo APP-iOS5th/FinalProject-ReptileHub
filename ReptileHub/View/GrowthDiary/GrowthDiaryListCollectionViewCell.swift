@@ -69,6 +69,6 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
     func configure(imageName: String, title: String, date: String){
         GrowthDiaryItemImage.setImage(with: imageName)
         GrowthDiaryItemTitle.text = title
-        GrowthDiaryItemDate.text = "\(date) 생성"
+        GrowthDiaryItemDate.text = "\(date)"
     }
 }

@@ -36,7 +36,6 @@
 		46F0F7F92C6D997800444C98 /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F0F7F82C6D997800444C98 /* PostModel.swift */; };
 		5805AE192C7216CB00AB6ED9 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */; };
 		580E1AC12C7E421B00CD3A91 /* PHPickerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580E1AC02C7E421B00CD3A91 /* PHPickerCollectionViewCell.swift */; };
-		581F02E82C8DDA37005E5407 /* PersonalInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 581F02E72C8DDA37005E5407 /* PersonalInfo.txt */; };
 		583511FF2C692FBA00E7D63F /* CommunityDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */; };
 		58418D6F2C63FA3F004E738E /* CommunityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */; };
 		5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5881F01F2C73122500FBB13E /* CommunityListView.swift */; };
@@ -66,6 +65,7 @@
 		7968449E2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */; };
 		798476412C70E05200895D2D /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798476402C70E05200895D2D /* EmptyView.swift */; };
 		7994BDA42C7E415B00ADE7A7 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7994BDA32C7E415A00ADE7A7 /* Extension.swift */; };
+		79A004F72C8EB5B3006D8D6A /* PersonalInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 79A004F62C8EB5B3006D8D6A /* PersonalInfo.txt */; };
 		79A1AE4A2C6A088D00D5711B /* TabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1AE492C6A088D00D5711B /* TabbarViewController.swift */; };
 		79A5CA8D2C8873E900E0D9B3 /* AddEditWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A5CA8C2C8873E900E0D9B3 /* AddEditWeightView.swift */; };
 		79AA14992C69C2F1009F8209 /* GrowthDiaryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */; };
@@ -139,7 +139,6 @@
 		46F0F7F82C6D997800444C98 /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
 		5805AE182C7216CB00AB6ED9 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		580E1AC02C7E421B00CD3A91 /* PHPickerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHPickerCollectionViewCell.swift; sourceTree = "<group>"; };
-		581F02E72C8DDA37005E5407 /* PersonalInfo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PersonalInfo.txt; path = ../../../../PersonalInfo.txt; sourceTree = "<group>"; };
 		583511FE2C692FBA00E7D63F /* CommunityDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityDetailViewController.swift; sourceTree = "<group>"; };
 		58418D6E2C63FA3F004E738E /* CommunityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTableViewCell.swift; sourceTree = "<group>"; };
 		5881F01F2C73122500FBB13E /* CommunityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListView.swift; sourceTree = "<group>"; };
@@ -164,6 +163,7 @@
 		7968449D2C6B3DE600765A80 /* GrowthDiaryListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListCollectionViewCell.swift; sourceTree = "<group>"; };
 		798476402C70E05200895D2D /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 		7994BDA32C7E415A00ADE7A7 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		79A004F62C8EB5B3006D8D6A /* PersonalInfo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PersonalInfo.txt; sourceTree = "<group>"; };
 		79A1AE492C6A088D00D5711B /* TabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabbarViewController.swift; sourceTree = "<group>"; };
 		79A5CA8C2C8873E900E0D9B3 /* AddEditWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditWeightView.swift; sourceTree = "<group>"; };
 		79AA14982C69C2F1009F8209 /* GrowthDiaryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDiaryListView.swift; sourceTree = "<group>"; };
@@ -249,15 +249,6 @@
 			);
 			path = LoginView;
 			sourceTree = "<group>";
-		};
-		581F02E62C8DD8CC005E5407 /* Text */ = {
-			isa = PBXGroup;
-			children = (
-				581F02E72C8DDA37005E5407 /* PersonalInfo.txt */,
-			);
-			name = Text;
-			path = ReptileHub/Text;
-			sourceTree = SOURCE_ROOT;
 		};
 		584107DC2C5395A100DA47BA /* Controller */ = {
 			isa = PBXGroup;
@@ -357,7 +348,7 @@
 		588CE3D42C524EA900338878 /* ReptileHub */ = {
 			isa = PBXGroup;
 			children = (
-				581F02E62C8DD8CC005E5407 /* Text */,
+				79A004F52C8EB538006D8D6A /* Text */,
 				7994BDA22C7E413C00ADE7A7 /* Extension */,
 				798476422C70EFA400895D2D /* Components */,
 				469B443D2C6308B300B1C49B /* ReptileHub.entitlements */,
@@ -403,6 +394,14 @@
 				7994BDA32C7E415A00ADE7A7 /* Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		79A004F52C8EB538006D8D6A /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				79A004F62C8EB5B3006D8D6A /* PersonalInfo.txt */,
+			);
+			path = Text;
 			sourceTree = "<group>";
 		};
 		79AA14952C69C29D009F8209 /* GrowthDiary */ = {
@@ -544,8 +543,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				588CE3DF2C524EAA00338878 /* Assets.xcassets in Resources */,
+				79A004F72C8EB5B3006D8D6A /* PersonalInfo.txt in Resources */,
 				588CE3E22C524EAA00338878 /* Base in Resources */,
-				581F02E82C8DDA37005E5407 /* PersonalInfo.txt in Resources */,
 				469B443F2C63116000B1C49B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -617,7 +616,6 @@
 				4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */,
 				79D4F1322C84AC2A00EFC064 /* DetailGrowthDiaryView.swift in Sources */,
 				79A5CA8D2C8873E900E0D9B3 /* AddEditWeightView.swift in Sources */,
-				C14FF36D2C75DB2800089C6D /* WritePostListTableViewCell.swift in Sources */,
 				C154FA1A2C7C0F2C00624AA3 /* LikePostView.swift in Sources */,
 				58F3F6402C772E6B00FDABD1 /* CommunityDetailView.swift in Sources */,
 				C154FA222C7C4D9F00624AA3 /* EditUserInfoView.swift in Sources */,
