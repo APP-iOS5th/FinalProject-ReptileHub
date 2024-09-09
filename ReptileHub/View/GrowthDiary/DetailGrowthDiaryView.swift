@@ -569,8 +569,15 @@ class DetailGrowthDiaryView: UIView {
            let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(3) as? UILabel
         {
             fatherImageView.setImage(with: fatherData.imageURL!)
-            fatherName.text = fatherData.name
-            fatherSpeciesMorph.text = "\(fatherData.morph != nil ? fatherData.morph! : "없음")"
+            if fatherData.name.isEmpty{
+                print("fdsfsdf")
+                fatherName.text = "이름 없음"
+            }else{
+                fatherName.text = fatherData.name
+            }
+            if let morphText = fatherData.morph{
+                fatherSpeciesMorph.text = morphText.isEmpty ? "모프 없음" : morphText
+            }
         }
         
         if let motherImageView = detailMotherInfoView.viewWithTag(1) as? UIImageView,
@@ -578,8 +585,14 @@ class DetailGrowthDiaryView: UIView {
            let motherSpeciesMorph = detailMotherInfoView.viewWithTag(3) as? UILabel
         {
             motherImageView.setImage(with: motherData.imageURL!)
-            motherName.text = motherData.name
-            motherSpeciesMorph.text = "\(motherData.morph != nil ? motherData.morph! : "없음")"
+            if motherData.name.isEmpty{
+                motherName.text = "이름 없음"
+            }else{
+                motherName.text = motherData.name
+            }
+            if let morphText = motherData.morph{
+                motherSpeciesMorph.text = morphText.isEmpty ? "모프 없음" : morphText
+            }
         }
         
     }
