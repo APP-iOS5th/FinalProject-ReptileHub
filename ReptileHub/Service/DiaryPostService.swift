@@ -95,7 +95,7 @@ class DiaryPostService {
                         "weight": initialWeight
                     ]
                     
-                    let weightHistoryRef = detailRef.collection("weight_history").document()
+                    let weightHistoryRef = detailRef.collection("weight_history").document(weightID)
                     transaction.setData(weightData, forDocument: weightHistoryRef)
                     
                     return nil

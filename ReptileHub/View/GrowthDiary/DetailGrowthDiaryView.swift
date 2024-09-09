@@ -32,7 +32,7 @@ class DetailGrowthDiaryView: UIView {
     //MARK: - 반려 도마뱀 이미지 뷰
     private lazy var detailThumbnailImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "tempImage")
+//        view.image = UIImage(named: "tempImage")
         view.contentMode = .scaleAspectFill
         view.layer.cornerRadius = 82.5
         view.layer.borderColor = UIColor.textFieldLine.cgColor
@@ -479,7 +479,7 @@ class DetailGrowthDiaryView: UIView {
     
     private func createDetailParentInfo() -> UIView{
         let detailParentImageView = UIImageView()
-        detailParentImageView.image = UIImage(named: "tempImage")
+//        detailParentImageView.image = UIImage(named: "tempImage")
         detailParentImageView.contentMode = .scaleAspectFill
         detailParentImageView.clipsToBounds = true
         detailParentImageView.layer.cornerRadius = 5
@@ -549,7 +549,7 @@ class DetailGrowthDiaryView: UIView {
         if let imageURL = lizardData.imageURL{
             detailThumbnailImageView.setImage(with: imageURL)
         }else{
-            detailThumbnailImageView.image = UIImage(named: "tempImage")
+            detailThumbnailImageView.image = nil
         }
         detailLiazardNameLabel.text = lizardData.name
         detailLizardSepciesMorphInfoLabel.text = "\(lizardData.species) · 모프 \(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
