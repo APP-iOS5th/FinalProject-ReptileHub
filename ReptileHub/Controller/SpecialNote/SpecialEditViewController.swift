@@ -167,12 +167,10 @@ extension SpecialEditViewController: UITextViewDelegate {
 //MARK: - SpecialEidtView 데이터 저장해서 게시
 extension SpecialEditViewController: SpecialEditViewDelegate {
     func didTapPostButton(imageData: [Data], date: Date, title: String, text: String) {
-        guard let userID = Auth.auth().getUserID() else {
-            return
-        }
+    
         if editMode { // SpecialEditView 수정 모드일 때
             guard let editEntry = self.editEntry else { return }
-            DiaryPostService.shared.updateDiary(userID: userID, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs, newSelectedDate: date) { [weak self] error in
+            DiaryPostService.shared.updateDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs, newSelectedDate: date) { [weak self] error in
                 if let error = error {
                     print(error.localizedDescription)
                 } else {
@@ -195,7 +193,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                     title: \(title)
                     text: \(text)
                     """)
-            DiaryPostService.shared.createDiary(userID: userID, diaryID: diaryID, images: imageData, title: title, content: text, selectedDate: date){ [weak self]
+            DiaryPostService.shared.createDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, images: imageData, title: title, content: text, selectedDate: date){ [weak self]
                 error in
                     if let error = error {
                                 print("게시글 게시 중 오류 발생: \(error.localizedDescription)")

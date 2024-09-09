@@ -48,11 +48,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
     }
     
     func loadData(){
-        guard let userId = Auth.auth().getUserID() else {
-            return
-        }
-        
-        DiaryPostService.shared.fetchGrowthThumbnails(for: userId) {[weak self] response in
+        DiaryPostService.shared.fetchGrowthThumbnails(for: UserService.shared.currentUserId) {[weak self] response in
             switch response{
                 
             case .success(let data):
