@@ -71,7 +71,8 @@ class DiaryPostService {
                     let thumbnailData: [String: Any] = [
                         "diary_id": diaryID,
                         "thumbnail": updateDiary.lizardInfo.imageURL as Any,
-                        "name": updateDiary.lizardInfo.name
+                        "name": updateDiary.lizardInfo.name,
+                        "createdAt": Timestamp(date: Date())
                     ]
                     
                     let thumbnailRef = db.collection("users").document(userID)
@@ -137,8 +138,9 @@ class DiaryPostService {
                     let data = document.data()
                     if let diaryID = data["diary_id"] as? String,
                        let thumbnail = data["thumbnail"] as? String,
-                       let name = data["name"] as? String {
-                        let thumbnailData = ThumbnailResponse(diary_id: diaryID, thumbnail: thumbnail, name: name)
+                       let name = data["name"] as? String ,
+                       let createdAt = data["createdAt"] as? Timestamp {
+                       let thumbnailData = ThumbnailResponse(diary_id: diaryID, thumbnail: thumbnail, name: name, createdAt: createdAt.dateValue())
                         thumbnails.append(thumbnailData)
                     }
                 }

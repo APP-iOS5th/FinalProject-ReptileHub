@@ -79,6 +79,7 @@ struct ThumbnailResponse: Codable {
     var diary_id: String
     var thumbnail: String
     var name: String
+    var createdAt: Date
 }
 
 
