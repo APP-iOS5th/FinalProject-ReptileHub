@@ -10,7 +10,13 @@ import SnapKit
 import PhotosUI
 import FirebaseAuth
 
+protocol EditUserInfoViewControllerDelegate: AnyObject {
+    func tapSaveEditButton(newName: String, newProfileImage: UIImage)
+}
+
 class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
+    
+    weak var delegate: EditUserInfoViewControllerDelegate?
     
     var editUserInfoData : (String, String)?
     var previousViewController: ProfileViewController?
@@ -68,20 +74,7 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - 프로필 수정 저장 기능
     @objc func saveButtonTouch() {
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        UserService.shared.updateUserProfile(uid: uid, newName: editUserInfoView.ProfileNameEdit.text, newProfileImage: editUserInfoView.ProfileImageEdit.image) { [weak self] error in
-            if let error = error {
-                print("프로필 저장 실패: \(error.localizedDescription)")
-            } else {
-                print("프로필 저장 성공")
-                if let previousVC = self?.previousViewController{
-                                    print("privousVC", previousVC)
-                                    previousVC.updateImage()
-                                }
-                self?.dismiss(animated: true)
-                self?.editUserInfoData = nil
-            }
-        }
+        self.delegate?.tapSaveEditButton(newName: self.editUserInfoView.ProfileNameEdit.text ?? "nil", newProfileImage: self.editUserInfoView.ProfileImageEdit.image ?? UIImage(systemName: "person")!)
     }
     
     // MARK: - 프로필 수정 취소

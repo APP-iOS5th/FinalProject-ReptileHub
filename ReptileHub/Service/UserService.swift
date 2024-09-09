@@ -143,7 +143,8 @@ class UserService {
                   let name = data["name"] as? String,
                   let profileImageURL = data["profileImageURL"] as? String,
                   let providerUID = data["providerUID"] as? String,
-                  let loginType = data["loginType"] as? String else {
+                  let loginType = data["loginType"] as? String,
+                  let isVaildUser = data["isVaildUser"] as? Bool else {
 
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid user data"])))
                 return
@@ -152,7 +153,7 @@ class UserService {
             let lizardCount = data["lizardCount"] as? Int ?? 0
             let postCount = data["postCount"] as? Int ?? 0
             
-            let userProfile = UserProfile(uid: uid, providerUID: providerUID, name: name, profileImageURL: profileImageURL, loginType: loginType, lizardCount: lizardCount, postCount: postCount)
+            let userProfile = UserProfile(uid: uid, providerUID: providerUID, name: name, profileImageURL: profileImageURL, loginType: loginType, lizardCount: lizardCount, postCount: postCount, isVaildUser: isVaildUser)
             completion(.success(userProfile))
         }
     }
@@ -418,6 +419,46 @@ extension UserService {
             }
         } else {
             completion(nil)
+        }
+    }
+}
+
+extension UserService {
+    //MARK: - 해당 게시글 신고 로직
+    func reportPost(postID: String, reportedUserID: String, currentUserID: String, content: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let reportID = UUID().uuidString // 고유 신고 ID 생성
+        let reportData: [String: Any] = [
+            "게시글ID": postID,
+            "게시글작성자": reportedUserID,
+            "신고한유저": currentUserID,
+            "신고내용": content,
+            "생성일시": Timestamp(date: Date())
+        ]
+        
+        // Firestore에 신고 데이터 추가
+        let reportRef = db.collection("Reports").document("Post").collection("PostReports").document(reportID)
+        reportRef.setData(reportData) { error in
+            completion(error)
+        }
+    }
+    //MARK: - 해당 댓글 신고 로직
+    func reportComment(postID: String, commentID: String, reportedUserID: String, currentUserID: String, content: String, completion: @escaping (Error?) -> Void) {
+        let db = Firestore.firestore()
+        let reportID = UUID().uuidString
+        let reportData: [String: Any] = [
+            "게시글ID": postID,
+            "댓글ID": commentID,
+            "댓글작성자": reportedUserID,
+            "신고한유저": currentUserID,
+            "신고내용": content,
+            "생성일시": Timestamp(date: Date())
+        ]
+        
+        // Firestore에 댓글 신고 데이터 추가
+        let reportRef = db.collection("Reports").document("Comments").collection("CommentReports").document(reportID)
+        reportRef.setData(reportData) { error in
+            completion(error)
         }
     }
 }
