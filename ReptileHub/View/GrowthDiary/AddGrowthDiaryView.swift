@@ -500,9 +500,18 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
         var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
         if parentSelected{
             let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
-            imageData.append(motherImageView.image == nil ? nil : motherImageView.image?.pngData())
+            if motherImageView.image == UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate){
+                imageData.append(nil)
+            }else{
+                imageData.append(motherImageView.image?.pngData())
+            }
+            
             let father = ParentInfo(name: fatherNameTextField.text ?? "이름 없음", morph: fatherMorphTextField.text)
-            imageData.append(fatherImageView.image == nil ? nil : fatherImageView.image?.pngData())
+            if fatherImageView.image == UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate){
+                imageData.append(nil)
+            }else{
+                imageData.append(fatherImageView.image?.pngData())
+            }
             let parent = Parents(mother: mother, father: father)
             return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData, parentSelected)
         }

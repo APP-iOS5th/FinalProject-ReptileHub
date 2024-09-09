@@ -544,6 +544,8 @@ class DetailGrowthDiaryView: UIView {
     }
     
     func configureDetailGrowthDiaryData(detailData: GrowthDiaryResponse){
+        var fatherStatus = false
+        var motherStatus = false
         let lizardData = detailData.lizardInfo
         
         if let imageURL = lizardData.imageURL{
@@ -568,15 +570,24 @@ class DetailGrowthDiaryView: UIView {
            let fatherName = detailFatherInfoView.viewWithTag(2) as? UILabel,
            let fatherSpeciesMorph = detailFatherInfoView.viewWithTag(3) as? UILabel
         {
-            fatherImageView.setImage(with: fatherData.imageURL!)
+            if let imageName = fatherData.imageURL{
+                fatherImageView.setImage(with: imageName)
+            }else{
+                fatherImageView.image = nil
+            }
+            
             if fatherData.name.isEmpty{
-                print("fdsfsdf")
                 fatherName.text = "이름 없음"
             }else{
                 fatherName.text = fatherData.name
             }
+            
             if let morphText = fatherData.morph{
                 fatherSpeciesMorph.text = morphText.isEmpty ? "모프 없음" : morphText
+            }
+            
+            if fatherImageView.image == nil && fatherData.name.isEmpty && fatherSpeciesMorph.text == "모프 없음"{
+                fatherStatus = true
             }
         }
         
@@ -584,7 +595,11 @@ class DetailGrowthDiaryView: UIView {
            let motherName = detailMotherInfoView.viewWithTag(2) as? UILabel,
            let motherSpeciesMorph = detailMotherInfoView.viewWithTag(3) as? UILabel
         {
-            motherImageView.setImage(with: motherData.imageURL!)
+            if let imageName = motherData.imageURL{
+                motherImageView.setImage(with: imageName)
+            }else{
+                motherImageView.image = nil
+            }
             if motherData.name.isEmpty{
                 motherName.text = "이름 없음"
             }else{
@@ -593,7 +608,14 @@ class DetailGrowthDiaryView: UIView {
             if let morphText = motherData.morph{
                 motherSpeciesMorph.text = morphText.isEmpty ? "모프 없음" : morphText
             }
+            
+            if motherImageView.image == nil && motherData.name.isEmpty && motherSpeciesMorph.text == "모프 없음"{
+                motherStatus = true
+            }
         }
         
+        if fatherStatus && motherStatus{
+            NotificationCenter.default.post(name: .parentInfoShow, object: nil)
+        }
     }
 }
