@@ -153,7 +153,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     }()
     
     //MARK: - 성장일지 등록버튼
-    private lazy var uploadGrowthDiaryButton: UIButton = {
+    private (set) lazy var uploadGrowthDiaryButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
