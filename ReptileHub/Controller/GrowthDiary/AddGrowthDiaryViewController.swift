@@ -54,10 +54,18 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     
     private func uploadGrowthDiary(){
         let result = addGrowthDiaryView.growthDiaryRequestData()
+        //등록하기 버튼을 클릭하면 해당 버튼은 더이상 사용하지 못하게 비활성화
+        self.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = false
         if editMode{
             //editMode가 true일떄 수정하기 활성화
             guard let diaryID = diaryID else { return }
             DiaryPostService.shared.updateGrowthDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, updatedDiary: result.0, newSelfImageData: result.1[0], newMotherImageData: result.1[1], newFatherImageData: result.1[2]) { [weak self] error in
+                
+                //해당 요청이 끝나면 다시 버튼 활성화 시켜주기
+                defer{
+                    self?.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = true
+                }
+                
                 if let error = error{
                     print("ERROR: \(error.localizedDescription)")
                 }else{
@@ -73,6 +81,12 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         }else{
             //editMode가 false일때 등록하기 활성화
             DiaryPostService.shared.registerGrowthDiary(userID: UserService.shared.currentUserId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
+                
+                //해당 요청이 끝나면 다시 버튼 활성화 시켜주기
+                defer{
+                    self?.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = true
+                }
+                
                 if let error = error{
                     print("error", error.localizedDescription)
                 }else{

@@ -69,6 +69,7 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
     
     private func navigateToSecondViewController(){
         let secondViewController = AddGrowthDiaryViewController(editMode: false)
+        secondViewController.hidesBottomBarWhenPushed = true
         secondViewController.previousViewController = self
         navigationController?.pushViewController(secondViewController, animated: true)
     }
