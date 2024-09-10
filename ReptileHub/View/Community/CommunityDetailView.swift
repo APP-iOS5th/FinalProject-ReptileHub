@@ -173,8 +173,10 @@ class CommunityDetailView: UIView {
     private func setupElementStackView() {
         titleLabel.text = "공부는 최대한 미뤄라."
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.textColor = .black
         nicknameLabel.text = "공부싫어"
         nicknameLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        nicknameLabel.textColor = .lightGray
         timestampLabel.text = "24.08.09 17:31"
         timestampLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
         timestampLabel.textColor = UIColor.lightGray
@@ -402,7 +404,9 @@ class CommunityDetailView: UIView {
     private func setupCommentTableView() {
         let headerView: UILabel = UILabel()
         headerView.text = "댓글"
+        headerView.textColor = .black
         headerView.frame = CGRect(x: 0, y: 0, width: 0, height: 40)
+        headerView.backgroundColor = .white
         
         
         commentTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
@@ -410,6 +414,7 @@ class CommunityDetailView: UIView {
         commentTableView.estimatedRowHeight = 100
         commentTableView.rowHeight = UITableView.automaticDimension
         commentTableView.tableHeaderView = headerView
+        commentTableView.backgroundColor = .white
         
         self.stackView.addArrangedSubview(commentTableView)
 

@@ -95,11 +95,14 @@ class EditUserInfoView: UIView {
         self.addSubview(ProfileNameEdit)
         self.addSubview(buttonStackView)
         
+        ProfileNameEdit.backgroundColor = .white
         ProfileImageEdit.snp.makeConstraints { make in
             make.topMargin.equalTo(40)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(100)
         }
+        
+
         
         imagePickerButton.snp.makeConstraints { make in
             make.width.height.equalTo(30)

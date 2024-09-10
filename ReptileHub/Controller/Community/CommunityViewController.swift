@@ -13,7 +13,7 @@ class CommunityViewController: UIViewController {
     
     private var fetchTestData: [ThumbnailPostResponse] = []
     private var fetchUserProfile: UserProfile?
-    
+    private var emptyView = EmptyView()
     private var searchButton: UIBarButtonItem = UIBarButtonItem()
     
     private var filteredPosts: [ThumbnailPostResponse] = []
@@ -63,6 +63,14 @@ class CommunityViewController: UIViewController {
         self.navigationItem.searchController = searchController
         self.navigationItem.hidesSearchBarWhenScrolling = false
         searchController.searchResultsUpdater = self
+        
+        if let textField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+               textField.attributedPlaceholder = NSAttributedString(
+                   string: "검색어를 입력하세요",
+                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.white] // 원하는 색상으로 변경
+               )
+            textField.leftView?.tintColor = .white
+           }
     }
     
     @objc
@@ -86,7 +94,19 @@ extension CommunityViewController: CommunityListViewDelegate {
 
 extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.isFiltering ? self.filteredPosts.count : self.fetchTestData.count
+       // return self.isFiltering ? self.filteredPosts.count : self.fetchTestData.count
+        let count = self.isFiltering ? self.filteredPosts.count : self.fetchTestData.count
+          
+          if count == 0 {
+              emptyView.configure("등록된 게시글이 없습니다.!")
+              communityListView.communityTableView.backgroundView = emptyView // 데이터가 없을 때 emptyView 설정
+          //    communityListView.communityTableView.backgroundColor = .red
+          } else {
+              communityListView.communityTableView.backgroundView = nil // 데이터가 있을 때는 기본 설정으로
+           //   communityListView.communityTableView.backgroundColor = .blue
+          }
+          
+          return count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -95,7 +115,7 @@ extension CommunityViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! CommunityTableViewCell
-        
+        cell.selectionStyle = .none
         let fetchData = self.fetchTestData[indexPath.row]
         
         UserService.shared.fetchUserProfile(uid: fetchData.userID) { result in

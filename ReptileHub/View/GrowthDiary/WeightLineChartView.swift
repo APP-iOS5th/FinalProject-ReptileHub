@@ -33,6 +33,7 @@ struct WeightLineChartView: View {
                         
                     }
                 }
+                .background(Color.white)
                 .chartYAxis(.hidden)
                 .chartXAxis {
                     AxisMarks(position: .bottom) { value in
@@ -53,11 +54,15 @@ struct WeightLineChartView: View {
                                 .foregroundColor(Color.textFieldLine), alignment: .bottom)
                 })
                 .padding(.bottom, 20)
+                
             }//: GROUPBOX
+            .background(Color.white)
         }else{
             Text("데이터가 존재하지 않습니다.")
         }
+   
     }
+    
     
     func formatDate(_ date: Date) -> String{
         let cal = Calendar.current

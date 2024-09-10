@@ -59,6 +59,11 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     private func setUP(){
         self.title = "반려 도마뱀 프로필"
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [
+               NSAttributedString.Key.foregroundColor: UIColor.black // 원하는 색상으로 변경
+           ]
+        
         self.view = detailGrowthDiaryView
         self.view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = self.detailEitButton
@@ -190,7 +195,8 @@ extension DetailGrowthDiaryViewController: UITableViewDelegate, UITableViewDataS
         if previewSpecialNotesData.count == 0{
             detailGrowthDiaryView.detailPreviesSpecialNoteTableView.isHidden = true
             detailGrowthDiaryView.emptyview.isHidden = false
-        }else{
+    
+        } else{
             detailGrowthDiaryView.detailPreviesSpecialNoteTableView.isHidden = false
             detailGrowthDiaryView.emptyview.isHidden = true
         }

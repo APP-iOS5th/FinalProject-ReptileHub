@@ -27,7 +27,7 @@ class WriteReplyListView: UIView {
     
     private func setupView() {
         self.addSubview(replyListTableView)
-        
+        replyListTableView.backgroundColor = .white
         replyListTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

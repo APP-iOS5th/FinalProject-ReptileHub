@@ -27,7 +27,7 @@ class WeightAddEditListView: UIView {
     
     func setUI(){
         self.addSubview(weightAddEditTableView)
-        
+        weightAddEditTableView.backgroundColor = .white
         weightAddEditTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

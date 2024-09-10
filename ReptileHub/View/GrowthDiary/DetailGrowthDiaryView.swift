@@ -228,7 +228,6 @@ class DetailGrowthDiaryView: UIView {
         view.clipsToBounds = true
         view.backgroundColor = .textFieldSegmentBG
         view.addSubview(detailWeightLineChartView.view)
-        
         return view
     }()
     private lazy var detailWeightLineChartView: UIHostingController<WeightLineChartView> = {

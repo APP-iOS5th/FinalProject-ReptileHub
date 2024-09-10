@@ -31,7 +31,7 @@ class CommunityTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        backgroundColor = .white
         setupThumbnail()
         setupMainInfoStackView()
         setupSubInfoStackView()
@@ -78,9 +78,11 @@ class CommunityTableViewCell: UITableViewCell {
         
         titleLabel.text = "Title"
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.textColor = .black
         contentLabel.text = "Content"
         contentLabel.numberOfLines = 0
         contentLabel.font = UIFont.systemFont(ofSize: 15, weight: .light)
+        contentLabel.textColor = .black
         
         self.contentView.addSubview(mainInfoStackView)
         
@@ -110,8 +112,10 @@ class CommunityTableViewCell: UITableViewCell {
         
         commentCountLabel.text = "9999"
         commentCountLabel.font = UIFont.systemFont(ofSize: 13, weight: .light)
+        commentCountLabel.textColor = .black
         bookmarkCountLabel.text = "9999"
         bookmarkCountLabel.font = UIFont.systemFont(ofSize: 13, weight: .light)
+        bookmarkCountLabel.textColor = .black
         
         
         let commentImageConfig = UIImage.SymbolConfiguration(pointSize: 13, weight: .light)
@@ -132,9 +136,11 @@ class CommunityTableViewCell: UITableViewCell {
         secondStackView.spacing = 10
         
         nicknameLabel.text = "구현현서"
-        nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
+        nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        nicknameLabel.textColor = .black
         timestampLabel.text = "24.08.05 17:00"
         timestampLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
+        timestampLabel.textColor = .gray
         
         secondStackView.addArrangedSubview(nicknameLabel)
         secondStackView.addArrangedSubview(timestampLabel)

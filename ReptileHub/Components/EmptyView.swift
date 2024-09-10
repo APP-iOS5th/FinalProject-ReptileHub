@@ -26,6 +26,7 @@ class EmptyView: UIView {
     }
     
     private func setUp(){
+        backgroundColor = .white
         self.addSubview(emptyLabel)
         
         emptyLabel.snp.makeConstraints { make in

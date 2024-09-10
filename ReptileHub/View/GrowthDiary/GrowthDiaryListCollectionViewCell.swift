@@ -48,6 +48,7 @@ class GrowthDiaryListCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(GrowthDiaryItemImage)
         contentView.addSubview(GrowthDiaryItemTitle)
         contentView.addSubview(GrowthDiaryItemDate)
+        backgroundColor = .white
         
         GrowthDiaryItemImage.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(contentView)

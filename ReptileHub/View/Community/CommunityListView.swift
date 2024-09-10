@@ -40,7 +40,7 @@ class CommunityListView: UIView {
         communityTableView.register(CommunityTableViewCell.self, forCellReuseIdentifier: "listCell")
         
         self.addSubview(communityTableView)
-        
+        communityTableView.backgroundColor = .white
         communityTableView.snp.makeConstraints { make in
             make.top.equalTo(self.safeAreaLayoutGuide.snp.top)
             make.leading.equalTo(self.snp.leading)

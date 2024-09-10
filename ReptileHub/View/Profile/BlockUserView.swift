@@ -28,7 +28,7 @@ class BlockUserView: UIView {
     
     private func setupView() {
         self.addSubview(blockUserTableView)
-        
+        blockUserTableView.backgroundColor = .white
         blockUserTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

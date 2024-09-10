@@ -31,7 +31,7 @@ class SpecialListView: UIView {
     // 테이블 뷰 레이아웃
     private func setupTableView() {
         self.addSubview(tableView)
-        
+        tableView.backgroundColor = .white
         tableView.snp.makeConstraints{(make) in
             make.top.equalTo(self.safeAreaLayoutGuide)
             make.bottom.equalTo(self)

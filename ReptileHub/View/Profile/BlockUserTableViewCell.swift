@@ -76,7 +76,7 @@ class BlockUserTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        backgroundColor = .white
         contentView.addSubview(stackView)
         BlockUserImage.addSubview(blurEffectView)
         BlockUserImage.addSubview(eyeSlashImageView)

@@ -79,6 +79,7 @@ class SpecialListViewCell: UITableViewCell {
         contentView.addSubview(specialText)
         contentView.addSubview(dateLabel)
         contentView.addSubview(deleteButton)
+         backgroundColor = .white
         
         specialImageView.snp.makeConstraints{(make) in
             make.width.height.equalTo(100)

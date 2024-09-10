@@ -91,7 +91,7 @@ class AddPostView: UIView {
         imagePickerCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         imagePickerCollectionView.register(PHPickerCollectionViewCell.self, forCellWithReuseIdentifier: "PHPickerCell")
         imagePickerCollectionView.showsHorizontalScrollIndicator = false
-        
+        imagePickerCollectionView.backgroundColor = .white
         self.addSubview(imagePickerCollectionView)
         
         imagePickerCollectionView.snp.makeConstraints { make in
@@ -106,8 +106,14 @@ class AddPostView: UIView {
     private func setupTitleTextView() {
         titleTextField.placeholder = "제목을 입력해주세요"
         titleTextField.borderStyle = .roundedRect
-        
+        titleTextField.textColor = .black
+        titleTextField.backgroundColor = .imagePicker
         self.addSubview(titleTextField)
+        
+        titleTextField.attributedPlaceholder = NSAttributedString(
+                string: "제목을 입력해주세요",
+                attributes: [NSAttributedString.Key.foregroundColor: UIColor.textFieldPlaceholder] // 원하는 색상으로 변경
+            )
         
         titleTextField.snp.makeConstraints { make in
             make.top.equalTo(imagePickerCollectionView.snp.bottom).offset(15)
@@ -123,7 +129,7 @@ class AddPostView: UIView {
         contentTextView.backgroundColor = .imagePicker
         contentTextView.layer.cornerRadius = 5
         contentTextView.font = UIFont.systemFont(ofSize: 17)
-        
+        contentTextView.textColor = .black
         textViewPlaceholder.text = "내용을 입력해주세요"
         textViewPlaceholder.font = UIFont.systemFont(ofSize: 17, weight: .light)
         textViewPlaceholder.textColor = .textFieldPlaceholder

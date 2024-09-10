@@ -27,7 +27,7 @@ class LikePostView: UIView {
     
     private func setupView() {
         self.addSubview(likePostTableView)
-        
+        likePostTableView.backgroundColor = .white
         likePostTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
