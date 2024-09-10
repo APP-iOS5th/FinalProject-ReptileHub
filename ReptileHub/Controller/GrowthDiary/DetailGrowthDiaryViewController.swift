@@ -178,6 +178,7 @@ class DetailGrowthDiaryViewController: UIViewController {
     @objc
     private func naviagtionEditDetailVC(){
         let editDetailVC = AddGrowthDiaryViewController(editMode: true)
+        editDetailVC.hidesBottomBarWhenPushed = true
         editDetailVC.previousViewController = previousVC
         editDetailVC.previousDetailVC = self
         editDetailVC.diaryID = self.diaryID

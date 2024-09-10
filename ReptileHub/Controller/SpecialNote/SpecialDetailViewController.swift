@@ -52,6 +52,7 @@ class SpecialDetailViewController: UIViewController {
     
     //MARK: - Navigationbar & UIMenu
     private func setupNavigationBar() {
+        
         navigationItem.title = "특이사항"
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         let ellipsis: UIButton = {
@@ -86,6 +87,7 @@ class SpecialDetailViewController: UIViewController {
     private func navigateToEditScreen() {
         let editViewController = SpecialEditViewController(diaryID: diaryID , editMode: true)
         editViewController.editEntry = saveSpecialData
+        editViewController.hidesBottomBarWhenPushed = true
         editViewController.previousDetailVC = self // SpecialEditVC 로 현재 VC 넘겨주는 코드
         editViewController.previousVC = prevoiusListVC
         navigationController?.pushViewController(editViewController, animated: true)
