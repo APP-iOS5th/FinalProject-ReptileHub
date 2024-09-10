@@ -206,6 +206,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.textColor = .black
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         cell.backgroundColor = .white
+        cell.selectionStyle = .none
         
         let symbol = UIImageView(image: UIImage(systemName: "chevron.right"))
         symbol.tintColor = .black

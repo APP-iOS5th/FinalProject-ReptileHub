@@ -13,6 +13,7 @@ import FirebaseAuth
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var previousViewController: GrowthDiaryViewController?
     weak var previousDetailVC: DetailGrowthDiaryViewController?
+    private let activityIndicator = CustomActivityIndicator()
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
     private var selectedImageView: UIImageView?
     let editMode: Bool
@@ -30,7 +31,29 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
         setUP()
+        setupActivityIndicator()
     }
+    
+    
+    private func setupActivityIndicator() {
+           view.addSubview(activityIndicator)
+
+           NSLayoutConstraint.activate([
+               activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+               activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+               activityIndicator.widthAnchor.constraint(equalToConstant: 400),
+               activityIndicator.heightAnchor.constraint(equalToConstant: 400)
+           ])
+        
+        
+        activityIndicator.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(300)
+            $0.height.equalTo(400)
+            
+        }
+           activityIndicator.isHidden = true
+       }
     
     func setUP(){
         self.title = "성장일지"
@@ -79,12 +102,17 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                 }
             }
         }else{
+            print("등록시작")
+            activityIndicator.startAnimating()
+           
             //editMode가 false일때 등록하기 활성화
             DiaryPostService.shared.registerGrowthDiary(userID: UserService.shared.currentUserId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
                 
                 //해당 요청이 끝나면 다시 버튼 활성화 시켜주기
                 defer{
                     self?.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = true
+                    self?.activityIndicator.stopAnimating()
+                    print("등록완료")
                 }
                 
                 if let error = error{

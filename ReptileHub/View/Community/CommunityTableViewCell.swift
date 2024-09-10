@@ -136,7 +136,7 @@ class CommunityTableViewCell: UITableViewCell {
         secondStackView.spacing = 10
         
         nicknameLabel.text = "구현현서"
-        nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        nicknameLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)
         nicknameLabel.textColor = .black
         timestampLabel.text = "24.08.05 17:00"
         timestampLabel.font = UIFont.systemFont(ofSize: 13, weight: .ultraLight)

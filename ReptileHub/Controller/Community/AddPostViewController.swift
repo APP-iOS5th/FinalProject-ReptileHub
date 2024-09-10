@@ -14,7 +14,7 @@ protocol AddPostViewControllerDelegate: AnyObject {
 }
 
 class AddPostViewController: UIViewController {
-    
+    let customIndicator = CustomActivityIndicator()
     weak var delegate: AddPostViewControllerDelegate?
     
     private let addPostView = AddPostView()
@@ -70,7 +70,6 @@ class AddPostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
         
         self.view = addPostView
         addPostView.configureAddPostView(delegate: self, datasource: self, textViewDelegate: self)
