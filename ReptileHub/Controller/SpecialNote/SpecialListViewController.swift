@@ -144,6 +144,7 @@ extension SpecialListViewController: UITableViewDelegate, UITableViewDataSource,
         specialPlusButtonView.buttonAction = { [weak self] in
             guard let diaryID = self?.diaryID else {return}
             let specialEditViewController = SpecialEditViewController(diaryID: diaryID, editMode: false)
+            specialEditViewController.hidesBottomBarWhenPushed = true
             specialEditViewController.previousVC = self // SpecialEditVC로 해당 VC 넘겨주는 코드
             self?.navigationController?.pushViewController(specialEditViewController, animated: true)
         }

@@ -11,7 +11,7 @@ import PhotosUI
 import FirebaseAuth
 
 protocol EditUserInfoViewControllerDelegate: AnyObject {
-    func tapSaveEditButton(newName: String, newProfileImage: UIImage)
+    func tapSaveEditButton(newName: String, newProfileImage: UIImage, targetButton: UIButton)
 }
 
 class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
@@ -74,7 +74,7 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - 프로필 수정 저장 기능
     @objc func saveButtonTouch() {
-        self.delegate?.tapSaveEditButton(newName: self.editUserInfoView.ProfileNameEdit.text ?? "nil", newProfileImage: self.editUserInfoView.ProfileImageEdit.image ?? UIImage(systemName: "person")!)
+        self.delegate?.tapSaveEditButton(newName: self.editUserInfoView.ProfileNameEdit.text ?? "nil", newProfileImage: self.editUserInfoView.ProfileImageEdit.image ?? UIImage(systemName: "person")!, targetButton: editUserInfoView.UserInfoSaveButton)
     }
     
     // MARK: - 프로필 수정 취소

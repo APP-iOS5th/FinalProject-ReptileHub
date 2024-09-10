@@ -166,11 +166,22 @@ extension SpecialEditViewController: UITextViewDelegate {
 }
 //MARK: - SpecialEidtView 데이터 저장해서 게시
 extension SpecialEditViewController: SpecialEditViewDelegate {
-    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String) {
-    
+    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String, targetButton: UIButton) {
+        
+        //버튼을 누르자마자 해당 버튼 비활성화
+        targetButton.isEnabled = false
+        targetButton.backgroundColor = .imagePicker
+        
         if editMode { // SpecialEditView 수정 모드일 때
             guard let editEntry = self.editEntry else { return }
             DiaryPostService.shared.updateDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, entryID: editEntry.entryID, newTitle: title, newContent: text, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs, newSelectedDate: date) { [weak self] error in
+                
+                //요청으로 부터 어떤 응답이 오면 버튼을 다시 활성화 시켜준다
+                defer{
+                    targetButton.isEnabled = true
+                    targetButton.backgroundColor = UIColor.addBtnGraphTabbar
+                }
+                
                 if let error = error {
                     print(error.localizedDescription)
                 } else {
@@ -195,6 +206,12 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                     """)
             DiaryPostService.shared.createDiary(userID: UserService.shared.currentUserId, diaryID: diaryID, images: imageData, title: title, content: text, selectedDate: date){ [weak self]
                 error in
+                
+                //요청으로 부터 어떤 응답이 오면 버튼을 다시 활성화 시켜준다
+                defer{
+                    targetButton.isEnabled = true
+                    targetButton.backgroundColor = UIColor.addBtnGraphTabbar
+                }
                     if let error = error {
                                 print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
                             } else {

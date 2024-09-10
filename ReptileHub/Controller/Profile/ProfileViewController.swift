@@ -30,7 +30,7 @@ class ProfileViewController: UIViewController {
     
     let profileView = ProfileView()
     
-    override func loadView() {
+    override func viewDidLoad() {
         super.viewDidLoad()
     
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "back", style: .plain, target: nil, action: nil)
@@ -90,6 +90,7 @@ class ProfileViewController: UIViewController {
                 self.profileView.firstButton.setTitle(String(userData.lizardCount), for: .normal)
                 self.profileView.secondButton.setTitle(String(userData.postCount), for: .normal)
                 self.profileView.postList.reloadData()
+                
                 print("userData: \(userData)")
                 print("불러오기 성공: \(self.userProfileData)")
             case .failure(let error):
@@ -152,10 +153,8 @@ class ProfileViewController: UIViewController {
 
     private func deleteAuthentication(){
         guard let loginType = currentUserProfile?.loginType else {
-            print("여기 뭔데 걸려?")
             return
         }
-        print(loginType, "입니다")
         AuthService.shared.deleteUserAccount(userID: UserService.shared.currentUserId, loginType: loginType) { error in
             if let error = error{
                 print("ERROR: \(error.localizedDescription)")
@@ -241,9 +240,18 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
 
 
 extension ProfileViewController: EditUserInfoViewControllerDelegate {
-    func tapSaveEditButton(newName: String, newProfileImage: UIImage) {
+    func tapSaveEditButton(newName: String, newProfileImage: UIImage, targetButton: UIButton) {
+        targetButton.isEnabled = false
         guard let uid = Auth.auth().currentUser?.uid else {return}
         UserService.shared.updateUserProfile(uid: uid, newName: newName, newProfileImage: newProfileImage) { [weak self] error in
+            //수정 버튼을 클릭하면 비활성화
+          
+            
+            
+            defer{
+                targetButton.isEnabled = true
+            }
+            
             if let error = error {
                 print("프로필 저장 실패: \(error.localizedDescription)")
             } else {
@@ -252,6 +260,7 @@ extension ProfileViewController: EditUserInfoViewControllerDelegate {
 //                                    print("privousVC", previousVC)
 //                                    previousVC.updateImage()
 //                                }
+                self?.updateImage()
                 UserService.shared.fetchUserProfile(uid: UserService.shared.currentUserId) { result in
                     switch result {
                     case .success(let userData):
@@ -260,7 +269,8 @@ extension ProfileViewController: EditUserInfoViewControllerDelegate {
                         print("error~! : \(error)")
                     }
                 }
-                self?.dismiss(animated: true)
+
+                self?.dismiss(animated: true,completion: nil)
 //                self?.editUserInfoData = nil
             }
         }

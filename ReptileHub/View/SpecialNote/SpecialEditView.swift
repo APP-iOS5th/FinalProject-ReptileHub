@@ -11,7 +11,7 @@ import PhotosUI
 import Kingfisher
 
 protocol SpecialEditViewDelegate: AnyObject {
-    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String)
+    func didTapPostButton(imageData: [Data], date: Date, title: String, text: String, targetButton: UIButton)
 }
 
 class SpecialEditView: UIView {
@@ -248,7 +248,7 @@ class SpecialEditView: UIView {
     //MARK: - saveButton 액션 함수
     @objc
     private func saveButtonAction() {
-        delegate?.didTapPostButton(imageData: imageData, date: datePicker.date, title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil")
+        delegate?.didTapPostButton(imageData: imageData, date: datePicker.date, title: specialTitle.text ?? "nil", text: descriptionTextView.text ?? "nil", targetButton: saveButton)
     }
     //MARK: - Delegate
     func configureSpecialEditView(delegate: UICollectionViewDelegate, datasource: UICollectionViewDataSource, textViewDelegate: UITextViewDelegate) {
