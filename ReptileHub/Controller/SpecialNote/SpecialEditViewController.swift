@@ -13,7 +13,7 @@ import FirebaseAuth
 class SpecialEditViewController: UIViewController {
     
     private let specialEditView = SpecialEditView()
-    
+    private let activityIndicator = CustomActivityIndicator()
     var diaryID: String
     
     var editMode: Bool
@@ -49,6 +49,12 @@ class SpecialEditViewController: UIViewController {
     func fetchEditData() {
         
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupActivityIndicator()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = specialEditView
@@ -57,7 +63,32 @@ class SpecialEditViewController: UIViewController {
         navigationItem.title = "특이사항"
         // Do any additional setup after loading the view.
     }
-    
+   
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+//        activityIndicator.backgroundColor = .red
+        activityIndicator.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(300)
+            $0.height.equalTo(400)
+            
+        }
+           activityIndicator.isHidden = true
+       }
+    func showActivityIndicator(withMessage message: String) {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.isHidden = false
+               self?.activityIndicator.startAnimating(withMessage: message)
+           }
+       }
+
+       func hideActivityIndicator() {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.stopAnimating()
+               self?.activityIndicator.isHidden = true
+           }
+       }
+
 
 }
 //MARK: - SpecialEditView Image CollectionViewDelegate 관련
@@ -171,6 +202,10 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
         //버튼을 누르자마자 해당 버튼 비활성화
         targetButton.isEnabled = false
         targetButton.backgroundColor = .imagePicker
+        let startMessage = editMode ? "수정 중입니다... \n 잠시만 기다려주세요" : "등록 중입니다... \n 잠시만 기다려주세요"
+            showActivityIndicator(withMessage: startMessage)
+
+     
         
         if editMode { // SpecialEditView 수정 모드일 때
             guard let editEntry = self.editEntry else { return }
@@ -180,6 +215,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                 defer{
                     targetButton.isEnabled = true
                     targetButton.backgroundColor = UIColor.addBtnGraphTabbar
+                    self?.hideActivityIndicator()
                 }
                 
                 if let error = error {
@@ -197,6 +233,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
             }
         }
         else { // SpecialEditView 등록 모드일 때
+           
             print("""
                     [현재 등록할 게시글 내용]
                     imageData: \(imageData)
@@ -211,6 +248,7 @@ extension SpecialEditViewController: SpecialEditViewDelegate {
                 defer{
                     targetButton.isEnabled = true
                     targetButton.backgroundColor = UIColor.addBtnGraphTabbar
+                    self?.hideActivityIndicator()
                 }
                     if let error = error {
                                 print("게시글 게시 중 오류 발생: \(error.localizedDescription)")

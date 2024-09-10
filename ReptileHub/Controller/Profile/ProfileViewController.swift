@@ -12,7 +12,6 @@ import FirebaseAuth
 class ProfileViewController: UIViewController {
     
     var currentUserProfile: UserProfile?
-    
     var isMyProfile: Bool?
     
     var userProfileData = [String]()
@@ -22,6 +21,7 @@ class ProfileViewController: UIViewController {
                 self.loadData()
                 editUserInfo()
                 shouldReloadImage = false
+               
             }
         }
     }
@@ -251,6 +251,10 @@ extension ProfileViewController: EditUserInfoViewControllerDelegate {
             
             defer{
                 targetButton.isEnabled = true
+                // 요청 완료 후 인디케이터 숨김
+                                if let editVC = self?.presentedViewController as? EditUserInfoViewController {
+                                    editVC.hideActivityIndicator()
+                                }
             }
             
             if let error = error {

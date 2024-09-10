@@ -17,7 +17,7 @@ protocol EditUserInfoViewControllerDelegate: AnyObject {
 class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     
     weak var delegate: EditUserInfoViewControllerDelegate?
-    
+    private let activityIndicator = CustomActivityIndicator(initialMessage: "프로필을 수정중입니다")
     var editUserInfoData : (String, String)?
     var previousViewController: ProfileViewController?
     private let editUserInfoView = EditUserInfoView()
@@ -41,6 +41,35 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
         editUserInfoView.setProfileImageEdit(imageName: editUserInfoData!.1, name: editUserInfoData!.0)
+        setupActivityIndicator()
+    }
+    
+    
+    
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+//        activityIndicator.backgroundColor = .red
+        activityIndicator.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(300)
+            $0.height.equalTo(100)
+            
+        }
+           activityIndicator.isHidden = true
+       }
+    func showActivityIndicator(withMessage message: String) {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.isHidden = false
+               self?.activityIndicator.startAnimating(withMessage: message)
+           }
+       }
+
+    func hideActivityIndicator() {
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.activityIndicator.isHidden = true
+        }
     }
     
     // MARK: - PHPicker
@@ -74,7 +103,10 @@ class EditUserInfoViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - 프로필 수정 저장 기능
     @objc func saveButtonTouch() {
+        showActivityIndicator(withMessage: "수정중입니다 \n 잠시만 기다려주세요")
         self.delegate?.tapSaveEditButton(newName: self.editUserInfoView.ProfileNameEdit.text ?? "nil", newProfileImage: self.editUserInfoView.ProfileImageEdit.image ?? UIImage(systemName: "person")!, targetButton: editUserInfoView.UserInfoSaveButton)
+          
+        print("하하하하하하")
     }
     
     // MARK: - 프로필 수정 취소
