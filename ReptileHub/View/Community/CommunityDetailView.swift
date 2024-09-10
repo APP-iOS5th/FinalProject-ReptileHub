@@ -324,7 +324,7 @@ class CommunityDetailView: UIView {
         contentText.numberOfLines = 0
 
         self.stackView.addArrangedSubview(contentText)
-        
+        contentText.textColor = .black
         contentText.snp.makeConstraints { make in
             make.top.equalTo(imageScrollView.snp.bottom).offset(10)
             make.leading.trailing.equalTo(titleStackView)

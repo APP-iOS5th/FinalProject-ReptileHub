@@ -188,6 +188,7 @@ class AddPostView: UIView {
         imagePickerCollectionView.delegate = delegate
         imagePickerCollectionView.dataSource = datasource
         contentTextView.delegate = textViewDelegate
+        titleTextField.delegate = textViewDelegate as? UITextFieldDelegate
     }
     
     func createPHPickerVC() -> PHPickerViewController {
