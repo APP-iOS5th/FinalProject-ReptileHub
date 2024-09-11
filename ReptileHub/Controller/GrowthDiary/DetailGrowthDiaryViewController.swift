@@ -59,7 +59,7 @@ class DetailGrowthDiaryViewController: UIViewController {
     
     private func setUP(){
         self.title = "반려 도마뱀 프로필"
-        
+        self.view.backgroundColor = .white
         self.navigationController?.navigationBar.titleTextAttributes = [
                NSAttributedString.Key.foregroundColor: UIColor.black // 원하는 색상으로 변경
            ]
