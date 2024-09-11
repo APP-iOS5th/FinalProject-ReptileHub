@@ -14,7 +14,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     
     var buttonTapped: (()->Void)?
     let keyboardManager = KeyboardManager()
-    private var morphSelected = false
+    private var morphSelected = true
     private var tailSelected = true
     private var parentSelected = true
     
@@ -498,8 +498,44 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     }
     
     func growthDiaryRequestData() -> request{
-        let lizardInfo = LizardInfo(name: nameTextField.text ?? "이름 없음", species: speciesTextField.text ?? "종 없음", morph: morphTextField.text, hatchDays: hatchDaysDatePicker.date, gender: Gender(rawValue: genderDropdownView.selectedOption!)!, weight: Int(weightTextField.text ?? "0")!, feedMethod: feedMethodDropdownView.selectedOption!, tailexistence: tailSelected)
-        var imageData: [Data?] = [thumbnailImageView.image?.pngData()]
+        var imageData: [Data?] = []
+        if let name = nameTextField.text, name.isEmpty{
+            nameTextField.text = "이름 없음"
+        }
+        
+        if let species = speciesTextField.text, species.isEmpty{
+            speciesTextField.text = "종 없음"
+        }
+        print(morphSelected)
+        if !morphSelected{
+            morphTextField.text = "없음"
+        }else{
+            if let morph = morphTextField.text, morph.isEmpty{
+                morphTextField.text = "없음"
+            }
+        }
+        
+        if genderDropdownView.selectedOption == nil{
+            genderDropdownView.selectedOption = Gender.unKnown.rawValue
+        }
+        
+        if let weight = weightTextField.text, weight.isEmpty{
+            weightTextField.text = "0"
+        }
+        
+        if feedMethodDropdownView.selectedOption == nil{
+            feedMethodDropdownView.selectedOption = "자율"
+        }
+        
+        if thumbnailImageView.image == UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate){
+            imageData.append(nil)
+        }else{
+            imageData.append(thumbnailImageView.image?.pngData())
+        }
+           
+        let lizardInfo = LizardInfo(name: nameTextField.text!, species: speciesTextField.text!, morph: morphTextField.text, hatchDays: hatchDaysDatePicker.date, gender: Gender(rawValue: genderDropdownView.selectedOption!)!, weight: Int(weightTextField.text!)!, feedMethod: feedMethodDropdownView.selectedOption!, tailexistence: tailSelected)
+        
+        
         if parentSelected{
             let mother = ParentInfo(name: motherNameTextField.text ?? "이름 없음", morph: motherMorphTextField.text)
             if motherImageView.image == UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate){
@@ -518,6 +554,8 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: parent),imageData, parentSelected)
         }
         imageData.append(contentsOf: [nil, nil])
+        
+        print(imageData)
         return (GrowthDiaryRequest(lizardInfo: lizardInfo, parentInfo: nil), imageData, parentSelected)
     }
     
@@ -582,7 +620,6 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
             UIView.animate(withDuration: 0.2) {
                 contentView.isHidden = true
             }
-            morphSelected = false
             // hideButton을 선택 상태로 설정
             hideButton.configuration?.baseBackgroundColor = UIColor.textFieldLine
             hideButton.configuration?.baseForegroundColor = UIColor.textFieldTitle
