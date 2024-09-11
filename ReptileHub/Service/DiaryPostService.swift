@@ -134,13 +134,16 @@ class DiaryPostService {
                 
                 var thumbnails: [ThumbnailResponse] = []
                 
+                let defaultProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/testforfinal-e5ce4.appspot.com/o/profile_images%2FinVaild_Profile.jpeg?alt=media&token=a3692a8e-6d83-4451-b3e3-c92cfbdc5566"
+                
+                
                 for document in documents {
                     let data = document.data()
                     if let diaryID = data["diary_id"] as? String,
-                       let thumbnail = data["thumbnail"] as? String,
                        let name = data["name"] as? String ,
                        let createdAt = data["createdAt"] as? Timestamp {
-                       let thumbnailData = ThumbnailResponse(diary_id: diaryID, thumbnail: thumbnail, name: name, createdAt: createdAt.dateValue())
+                       let thumbnail = data["thumbnail"] as? String
+                       let thumbnailData = ThumbnailResponse(diary_id: diaryID, thumbnail: thumbnail ?? defaultProfileImageURL , name: name, createdAt: createdAt.dateValue())
                         thumbnails.append(thumbnailData)
                     }
                 }

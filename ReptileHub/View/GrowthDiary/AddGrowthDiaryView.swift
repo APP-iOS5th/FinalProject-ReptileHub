@@ -119,7 +119,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //아빠 이름
     private lazy var fatherNameTextField: UITextField = createTextField(text: "이름을 입력해주세요.")
     //아빠 모프
-    private lazy var fatherMorphTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
+    private lazy var fatherMorphTextField: UITextField = createTextField(text: "모프를 입력해주세요.")
     
     //MARK: - 엄마 정보
     //엄마 이미지
@@ -127,7 +127,7 @@ class AddGrowthDiaryView: UIView, UIGestureRecognizerDelegate, UITextFieldDelega
     //엄마 이름
     private lazy var motherNameTextField: UITextField = createTextField(text: "이름을 입력해주세요.")
     //엄마 모프
-    private lazy var motherMorphTextField: UITextField = createTextField(text: "무게를 입력해주세요.")
+    private lazy var motherMorphTextField: UITextField = createTextField(text: "모프를 입력해주세요.")
     
     //MARK: - 부모 뷰
     //구분선

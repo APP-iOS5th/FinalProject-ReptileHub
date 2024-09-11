@@ -18,6 +18,7 @@ protocol AuthUser {
     var idToken: String? { get }
     var accessToken: String? { get }
     var providerUID: String { get }
+    var authorizationCode: String? { get }
 }
 
 // GoogleAuthUser 클래스 정의
@@ -29,6 +30,7 @@ struct GoogleAuthUser: AuthUser {
     let idToken: String?
     let accessToken: String?
     let providerUID: String
+    let authorizationCode: String? = nil
 
     init(user: GIDGoogleUser) {
         self.uid = user.userID ?? ""
@@ -72,6 +74,7 @@ struct KakaoAuthUser: AuthUser {
     let idToken: String? = nil // Kakao는 ID 토큰이 없음
     let accessToken: String? = nil // Access 토큰
     let providerUID: String // Kakao 고유 사용자 ID
+    let authorizationCode: String? = nil
     
     init(user:KakaoSDKUser.User) {
         self.uid = String(describing: user.id)

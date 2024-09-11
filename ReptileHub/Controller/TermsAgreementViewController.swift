@@ -16,8 +16,9 @@ class TermsAgreementViewController: UIViewController {
 
     private let agreementView = TermsAgreementView() // AgreementView 추가
 
-    init(user: AuthUser) {
+    init(user: AuthUser,authorizationCode: String? = nil) {
         self.user = user
+        self.authorizationCode = authorizationCode
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -75,12 +76,14 @@ class TermsAgreementViewController: UIViewController {
     @objc private func agreeButtonTapped() {
         agreementView.updateSelection(isAgreeSelected: true)
         onAgreementAccepted?()
+        print("도으이")
         self.dismiss(animated: true, completion: nil)
     }
 
     @objc private func disagreeButtonTapped() {
         agreementView.updateSelection(isAgreeSelected: false)
         onAgreementDeclined?()
+        print("도으이X")
         self.dismiss(animated: true, completion: nil)
     }
 }
