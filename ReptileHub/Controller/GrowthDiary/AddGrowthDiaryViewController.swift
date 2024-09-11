@@ -9,7 +9,6 @@ import UIKit
 import PhotosUI
 import FirebaseAuth
 
-
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var previousViewController: GrowthDiaryViewController?
     weak var previousDetailVC: DetailGrowthDiaryViewController?
@@ -54,6 +53,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     
     private func uploadGrowthDiary(){
         let result = addGrowthDiaryView.growthDiaryRequestData()
+        print("여기는 보내는 거야", result)
         //등록하기 버튼을 클릭하면 해당 버튼은 더이상 사용하지 못하게 비활성화
         self.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = false
         if editMode{
@@ -90,6 +90,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                 if let error = error{
                     print("error", error.localizedDescription)
                 }else{
+                    print("SSFADFSDFS")
                     if let previousVC = self?.previousViewController{
                         previousVC.updateImage()
                     }

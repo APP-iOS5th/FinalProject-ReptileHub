@@ -548,11 +548,14 @@ class DetailGrowthDiaryView: UIView {
         var motherStatus = false
         let lizardData = detailData.lizardInfo
         
+        print(detailData)
+        
         if let imageURL = lizardData.imageURL{
             detailThumbnailImageView.setImage(with: imageURL)
         }else{
             detailThumbnailImageView.image = nil
         }
+        
         detailLiazardNameLabel.text = lizardData.name
         detailLizardSepciesMorphInfoLabel.text = "\(lizardData.species) · 모프 \(String(describing: (lizardData.morph != nil) ? lizardData.morph! : "없음"))"
         detailHatchDaysLabel.text = lizardData.hatchDays.formatted
@@ -560,7 +563,7 @@ class DetailGrowthDiaryView: UIView {
         detailTailLabel.text = lizardData.tailexistence ? "있음" : "없음"
         
 
-        guard let fatherData = detailData.parentInfo?.father, 
+        guard let fatherData = detailData.parentInfo?.father,
                 let motherData = detailData.parentInfo?.mother else {
             detailParentStackView.isHidden = true
             return

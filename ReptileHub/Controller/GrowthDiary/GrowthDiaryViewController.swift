@@ -49,10 +49,12 @@ class GrowthDiaryViewController: UIViewController, UICollectionViewDelegateFlowL
     
     func loadData(){
         DiaryPostService.shared.fetchGrowthThumbnails(for: UserService.shared.currentUserId) {[weak self] response in
+            print("응답을 봐보자")
             switch response{
                 
             case .success(let data):
                 self?.thumbnailData = data
+                print("결과", data)
                 self?.GrowthDiaryView.GrowthDiaryListCollectionView.reloadData()
                 self?.GrowthDiaryView.updateScrollState()
             case .failure(let error):
