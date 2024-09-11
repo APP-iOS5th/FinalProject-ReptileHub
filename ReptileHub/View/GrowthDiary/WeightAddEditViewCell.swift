@@ -83,6 +83,6 @@ class WeightAddEditViewCell: UITableViewCell {
     
     func configureWeightCell(weightEntry: WeightEntry){
         weightAddEditViewCellDateLabel.text = weightEntry.date.formatted
-        weightAddEditViewCellWeightLabel.text = "무게 : \(weightEntry.weight)kg"
+        weightAddEditViewCellWeightLabel.text = "무게 : \(weightEntry.weight)g"
     }
 }
