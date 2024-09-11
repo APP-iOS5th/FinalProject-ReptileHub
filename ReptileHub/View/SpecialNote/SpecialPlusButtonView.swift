@@ -47,7 +47,7 @@ class SpecialPlusButtonView: UITableViewHeaderFooterView {
     
     //MARK: 버튼 레이아웃
     private func setupUI2() {
-        
+        backgroundColor = .white
         addSubview(plusButton)
         
         plusButton.snp.makeConstraints{(make) in

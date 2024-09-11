@@ -37,7 +37,7 @@ class CommentTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        backgroundColor = .white
         setupProfileImage()
         setupMenuButton()
         setupElementStackView()
@@ -78,11 +78,13 @@ class CommentTableViewCell: UITableViewCell {
     private func setupElementStackView() {
         nameLabel.text = "부천 정구현"
         nameLabel.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
+        nameLabel.textColor = .black
         nameLabel.sizeToFit()
 
         commentLabel.text = "테스트 내용"
         commentLabel.numberOfLines = 0
         commentLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        commentLabel.textColor = .black
         timestampLabel.text = "24.08.09 17:31"
         timestampLabel.font = UIFont.systemFont(ofSize: 10, weight: .light)
         timestampLabel.textColor = UIColor.lightGray

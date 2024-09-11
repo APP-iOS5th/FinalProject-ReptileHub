@@ -12,6 +12,7 @@ import FirebaseAuth
 class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     var previousViewController: GrowthDiaryViewController?
     weak var previousDetailVC: DetailGrowthDiaryViewController?
+    private let activityIndicator = CustomActivityIndicator()
     private lazy var addGrowthDiaryView = AddGrowthDiaryView()
     private var selectedImageView: UIImageView?
     let editMode: Bool
@@ -29,7 +30,34 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
         setUP()
+        setupActivityIndicator()
     }
+    
+    
+    private func setupActivityIndicator() {
+           view.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(300)
+            $0.height.equalTo(400)
+            
+        }
+           activityIndicator.isHidden = true
+       }
+    
+    func showActivityIndicator(withMessage message: String) {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.isHidden = false
+               self?.activityIndicator.startAnimating(withMessage: message)
+           }
+       }
+
+       func hideActivityIndicator() {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.stopAnimating()
+               self?.activityIndicator.isHidden = true
+           }
+       }
     
     func setUP(){
         self.title = "성장일지"
@@ -55,7 +83,10 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
         let result = addGrowthDiaryView.growthDiaryRequestData()
         print("여기는 보내는 거야", result)
         //등록하기 버튼을 클릭하면 해당 버튼은 더이상 사용하지 못하게 비활성화
-        self.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = false
+        let startMessage = editMode ? "수정 중입니다... \n 잠시만 기다려주세요" : "등록 중입니다... \n 잠시만 기다려주세요"
+            showActivityIndicator(withMessage: startMessage)
+
+
         if editMode{
             //editMode가 true일떄 수정하기 활성화
             guard let diaryID = diaryID else { return }
@@ -64,6 +95,7 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                 //해당 요청이 끝나면 다시 버튼 활성화 시켜주기
                 defer{
                     self?.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = true
+                    self?.hideActivityIndicator()
                 }
                 
                 if let error = error{
@@ -79,12 +111,17 @@ class AddGrowthDiaryViewController: UIViewController, UIImagePickerControllerDel
                 }
             }
         }else{
+            print("등록시작")
+           
+           
             //editMode가 false일때 등록하기 활성화
             DiaryPostService.shared.registerGrowthDiary(userID: UserService.shared.currentUserId, diary: result.0, selfImageData: result.1[0], motherImageData: result.1[1], fatherImageData: result.1[2]) { [weak self] error in
                 
                 //해당 요청이 끝나면 다시 버튼 활성화 시켜주기
                 defer{
                     self?.addGrowthDiaryView.uploadGrowthDiaryButton.isEnabled = true
+                    self?.hideActivityIndicator()
+                    print("등록완료")
                 }
                 
                 if let error = error{

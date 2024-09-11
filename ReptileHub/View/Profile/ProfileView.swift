@@ -27,6 +27,7 @@ class ProfileView: UIView {
     // 프로필 이름
     private var profileName: UILabel = {
         let label = UILabel()
+        label.textColor = .black
         label.font = .systemFont(ofSize: 23)
         return label
     }()
@@ -118,6 +119,7 @@ class ProfileView: UIView {
     private (set) var postList: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.backgroundColor = .white
         tableView.isScrollEnabled = false
         return tableView
     }()

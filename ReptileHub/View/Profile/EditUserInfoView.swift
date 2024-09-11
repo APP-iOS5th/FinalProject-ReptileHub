@@ -37,8 +37,15 @@ class EditUserInfoView: UIView {
     // 프로필 이름 수정
     var ProfileNameEdit: UITextField = {
        let textField = UITextField()
-       textField.placeholder = "변경할 이름을 적어주세요."
-       textField.borderStyle = .roundedRect
+        textField.layer.borderWidth = 1.0
+        textField.layer.borderColor = UIColor.gray.cgColor
+        textField.layer.cornerRadius = 8.0
+        textField.layer.masksToBounds = true
+        textField.textColor = .black
+        textField.attributedPlaceholder = NSAttributedString(
+              string: "변경할 이름을 적어주세요.",
+              attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
+          )
        return textField
     }()
     
@@ -95,11 +102,14 @@ class EditUserInfoView: UIView {
         self.addSubview(ProfileNameEdit)
         self.addSubview(buttonStackView)
         
+        ProfileNameEdit.backgroundColor = .white
         ProfileImageEdit.snp.makeConstraints { make in
             make.topMargin.equalTo(40)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(100)
         }
+        
+
         
         imagePickerButton.snp.makeConstraints { make in
             make.width.height.equalTo(30)
@@ -134,6 +144,7 @@ class EditUserInfoView: UIView {
     func setProfileImageEdit(imageName: String?, name: String?) {
         ProfileImageEdit.setImage(with: imageName!)
         ProfileNameEdit.text = name
+        ProfileNameEdit.textAlignment = .center
     }
 }
 

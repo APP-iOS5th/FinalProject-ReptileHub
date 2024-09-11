@@ -45,11 +45,5 @@ class TabbarViewController: UITabBarController {
         self.tabBar.tintColor = .addBtnGraphTabbar
     }
     
-    deinit {
-           print("TabbarViewController deinit")
-       }
-
-    
-
 }
 

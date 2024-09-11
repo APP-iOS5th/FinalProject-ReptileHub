@@ -12,6 +12,7 @@
 		464338092C8DB5FE00D9DDCF /* TermsAgreementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464338082C8DB5FE00D9DDCF /* TermsAgreementView.swift */; };
 		4674B2E02C6464D700BCD451 /* TermsAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */; };
 		4674B2E32C64D71700BCD451 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4674B2E22C64D71700BCD451 /* AuthUser.swift */; };
+		4683591F2C90044C003DC258 /* CustomIndicatior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4683591E2C90044C003DC258 /* CustomIndicatior.swift */; };
 		4693FACB2C60A3F200BB70D6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4693FACA2C60A3F200BB70D6 /* SnapKit */; };
 		4693FACD2C60E87100BB70D6 /* DiaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACC2C60E87100BB70D6 /* DiaryModel.swift */; };
 		4693FAD02C60EB5200BB70D6 /* DiaryPostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */; };
@@ -122,6 +123,7 @@
 		464338082C8DB5FE00D9DDCF /* TermsAgreementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementView.swift; sourceTree = "<group>"; };
 		4674B2DF2C6464D700BCD451 /* TermsAgreementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAgreementViewController.swift; sourceTree = "<group>"; };
 		4674B2E22C64D71700BCD451 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
+		4683591E2C90044C003DC258 /* CustomIndicatior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIndicatior.swift; sourceTree = "<group>"; };
 		4693FACC2C60E87100BB70D6 /* DiaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryModel.swift; sourceTree = "<group>"; };
 		4693FACF2C60EB5200BB70D6 /* DiaryPostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryPostService.swift; sourceTree = "<group>"; };
 		469B44372C62F3BC00B1C49B /* SocialLoginButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialLoginButton.swift; sourceTree = "<group>"; };
@@ -384,6 +386,7 @@
 				7968449B2C6AEC7100765A80 /* Spacing.swift */,
 				798476402C70E05200895D2D /* EmptyView.swift */,
 				79BCE2732C72F775002F630C /* FontWeightLabel.swift */,
+				4683591E2C90044C003DC258 /* CustomIndicatior.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -629,6 +632,7 @@
 				C14FF36B2C75DB2800089C6D /* BlockUserViewController.swift in Sources */,
 				5881F0202C73122500FBB13E /* CommunityListView.swift in Sources */,
 				46F0F7F52C6B286300444C98 /* CommunityService.swift in Sources */,
+				4683591F2C90044C003DC258 /* CustomIndicatior.swift in Sources */,
 				79BCE2742C72F775002F630C /* FontWeightLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

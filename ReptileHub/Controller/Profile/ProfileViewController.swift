@@ -12,7 +12,6 @@ import FirebaseAuth
 class ProfileViewController: UIViewController {
     
     var currentUserProfile: UserProfile?
-    
     var isMyProfile: Bool?
     
     var userProfileData = [String]()
@@ -22,6 +21,7 @@ class ProfileViewController: UIViewController {
                 self.loadData()
                 editUserInfo()
                 shouldReloadImage = false
+               
             }
         }
     }
@@ -136,6 +136,7 @@ class ProfileViewController: UIViewController {
 
     // 회원탈퇴 (버튼)
     @objc func withdrawalButtonTouch() {
+        print("hi")
         let alert = UIAlertController(title: "회원탈퇴", message: "ReptileHub 앱을 탈퇴하시겠습니까?", preferredStyle: .alert)
         
 
@@ -202,7 +203,10 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = list[indexPath.row]
+        cell.textLabel?.textColor = .black
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        cell.backgroundColor = .white
+        cell.selectionStyle = .none
         
         let symbol = UIImageView(image: UIImage(systemName: "chevron.right"))
         symbol.tintColor = .black
@@ -247,6 +251,10 @@ extension ProfileViewController: EditUserInfoViewControllerDelegate {
             
             defer{
                 targetButton.isEnabled = true
+                // 요청 완료 후 인디케이터 숨김
+                                if let editVC = self?.presentedViewController as? EditUserInfoViewController {
+                                    editVC.hideActivityIndicator()
+                                }
             }
             
             if let error = error {

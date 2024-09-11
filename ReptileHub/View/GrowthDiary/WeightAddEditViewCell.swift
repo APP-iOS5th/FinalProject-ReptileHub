@@ -73,7 +73,7 @@ class WeightAddEditViewCell: UITableViewCell {
     private func setUI(){
         
         self.contentView.addSubview(weightAddEditStackView)
-        
+        backgroundColor = .white
         weightAddEditStackView.snp.makeConstraints { make in
             make.leading.equalTo(self.contentView.snp.leading).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self.contentView.snp.trailing).offset(-Spacing.mainSpacing)

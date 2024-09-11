@@ -14,7 +14,7 @@ protocol AddPostViewControllerDelegate: AnyObject {
 }
 
 class AddPostViewController: UIViewController {
-    
+    private let activityIndicator = CustomActivityIndicator()
     weak var delegate: AddPostViewControllerDelegate?
     
     private let addPostView = AddPostView()
@@ -42,11 +42,12 @@ class AddPostViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         print("으아아아아아아아악!!")
         print("첫번째. AddPostVC 나타남. editMode: \(editMode)")
         print("넘겨받은 게시글 정보 : \(postId)")
-        
-        
+        checkPostButtonState()
+        setupActivityIndicator()
         
         if self.editMode {
             CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: postId) { result in
@@ -69,8 +70,7 @@ class AddPostViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .white
+      
         
         self.view = addPostView
         addPostView.configureAddPostView(delegate: self, datasource: self, textViewDelegate: self)
@@ -82,8 +82,31 @@ class AddPostViewController: UIViewController {
     }
     
     
-    
-}
+    private func setupActivityIndicator() {
+        view.addSubview(activityIndicator)
+//        activityIndicator.backgroundColor = .red
+        activityIndicator.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.width.equalTo(300)
+            $0.height.equalTo(400)
+            
+        }
+           activityIndicator.isHidden = true
+       }
+    func showActivityIndicator(withMessage message: String) {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.isHidden = false
+               self?.activityIndicator.startAnimating(withMessage: message)
+           }
+       }
+
+       func hideActivityIndicator() {
+           DispatchQueue.main.async { [weak self] in
+               self?.activityIndicator.stopAnimating()
+               self?.activityIndicator.isHidden = true
+           }
+       }
+ }
 
 
 extension AddPostViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -147,7 +170,14 @@ extension AddPostViewController: PHPickerViewControllerDelegate {
     
 }
 
-extension AddPostViewController: UITextViewDelegate {
+extension AddPostViewController:UITextFieldDelegate,UITextViewDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+           checkPostButtonState() // 입력값이 바뀔 때마다 버튼 상태 체크
+           return true
+       }
+    
+    
     // 텍스트 뷰의 텍스트가 변경될 때 호출되는 델리게이트 메서드
     func textViewDidChange(_ textView: UITextView) {
 
@@ -156,6 +186,8 @@ extension AddPostViewController: UITextViewDelegate {
         } else {
             self.addPostView.textViewPlaceholder.isHidden = true
         }
+        
+        checkPostButtonState()
     }
 }
 
@@ -186,50 +218,77 @@ extension AddPostViewController: PHPickerCollectionViewCellDelegate {
     
 }
 
-
 extension AddPostViewController: AddPostViewDelegate {
     func didTapPostButton(imageData: [Data], title: String, content: String) {
-        guard let userID = Auth.auth().getUserID() else {
-            return
-        }
+        guard let userID = Auth.auth().getUserID() else { return }
+
+        // Indicator 표시
+        let startMessage = editMode ? "수정 중입니다... \n 잠시만 기다려주세요" : "등록 중입니다... \n 잠시만 기다려주세요"
+            showActivityIndicator(withMessage: startMessage)
+
         if editMode {
             guard let editResponse = self.editResponse else { return }
-            CommunityService.shared.updatePost(postID: editResponse.postID, userID: editResponse.userID, newTitle: title, newContent: content, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs) { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                } else {
-                    print("업데이트 완료")
-
-                    CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: editResponse.postID) { result in
-                        switch result {
-                        case .success(let success):                            self.delegate?.dismissAddPost(detailPostData: success)
-                            self.navigationController?.popViewController(animated: true)
-
-                        case .failure(let failure):
-                            print("에러다!!!!!!!")
+            CommunityService.shared.updatePost(postID: editResponse.postID, userID: editResponse.userID, newTitle: title, newContent: content, newImages: imageData, existingImageURLs: originalImageURLs, removedImageURLs: removedImageURLs) { [weak self] error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print(error.localizedDescription)
+                    } else {
+                        print("업데이트 완료")
+                        CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: editResponse.postID) { result in
+                            switch result {
+                            case .success(let success):
+                                self?.delegate?.dismissAddPost(detailPostData: success)
+                                self?.navigationController?.popViewController(animated: true)
+                            case .failure(let failure):
+                                print("에러 발생: \(failure.localizedDescription)")
+                            }
                         }
                     }
-
+                    self?.hideActivityIndicator()
+                }
+            }
+        } else {
+            CommunityService.shared.createPost(userID: userID, title: title, content: content, images: imageData) { [weak self] error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
+                    } else {
+                        print("게시글 게시 성공")
+                        self?.navigationController?.popViewController(animated: true)
+                    }
+                    self?.hideActivityIndicator()
                 }
             }
         }
-        else {
-            print("""
-                    [현재 등록할 게시글 내용]
-                    userid: \(Auth.auth().currentUser?.uid)
-                    imageData: \(imageData)
-                    title: \(title)
-                    content: \(content)
-                    """)
-            
-            CommunityService.shared.createPost(userID: Auth.auth().currentUser!.uid, title: title, content: content, images: imageData) { error in
-                if let error = error {
-                            print("게시글 게시 중 오류 발생: \(error.localizedDescription)")
-                        } else {
-                            print("게시글 게시 성공")
-                            self.navigationController?.popViewController(animated: true)
-                        }
-            }
-        }
     }
+}
+
+
+extension AddPostViewController {
+    private func isValidInput(_ input: String) -> Bool {
+           // 유효성 검사 - 공백문자만 있는지, HTML 태그 방지, 최소한 하나의 공백 아닌 문자 포함해야 함
+           let pattern = "^(?!\\s*$)(?!.*<[^>]+>).+"
+           let regex = try? NSRegularExpression(pattern: pattern)
+           let range = NSRange(location: 0, length: input.utf16.count)
+           return regex?.firstMatch(in: input, options: [], range: range) != nil
+       }
+       
+       private func checkPostButtonState() {
+           let title = addPostView.titleTextField.text ?? ""
+           let content = addPostView.contentTextView.text ?? ""
+           
+           // 유효성 검사
+           let isTitleValid = isValidInput(title)
+           let isContentValid = isValidInput(content)
+
+           // 제목과 내용이 모두 유효해야 버튼 활성화
+           let shouldEnable = isTitleValid && isContentValid
+           addPostView.postButton.isEnabled = shouldEnable
+
+           // 버튼의 배경 색상 변경
+           addPostView.postButton.backgroundColor = shouldEnable ? .addBtnGraphTabbar : .gray
+       }
+    
+    
+    
 }

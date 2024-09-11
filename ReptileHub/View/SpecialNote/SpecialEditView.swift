@@ -232,6 +232,7 @@ class SpecialEditView: UIView {
         
         imagePickerCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         imagePickerCollectionView.register(SpecialPHPickerCollectionViewCell.self, forCellWithReuseIdentifier: "PHPickerCell")
+        imagePickerCollectionView.backgroundColor = .white
         imagePickerCollectionView.showsHorizontalScrollIndicator = false
         
         self.addSubview(imagePickerCollectionView)

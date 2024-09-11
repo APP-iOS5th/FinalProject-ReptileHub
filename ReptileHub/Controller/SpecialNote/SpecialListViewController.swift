@@ -42,7 +42,6 @@ class SpecialListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view = specialListView
         specialListView.configureTableView(delegate: self, datasource: self)
         // UIMenu 관련 셀 호출

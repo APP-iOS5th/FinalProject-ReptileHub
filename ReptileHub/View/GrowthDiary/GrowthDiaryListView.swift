@@ -74,6 +74,8 @@ class GrowthDiaryListView: UIView {
         self.addSubview(GrowthDiaryListCollectionView)
         self.addSubview(GrowthDiaryUploadViewMoveButton)
         
+        GrowthDiaryListCollectionView.backgroundColor = .white
+        
         GrowthDiaryTitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(self).offset(Spacing.mainSpacing)
             make.trailing.equalTo(self).offset(-Spacing.mainSpacing)

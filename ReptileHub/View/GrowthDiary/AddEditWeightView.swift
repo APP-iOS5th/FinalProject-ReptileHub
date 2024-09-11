@@ -148,7 +148,6 @@ class AddEditWeightView: UIView {
     
     private func setUI(){
         self.addSubview(mainView)
-        
         mainView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

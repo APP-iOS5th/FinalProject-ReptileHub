@@ -28,7 +28,7 @@ class WritePostListView: UIView {
     
     private func setupView() {
         self.addSubview(WritePostTableView)
-        
+        WritePostTableView.backgroundColor = .white
         WritePostTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

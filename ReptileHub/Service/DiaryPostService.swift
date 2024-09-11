@@ -71,7 +71,8 @@ class DiaryPostService {
                     let thumbnailData: [String: Any] = [
                         "diary_id": diaryID,
                         "thumbnail": updateDiary.lizardInfo.imageURL as Any,
-                        "name": updateDiary.lizardInfo.name
+                        "name": updateDiary.lizardInfo.name,
+                        "createdAt": Timestamp(date: Date())
                     ]
                     
                     let thumbnailRef = db.collection("users").document(userID)
@@ -154,6 +155,7 @@ class DiaryPostService {
                completion(.success(thumbnails))  // 성공적으로 썸네일 데이터를 반환
            }
    } 
+
     
     //MARK: - DiaryDetail 정보 불러오는 함수. 썸네일에서 받아온 diaryID 를 할당해서 조회 하면 해당 detail 정보를 받을 수 있다 .
     func fetchGrowthDiaryDetails(userID: String, diaryID: String, completion: @escaping (Result<GrowthDiaryResponse, Error>) -> Void) {
