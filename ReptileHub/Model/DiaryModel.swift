@@ -76,6 +76,7 @@ struct ThumbnailResponse: Codable {
     var diary_id: String
     var thumbnail: String
     var name: String
+    var createdAt: Date
 }
 // 성장일지 속 성장일기 작성할때 사용하는 구조체
 struct DiaryRequest {
