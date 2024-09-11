@@ -169,24 +169,35 @@ class ProfileViewController: UIViewController {
     @objc func logoutButtonTouch() {
         print("로그아웃 버튼 터치")
         
-        // AuthService의 로그아웃 메서드 호출)
-        AuthService.shared.logout { success in
-            if success {
-                print("DEBUG: 로그아웃 성공")
-                
-                // 로그인 화면으로 이동
-                DispatchQueue.main.async {
-                    let loginVC = LoginViewController()
-                    loginVC.modalPresentationStyle = .fullScreen
+        let alert = UIAlertController(title: "로그아웃", message: "정말로 로그아웃 하시겠습니까?", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "로그아웃", style: .destructive){ [weak self] action in
+            // AuthService의 로그아웃 메서드 호출)
+            AuthService.shared.logout { success in
+                if success {
+                    print("DEBUG: 로그아웃 성공")
                     
-                    if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                        sceneDelegate.window?.rootViewController = loginVC
+                    // 로그인 화면으로 이동
+                    DispatchQueue.main.async {
+                        let loginVC = LoginViewController()
+                        loginVC.modalPresentationStyle = .fullScreen
+                        
+                        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                            sceneDelegate.window?.rootViewController = loginVC
+                        }
                     }
+                } else {
+                    print("DEBUG: 로그아웃 실패")
                 }
-            } else {
-                print("DEBUG: 로그아웃 실패")
             }
         }
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        alert.addAction(cancel)
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+        
+        
     }
 }
 

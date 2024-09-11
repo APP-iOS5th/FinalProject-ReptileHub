@@ -321,7 +321,7 @@ class AuthService: NSObject {
     
     private func saveUserWithDefaultProfileImage(uid: String, user: AuthUser, completion: @escaping () -> Void) {
         print("DEBUG","saveUserWithDefaultProfileImage")
-        let defaultProfileImageRef = Storage.storage().reference().child("profile_images/default_profile.jpg")
+        let defaultProfileImageRef = Storage.storage().reference().child("profile_images/default_profile.png")
         
         defaultProfileImageRef.downloadURL { url, error in
             if let error = error {
@@ -840,7 +840,7 @@ extension AuthService {
         }
         
         // 기본 프로필 이미지는 삭제하지 않음
-        if fileName != "default_profile.jpg" {
+        if fileName != "default_profile.png" {
             let fileRef = Storage.storage().reference().child("profile_images/\(fileName)")
             print("Deleting file at path: \(fileRef.fullPath)")
             fileRef.delete { error in

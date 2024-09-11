@@ -134,7 +134,7 @@ class DiaryPostService {
                
                var thumbnails: [ThumbnailResponse] = []
                
-               let defaultProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/testforfinal-e5ce4.appspot.com/o/profile_images%2FinVaild_Profile.jpeg?alt=media&token=a3692a8e-6d83-4451-b3e3-c92cfbdc5566"
+               let defaultProfileImageURL = "https://firebasestorage.googleapis.com/v0/b/reptilehub-a8815.appspot.com/o/profile_images%2FinVaild_Profile.png?alt=media&token=bed2133b-5f8c-4655-b38c-e671634095a4"
                
                // TODO: createdAt을 수정하면 해결 아마 등록하기 할때 날짜를 안보냐줘서 그런 것 같음 내일 재현님께 여쭤보기
                // TODO: 해치할때만 이렇게 넣어주는게 아니라 애초에 nil을 넘겨받으면 샘플 이미지로 넘겨주는건 어떨지 그러면 다른 뷰에서도 편하게 사용가능

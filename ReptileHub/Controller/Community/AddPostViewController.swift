@@ -47,9 +47,14 @@ class AddPostViewController: UIViewController {
         print("첫번째. AddPostVC 나타남. editMode: \(editMode)")
         print("넘겨받은 게시글 정보 : \(postId)")
         checkPostButtonState()
+
         setupActivityIndicator()
         
         if self.editMode {
+            
+            addPostView.postButton.isEnabled = true
+            addPostView.postButton.backgroundColor = .addBtnGraphTabbar
+            
             CommunityService.shared.fetchPostDetail(userID: UserService.shared.currentUserId, postID: postId) { result in
                 switch result {
                 case .success(let postDetail):

@@ -164,6 +164,7 @@ class SpecialDetailView: UIView {
             specialImages[i].snp.makeConstraints { (make) -> Void in
                 make.centerX.equalTo(imageView)
                 make.height.equalTo(230)
+                make.width.lessThanOrEqualTo(imageView)
             }
             
             imageViews.append(imageView)

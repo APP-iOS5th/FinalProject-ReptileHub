@@ -232,6 +232,7 @@ class DetailGrowthDiaryView: UIView {
     }()
     private lazy var detailWeightLineChartView: UIHostingController<WeightLineChartView> = {
         let hostingController = UIHostingController(rootView: WeightLineChartView())
+        hostingController.view.backgroundColor = .white
         return hostingController
     }()
     

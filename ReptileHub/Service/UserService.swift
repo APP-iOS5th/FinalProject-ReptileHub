@@ -331,7 +331,7 @@ extension UserService {
                 }
                 
                 // Default 이미지인지 확인
-                if !currentProfileImageURL.contains("default_profile.jpg") {
+                if !currentProfileImageURL.contains("default_profile.png") {
                     // 기존 이미지를 삭제
                     self.deleteImage(from: currentProfileImageURL) { error in
                         if let error = error {
@@ -406,7 +406,7 @@ extension UserService {
         }
         
         // 기본 프로필 이미지는 삭제하지 않음
-        if fileName != "default_profile.jpg" {
+        if fileName != "default_profile.png" {
             let fileRef = Storage.storage().reference().child("profile_images/\(fileName)")
             print("Deleting file at path: \(fileRef.fullPath)")
             fileRef.delete { error in
