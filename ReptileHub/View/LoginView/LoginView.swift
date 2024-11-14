@@ -10,22 +10,43 @@ import SnapKit
 
 class LoginView: UIView {
     
-
-    let logoImageView = UIImageView()
-    let lineView = UIView()
-    let stackView = UIStackView()
+    private enum Constants {
+        static let logoTopOffset: CGFloat = 80
+        static let logoWidth: CGFloat = 273
+        static let logoHeight: CGFloat = 202
+        static let lineTopOffset: CGFloat = 4
+        static let lingLeadingOffset: CGFloat = 80
+        static let lineHeight: CGFloat = 1
+        static let stackViewTopOffset: CGFloat = 20
+        static let stackViewSpacing: CGFloat = 15
+        static let buttonWidth: CGFloat = 344
+        static let buttonHeight: CGFloat = 52
+    }
     
-    let kakaoButton: UIButton
-    let googleButton: UIButton
-    let appleButton: UIButton
+    private let buttons: [SocialLoginButton]
+    private let logoImageView = UIImageView(image: UIImage(named: "LogoImage"))
+    private let lineView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .gray
+        return view
+    }()
     
+    private let socialButtonStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = Constants.stackViewSpacing
+        stack.alignment = .center
+        return stack
+    }()
 
+    
     override init(frame: CGRect) {
-        kakaoButton = LoginView.createButton(for: .kakao)
-        googleButton = LoginView.createButton(for: .google)
-        appleButton = LoginView.createButton(for: .apple)
+        self.buttons = LoginType.allCases.map { type in
+            SocialLoginButton(configuration: type.configuration)
+        }
         super.init(frame: frame)
         configureUI()
+      
     }
     
     required init?(coder: NSCoder) {
@@ -34,63 +55,49 @@ class LoginView: UIView {
 
     private func configureUI() {
         backgroundColor = .white
-        
-        addSubview(logoImageView)
-        addSubview(lineView)
-        addSubview(stackView)
-        
-        logoImageView.image = UIImage(named: "LogoImage")
-        logoImageView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(80)
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(273)
-            $0.height.equalTo(202)
-        }
-        
-        lineView.backgroundColor = .gray
-        lineView.snp.makeConstraints {
-            $0.top.equalTo(logoImageView.snp.bottom).offset(4)
-            $0.centerX.equalToSuperview()
-            $0.height.equalTo(1)
-            $0.leading.equalToSuperview().offset(80)
-        }
-        
-        stackView.axis = .vertical
-        stackView.spacing = 15
-        stackView.alignment = .center
-        stackView.addArrangedSubview(kakaoButton)
-        stackView.addArrangedSubview(googleButton)
-        stackView.addArrangedSubview(appleButton)
-        
-        addSubview(stackView)
-        stackView.snp.makeConstraints {
-            $0.top.equalTo(lineView.snp.bottom).offset(20)
-            $0.centerX.equalToSuperview()
-        }
-        
-        setButtonConstraints(kakaoButton)
-        setButtonConstraints(googleButton)
-        setButtonConstraints(appleButton)
+        setupLogoImage()
+        setupLineView()
+        setupSocialButtonStackView()
     }
     
-    private static func createButton(for type: LoginType) -> UIButton {
-        if type == .kakao {
-            let button = UIButton()
-            button.setImage(type.backgroundImage, for: .normal)
-            button.backgroundColor = type.backgroundColor
-            button.layer.cornerRadius = 8
-            button.showsTouchWhenHighlighted = false
-            button.adjustsImageWhenHighlighted = false
-            return button
-        } else {
-            return SocialLoginButton(icon: type.icon!, title: type.title!, backgroundColor: type.backgroundColor, textColor: type.textColor)
+    private func setupLogoImage() {
+        addSubview(logoImageView)
+        
+        logoImageView.snp.makeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide).offset(Constants.logoTopOffset)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(Constants.logoWidth)
+            $0.height.equalTo(Constants.logoHeight)
+        }
+    }
+    
+    private func setupLineView() {
+        lineView.snp.makeConstraints {
+            $0.top.equalTo(logoImageView.snp.bottom).offset(Constants.lineTopOffset)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(Constants.lineHeight)
+            $0.leading.equalToSuperview().offset(Constants.lingLeadingOffset)
+        }
+    }
+    
+    private func setupSocialButtonStackView() {
+        addSubview(socialButtonStackView)
+        
+        buttons.forEach { button in
+            socialButtonStackView.addArrangedSubview(button)
+            setButtonConstraints(button)
+        }
+        
+        socialButtonStackView.snp.makeConstraints {
+            $0.top.equalTo(lineView.snp.bottom).offset(Constants.stackViewTopOffset)
+            $0.centerX.equalToSuperview()
         }
     }
     
     private func setButtonConstraints(_ button: UIButton) {
         button.snp.makeConstraints {
-            $0.width.equalTo(344)
-            $0.height.equalTo(52)
+            $0.width.equalTo(Constants.buttonWidth)
+            $0.height.equalTo(Constants.buttonHeight)
         }
     }
 }

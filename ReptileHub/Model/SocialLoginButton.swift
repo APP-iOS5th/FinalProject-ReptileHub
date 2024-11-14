@@ -8,114 +8,144 @@
 import UIKit
 import SnapKit
 
-enum LoginType {
-    case kakao,google,apple
+enum LoginType: CaseIterable {
+    case kakao, google, apple
     
-    var icon:UIImage? {
+    private enum Constants {
+        static let googleTitle = "구글로 로그인"
+        static let appleTitle = "애플로 로그인"
+        static let iconSize: CGFloat = 45
+        static let cornerRadius: CGFloat = 8
+        static let horizontalPadding: CGFloat = 8
+        static let trailingPadding: CGFloat = 32
+    }
+    
+    var configuration: LoginButtonConfiguration {
         switch self {
         case .kakao:
-            return nil
+            return LoginButtonConfiguration(icon: nil,
+                                            backgroundImage: UIImage(named: "kakaoButton"),
+                                            title: nil,
+                                            backgroundColor: .clear,
+                                            textColor: .clear,
+                                            style: .backgroundImage)
         case .google:
-            return UIImage(named:"googleIcon")
+            return LoginButtonConfiguration(icon: UIImage(named: "googleIcon"),
+                                            backgroundImage: nil,
+                                            title: Constants.googleTitle,
+                                            backgroundColor: .googleBackgroundColor,
+                                            textColor: .black,
+                                            style: .iconWithText)
         case .apple:
-            return UIImage(named:"appleIcon")
+            return LoginButtonConfiguration(icon: UIImage(named: "appleIcon"),
+                                            backgroundImage: nil,
+                                            title: Constants.appleTitle,
+                                            backgroundColor: .black,
+                                            textColor: .white,
+                                            style: .iconWithText)
         }
     }
     
-    var backgroundImage:UIImage? {
-        switch self {
-        case .kakao:
-            return UIImage(named: "kakaoButton")
-        case .google,.apple:
-            return nil
-        }
-    }
     
-    var title: String? {
-        switch self {
-        case .kakao:
-            return nil
-        case .google:
-            return "구글로 로그인"
-        case .apple:
-            return "애플로 로그인"
-        }
-    }
+}
+
+struct LoginButtonConfiguration {
+    let icon: UIImage?
+    let backgroundImage: UIImage?
+    let title: String?
+    let backgroundColor: UIColor
+    let textColor: UIColor
+    let style: LoginButtonStyle
     
-    var backgroundColor: UIColor {
-        switch self {
-        case .kakao:
-            return .clear
-        case .google:
-            return .googleBackgroundColor
-        case .apple:
-            return .black
-        }
+    enum LoginButtonStyle {
+        case backgroundImage
+        case iconWithText
     }
-    
-    var textColor: UIColor {
-        switch self {
-        case .kakao:
-            return .clear
-        case .google:
-            return .black
-        case .apple:
-            return .white
-        }
-    }
-    
 }
 
 
 
-
-
-class SocialLoginButton:UIButton {
+final class SocialLoginButton: UIButton {
+    private enum Constants {
+        static let cornerRadius: CGFloat = 8
+        static let iconSize: CGFloat = 45
+        static let horizontalPadding: CGFloat = 8
+        static let trailingPadding: CGFloat = 32
+    }
     
-    init(icon:UIImage,title:String,backgroundColor:UIColor,textColor:UIColor) {
+    private let containerView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+    private let iconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
+    private let socialTitleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
+    
+    init(configuration: LoginButtonConfiguration) {
         super.init(frame: .zero)
-        
-        self.backgroundColor = backgroundColor
-        self.layer.cornerRadius = 8
-        
-        let containerView = UIView()
-        containerView.isUserInteractionEnabled = false
-        self.addSubview(containerView)
-        
-        let iconImageView = UIImageView(image: icon)
-        iconImageView.contentMode = .scaleAspectFit
-        containerView.addSubview(iconImageView)
-        
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.textColor = textColor
-        titleLabel.textAlignment = .center
-        containerView.addSubview(titleLabel)
-        
-        containerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        iconImageView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(8)
-            $0.width.height.equalTo(45)
-        }
-        
-        titleLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.equalTo(iconImageView.snp.trailing).offset(8)
-            $0.trailing.equalToSuperview().offset(-32)
-        }
-        
         
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
+    
+    private func setupWithConfiguration(_ configuration: LoginButtonConfiguration) {
+        backgroundColor = configuration.backgroundColor
+        layer.cornerRadius = Constants.cornerRadius
+        
+        switch configuration.style {
+        case .backgroundImage:
+            setImage(configuration.backgroundImage, for: .normal)
+        case .iconWithText:
+            setupIconWithTextStyle(icon: configuration.icon,
+                                   title: configuration.title,
+                                   textColor: configuration.textColor)
+            
+        }
+    }
+        
+        private func setupIconWithTextStyle(icon: UIImage?, title: String?, textColor: UIColor) {
+            addSubview(containerView)
+            containerView.addSubview(iconImageView)
+            containerView.addSubview(socialTitleLabel)
+            
+            iconImageView.image = icon
+            socialTitleLabel.text = title
+            socialTitleLabel.textColor = textColor
+            
+            setupConstraints()
+        }
+        
+        private func setupConstraints() {
+            containerView.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
+            
+            iconImageView.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.leading.equalToSuperview().offset(Constants.horizontalPadding)
+                $0.width.height.equalTo(Constants.iconSize)
+            }
+            
+            socialTitleLabel.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.leading.equalTo(iconImageView.snp.trailing).offset(Constants.horizontalPadding)
+                $0.trailing.equalToSuperview().offset(-Constants.trailingPadding)
+            }
+        }
+    }
+        
 
 extension UIColor {
     static let googleBackgroundColor = UIColor(red: 242 / 255.0,
