@@ -23,21 +23,24 @@ enum LoginType: CaseIterable {
     var configuration: LoginButtonConfiguration {
         switch self {
         case .kakao:
-            return LoginButtonConfiguration(icon: nil,
+            return LoginButtonConfiguration(type: .kakao,
+                                            icon: nil,
                                             backgroundImage: UIImage(named: "kakaoButton"),
                                             title: nil,
                                             backgroundColor: .clear,
                                             textColor: .clear,
                                             style: .backgroundImage)
         case .google:
-            return LoginButtonConfiguration(icon: UIImage(named: "googleIcon"),
+            return LoginButtonConfiguration(type: .google,
+                                            icon: UIImage(named: "googleIcon"),
                                             backgroundImage: nil,
                                             title: Constants.googleTitle,
                                             backgroundColor: .googleBackgroundColor,
                                             textColor: .black,
                                             style: .iconWithText)
         case .apple:
-            return LoginButtonConfiguration(icon: UIImage(named: "appleIcon"),
+            return LoginButtonConfiguration(type: .apple,
+                                            icon: UIImage(named: "appleIcon"),
                                             backgroundImage: nil,
                                             title: Constants.appleTitle,
                                             backgroundColor: .black,
@@ -50,6 +53,7 @@ enum LoginType: CaseIterable {
 }
 
 struct LoginButtonConfiguration {
+    let type: LoginType
     let icon: UIImage?
     let backgroundImage: UIImage?
     let title: String?
@@ -66,6 +70,8 @@ struct LoginButtonConfiguration {
 
 
 final class SocialLoginButton: UIButton {
+    let socialConfig: LoginButtonConfiguration
+    
     private enum Constants {
         static let cornerRadius: CGFloat = 8
         static let iconSize: CGFloat = 45
@@ -92,8 +98,9 @@ final class SocialLoginButton: UIButton {
     }()
     
     init(configuration: LoginButtonConfiguration) {
+        self.socialConfig = configuration
         super.init(frame: .zero)
-        
+        setupWithConfiguration(configuration)
     }
     
     required init?(coder: NSCoder) {

@@ -7,8 +7,10 @@
 
 import UIKit
 import SnapKit
+import Combine
 
 class LoginView: UIView {
+    let loginButtonTapPublisher = PassthroughSubject<LoginType, Never>()
     
     private enum Constants {
         static let logoTopOffset: CGFloat = 80
@@ -38,7 +40,7 @@ class LoginView: UIView {
         stack.alignment = .center
         return stack
     }()
-
+    
     
     override init(frame: CGRect) {
         self.buttons = LoginType.allCases.map { type in
@@ -46,13 +48,15 @@ class LoginView: UIView {
         }
         super.init(frame: frame)
         configureUI()
-      
+        print("LoginView init()")
+        setupButtonActions()
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func configureUI() {
         backgroundColor = .white
         setupLogoImage()
@@ -72,6 +76,8 @@ class LoginView: UIView {
     }
     
     private func setupLineView() {
+        addSubview(lineView)
+        
         lineView.snp.makeConstraints {
             $0.top.equalTo(logoImageView.snp.bottom).offset(Constants.lineTopOffset)
             $0.centerX.equalToSuperview()
@@ -100,5 +106,20 @@ class LoginView: UIView {
             $0.height.equalTo(Constants.buttonHeight)
         }
     }
+    
+    private func setupButtonActions() {
+        buttons.forEach { button in
+            button.addAction(
+                UIAction { [weak self] _ in
+                    print("button Tapped:\(button.socialConfig.type)")
+                    self?.loginButtonTapPublisher.send(button.socialConfig.type)
+            }, for: .touchUpInside)
+        }
+    }
+    
+    
+    
+    
+    
 }
 
