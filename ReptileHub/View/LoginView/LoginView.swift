@@ -12,6 +12,10 @@ import Combine
 class LoginView: UIView {
     let loginButtonTapPublisher = PassthroughSubject<LoginType, Never>()
     
+    private var isUITesting: Bool {
+        ProcessInfo.processInfo.arguments.contains("UITesting")
+    }
+    
     private enum Constants {
         static let logoTopOffset: CGFloat = 80
         static let logoWidth: CGFloat = 273
@@ -23,6 +27,15 @@ class LoginView: UIView {
         static let stackViewSpacing: CGFloat = 15
         static let buttonWidth: CGFloat = 344
         static let buttonHeight: CGFloat = 52
+    }
+    
+    private enum AccessibilityIdentifier {
+        static let logoImage = "LoginView.logoImage"
+        static let lineView = "LoginView.lineView"
+        static let stackView = "LoginView.stackView"
+        static let kakaoButton = "LoginView.kakaoButton"
+        static let googleButton = "LoginView.googleButton"
+        static let appleButton = "LoginView.appleButton"
     }
     
     private let buttons: [SocialLoginButton]
@@ -62,6 +75,7 @@ class LoginView: UIView {
         setupLogoImage()
         setupLineView()
         setupSocialButtonStackView()
+        setupAccessibility()
     }
     
     private func setupLogoImage() {
@@ -117,7 +131,23 @@ class LoginView: UIView {
         }
     }
     
-    
+    private func setupAccessibility() {
+        logoImageView.accessibilityIdentifier = AccessibilityIdentifier.logoImage
+        lineView.accessibilityIdentifier = AccessibilityIdentifier.lineView
+        socialButtonStackView.accessibilityIdentifier = AccessibilityIdentifier.stackView
+        
+        buttons.forEach { button in
+            switch button.socialConfig.type {
+            case .kakao:
+                button.accessibilityIdentifier = AccessibilityIdentifier.kakaoButton
+            case .google:
+                button.accessibilityIdentifier = AccessibilityIdentifier.googleButton
+            case .apple:
+                button.accessibilityIdentifier = AccessibilityIdentifier.appleButton
+            }
+        }
+        
+    }
     
     
     
