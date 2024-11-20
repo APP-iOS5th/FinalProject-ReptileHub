@@ -9,7 +9,7 @@ import UIKit
 import Combine
 
 protocol AuthServiceProtocol {
-    func loginWithKaKao(presentingViewController: UIViewController) -> AnyPublisher<Bool,Error>
+    func loginWithKaKao(presentingViewController: UIViewController) -> AnyPublisher<KakaoAuthUser,Error>
     func loginWithGoogle(presentingViewController: UIViewController) -> AnyPublisher<Bool,Error>
     func loginWithApple(presentingViewController: UIViewController) -> AnyPublisher<Bool, Error>
 }
